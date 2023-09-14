@@ -1,6 +1,6 @@
 import mysql from "mysql2";
 
-const connection = mysql.createPool({
+const conn = mysql.createPool({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   user: process.env.DB_USER,
@@ -8,4 +8,4 @@ const connection = mysql.createPool({
   port: process.env.DB_PORT,
 });
 
-export default connection.promise();
+export default conn.promise();

@@ -1,4 +1,4 @@
-import db from "../db/connection";
+import conn from "../db/connection";
 
 export class AssociateInvites {
   constructor(associate_uuid, associate_invite_from, associate_invite_to, associate_invite_status) {
@@ -19,7 +19,7 @@ export class AssociateInvites {
         this.associate_invite_to,
         this.associate_invite_status,
       ];
-      const [data, _] = await db.execute(sql, associateInviteValues);
+      const [data, _] = await conn.execute(sql, associateInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- create associate ---");
@@ -31,7 +31,7 @@ export class AssociateInvites {
       const sql = `UPDATE associate_invites SET status = ?
                     WHERE ${selector} = ?`;
       const associateInviteValues = [status, value];
-      const [data, _] = await db.execute(sql, associateInviteValues);
+      const [data, _] = await conn.execute(sql, associateInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- update associate invite ---");
@@ -43,7 +43,7 @@ export class AssociateInvites {
       const sql = `DELETE FROM associate_invites
                     WHERE ${selector} = ?`;
       const associateInviteValues = [value];
-      const [data, _] = await db.execute(sql, associateInviteValues);
+      const [data, _] = await conn.execute(sql, associateInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete associate ---");

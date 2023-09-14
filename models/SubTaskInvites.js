@@ -1,4 +1,4 @@
-import db from "../db/connection";
+import conn from "../db/connection";
 
 export class SubTaskInvites {
   constructor(
@@ -36,7 +36,7 @@ export class SubTaskInvites {
         this.sub_task_invite_message,
         this.sub_task_invite_status,
       ];
-      const [data, _] = await db.execute(sql, subTaskInviteValues);
+      const [data, _] = await conn.execute(sql, subTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- create sub task invite ---");
@@ -48,10 +48,22 @@ export class SubTaskInvites {
       const sql = `DELETE FROM sub_task_invites
                   WHERE '${selector}' = ?`;
       const subTaskInviteValues = [value];
-      const [data, _] = await db.execute(sql, subTaskInviteValues);
+      const [data, _] = await conn.execute(sql, subTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task invite ---");
+    }
+  }
+
+  static async updateSubTaskInviteStatus(sub_task_invite_status, selector, value) {
+    try {
+      const sql = `UPDATE sub_task_invites SET sub_task_invite_status = ?
+                  WHERE '${selector}' = ?`;
+      const subTaskInviteValues = [sub_task_invite_status, value];
+      const [data, _] = await conn.execute(sql, subTaskInviteValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- update sub task invite ---");
     }
   }
 }

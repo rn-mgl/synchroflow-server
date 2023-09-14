@@ -1,4 +1,4 @@
-import db from "../db/connection";
+import conn from "../db/connection";
 
 export class SubTasks {
   constructor(
@@ -48,7 +48,7 @@ export class SubTasks {
         this.sub_task_end_date,
       ];
 
-      const [data, _] = await db.execute(sql, subTaskValues);
+      const [data, _] = await conn.execute(sql, subTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- create sub task ---");
@@ -84,7 +84,7 @@ export class SubTasks {
         sub_task_end_date,
         value,
       ];
-      const [data, _] = await db.execute(sql, subTaskValues);
+      const [data, _] = await conn.execute(sql, subTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- update sub task ---");
@@ -96,7 +96,7 @@ export class SubTasks {
       const sql = `SELECT * FROM sub_tasks
                   WHERE ${selector} = ?;`;
       const subTaskValues = [value];
-      const [data, _] = await db.execute(sql, subTaskValues);
+      const [data, _] = await conn.execute(sql, subTaskValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get sub task ---");
@@ -108,7 +108,7 @@ export class SubTasks {
       const sql = `SELECT * FROM sub_tasks
                   WHERE ${selector} = ?;`;
       const subTaskValues = [value];
-      const [data, _] = await db.execute(sql, subTaskValues);
+      const [data, _] = await conn.execute(sql, subTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all sub tasks ---");
@@ -120,7 +120,7 @@ export class SubTasks {
       const sql = `DELETE FROM sub_tasks
                   WHERE ${selector} = ?;`;
       const subTaskValues = [value];
-      const [data, _] = await db.execute(sql, subTaskValues);
+      const [data, _] = await conn.execute(sql, subTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task ---");

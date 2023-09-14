@@ -1,4 +1,4 @@
-import db from "../db/connection";
+import conn from "../db/connection";
 
 export class PrivateMessages {
   constructor(
@@ -32,7 +32,7 @@ export class PrivateMessages {
         this.private_message,
         this.private_message_file,
       ];
-      const [data, _] = await db.execute(sql, privateMessageValues);
+      const [data, _] = await conn.execute(sql, privateMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- create private message ---");
@@ -44,7 +44,7 @@ export class PrivateMessages {
       const sql = `DELETE FROM private_messages
                     WHERE ${selector} = ?;`;
       const privateMessageValues = [value];
-      const [data, _] = await db.execute(sql, privateMessageValues);
+      const [data, _] = await conn.execute(sql, privateMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete private message ---");
@@ -56,7 +56,7 @@ export class PrivateMessages {
       const sql = `SELECT * FROM private_messages
                     WHERE ${selector} = ?;`;
       const privateMessageValues = [value];
-      const [data, _] = await db.execute(sql, privateMessageValues);
+      const [data, _] = await conn.execute(sql, privateMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all private messages ---");

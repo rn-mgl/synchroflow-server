@@ -1,4 +1,4 @@
-import db from "../db/connection";
+import conn from "../db/connection";
 
 export class MainTaskCollaborators {
   constructor(main_task_collaborator_uuid, main_task_id, collaborator_id) {
@@ -16,7 +16,7 @@ export class MainTaskCollaborators {
                         collaborator_id
                      ) VALUES (?, ?, ?);`;
       const mainTaskCollaboratorValues = [this.main_task_collaborator_uuid, this.main_task_id, this.collaborator_id];
-      const [data, _] = await db.execute(sql, mainTaskCollaboratorValues);
+      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- create main task collaborator ---");
@@ -28,7 +28,7 @@ export class MainTaskCollaborators {
       const sql = `DELETE FROM main_task_collaborators
                 WHERE ${selector} = ?;`;
       const mainTaskCollaboratorValues = [value];
-      const [data, _] = await db.execute(sql, mainTaskCollaboratorValues);
+      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task collaborator ---");

@@ -1,4 +1,4 @@
-import db from "../db/connection";
+import conn from "../db/connection";
 
 export class SubTaskCollaborators {
   constructor(sub_task_collaborator_uuid, sub_task_id, collaborator_id) {
@@ -16,7 +16,7 @@ export class SubTaskCollaborators {
                         collaborator_id
                      ) VALUES (?, ?, ?);`;
       const subTaskCollaboratorValues = [this.sub_task_collaborator_uuid, this.sub_task_id, this.collaborator_id];
-      const [data, _] = await db.execute(sql, subTaskCollaboratorValues);
+      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- create sub task collaborator ---");
@@ -28,7 +28,7 @@ export class SubTaskCollaborators {
       const sql = `DELETE FROM sub_task_collaborators
                 WHERE ${selector} = ?;`;
       const subTaskCollaboratorValues = [value];
-      const [data, _] = await db.execute(sql, subTaskCollaboratorValues);
+      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task collaborator ---");

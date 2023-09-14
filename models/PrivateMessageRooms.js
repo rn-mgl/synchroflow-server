@@ -1,4 +1,4 @@
-import db from "../db/connection";
+import conn from "../db/connection";
 
 export class PrivateMessageRooms {
   constructor(private_message_room, member_id) {
@@ -14,7 +14,7 @@ export class PrivateMessageRooms {
                         member_id
                     ) VALUES (?, ?);`;
       const privateMessageRoomValues = [this.private_message_room, this.member_id];
-      const [data, _] = await db.execute(sql, privateMessageRoomValues);
+      const [data, _] = await conn.execute(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- create private message room ---");
@@ -26,7 +26,7 @@ export class PrivateMessageRooms {
       const sql = `DELETE FROM private_message_rooms
                     WHERE ${selector} = ?;`;
       const privateMessageRoomValues = [value];
-      const [data, _] = await db.execute(sql, privateMessageRoomValues);
+      const [data, _] = await conn.execute(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete private message room ---");
