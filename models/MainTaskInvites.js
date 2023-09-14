@@ -2,14 +2,14 @@ import db from "../db/connection";
 
 export class MainTaskInvites {
   constructor(
-    main_task_invites_uuid,
+    main_task_invite_uuid,
     main_task_id,
     invited_by,
     invited_associate,
     main_task_invite_message,
     main_task_invite_status
   ) {
-    this.main_task_invites_uuid = main_task_invites_uuid;
+    this.main_task_invite_uuid = main_task_invite_uuid;
     this.main_task_id = main_task_id;
     this.invited_by = invited_by;
     this.invited_associate = invited_associate;
@@ -21,7 +21,7 @@ export class MainTaskInvites {
     try {
       const sql = `INSERT INTO main_task_invites
                   (
-                    main_task_invites_uuid, 
+                    main_task_invite_uuid, 
                     main_task_id, 
                     invited_by, 
                     invited_associate, 
@@ -29,7 +29,7 @@ export class MainTaskInvites {
                     main_task_invite_status
                   ) VALUES (?, ?, ?, ?, ?, ?);`;
       const mainTaskInviteValues = [
-        this.main_task_invites_uuid,
+        this.main_task_invite_uuid,
         this.main_task_id,
         this.invited_by,
         this.invited_associate,

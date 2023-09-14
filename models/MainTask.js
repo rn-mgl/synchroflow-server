@@ -70,7 +70,6 @@ export class MainTasks {
                     main_task_status= ?,
                     main_task_start_date= ?,
                     main_task_end_date= ?
-                  VALUES (?)
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [
         main_task_name,
