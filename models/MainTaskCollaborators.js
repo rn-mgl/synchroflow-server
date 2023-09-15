@@ -34,4 +34,30 @@ export class MainTaskCollaborators {
       console.log(error + "--- delete main task collaborator ---");
     }
   }
+
+  static async getMainTaskCollaborator(selector, value) {
+    try {
+      const sql = `SELECT * FROM main_task_collaborators
+                WHERE ${selector} = ?;`;
+      const mainTaskCollaboratorValues = [value];
+      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get main task collaborator ---");
+    }
+  }
+
+  static async getAllMainTaskCollaborators(selector, value) {
+    try {
+      const sql = `SELECT * FROM main_task_collaborators AS mtc
+                    INNER JOIN main_tasks AS mt
+                    ON mtc.main_task_id = mt.task_id
+                    WHERE ${selector} = ?;`;
+      const mainTaskCollaboratorValues = [value];
+      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all main task collaborators ---");
+    }
+  }
 }

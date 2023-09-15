@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { BadRequestError, NotFoundError } from "../errors";
-import { EXPECTATION_FAILED, StatusCodes } from "http-status-codes";
-import { MainTasks } from "../models/MainTask";
+import { StatusCodes } from "http-status-codes";
+import { MainTasks } from "../models/MainTasks";
 
 export const createMainTask = async (req, res) => {
   const { taskName, taskDescription, taskPriority, taskStartDate, taskEndData } = req.body;

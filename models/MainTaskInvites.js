@@ -1,20 +1,12 @@
 import conn from "../db/connection";
 
 export class MainTaskInvites {
-  constructor(
-    main_task_invite_uuid,
-    main_task_id,
-    invited_by,
-    invited_associate,
-    main_task_invite_message,
-    main_task_invite_status
-  ) {
+  constructor(main_task_invite_uuid, main_task_id, invited_by, invited_associate, main_task_invite_message) {
     this.main_task_invite_uuid = main_task_invite_uuid;
     this.main_task_id = main_task_id;
     this.invited_by = invited_by;
     this.invited_associate = invited_associate;
     this.main_task_invite_message = main_task_invite_message;
-    this.main_task_invite_status = main_task_invite_status;
   }
 
   async createMainTaskInvite() {
@@ -25,16 +17,14 @@ export class MainTaskInvites {
                     main_task_id, 
                     invited_by, 
                     invited_associate, 
-                    main_task_invite_message, 
-                    main_task_invite_status
-                  ) VALUES (?, ?, ?, ?, ?, ?);`;
+                    main_task_invite_message
+                  ) VALUES (?, ?, ?, ?, ?);`;
       const mainTaskInviteValues = [
         this.main_task_invite_uuid,
         this.main_task_id,
         this.invited_by,
         this.invited_associate,
         this.main_task_invite_message,
-        this.main_task_invite_status,
       ];
       const [data, _] = await conn.execute(sql, mainTaskInviteValues);
       return data;
@@ -64,6 +54,30 @@ export class MainTaskInvites {
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");
+    }
+  }
+
+  static async getMainTaskInvite(selector, value) {
+    try {
+      const sql = `SELECT * FROM main_task_invites
+                    WHERE ${selector} = ?;`;
+      const mainTaskInviteValues = [value];
+      const [data, _] = await conn.execute(sql, mainTaskInviteValues);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get main task invite ---");
+    }
+  }
+
+  static async getAllMainTaskInvites(selector, value) {
+    try {
+      const sql = `SELECT * FROM main_task_invites
+                    WHERE ${selector} = ?;`;
+      const mainTaskInviteValues = [value];
+      const [data, _] = await conn.execute(sql, mainTaskInviteValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all main task invites ---");
     }
   }
 }
