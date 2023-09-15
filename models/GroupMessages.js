@@ -1,12 +1,12 @@
 import conn from "../db/connection";
 
 export class GroupMessages {
-  constructor(group_message_room_id, group_message_from, group_message, group_message_file, group_message_is_deleted) {
+  constructor(group_message_room_id, group_message_uuid, group_message_from, group_message, group_message_file) {
     this.group_message_room_id = group_message_room_id;
+    this.group_message_uuid = group_message_uuid;
     this.group_message_from = group_message_from;
     this.group_message = group_message;
     this.group_message_file = group_message_file;
-    this.group_message_is_deleted = group_message_is_deleted;
   }
 
   async createGroupMessage() {
@@ -14,17 +14,17 @@ export class GroupMessages {
       const sql = `INSERT INTO group_messages
                      (
                         group_message_room_id,
+                        group_message_uuid,
                         group_message_from,
                         group_message,
-                        group_message_file,
-                        group_message_is_deleted
-                     ) VALUES (?, ?, ?, ?, ?)`;
+                        group_message_file
+                     ) VALUES (?, ?, ?, ?)`;
       const groupMessageValues = [
         this.group_message_room_id,
+        this.group_message_uuid,
         this.group_message_from,
         this.group_message,
         this.group_message_file,
-        this.group_message_is_deleted,
       ];
       const [data, _] = await conn.execute(sql, groupMessageValues);
       return data;
@@ -35,9 +35,9 @@ export class GroupMessages {
 
   static async deleteGroupMessage(selector, value) {
     try {
-      const sql = `DELETE FROM group_messages
+      const sql = `UPDATE group_messages SET group_message_is_deleted = ?
                     WHERE ${selector} = ?;`;
-      const groupMessageValues = [value];
+      const groupMessageValues = [true, value];
       const [data, _] = await conn.execute(sql, groupMessageValues);
       return data;
     } catch (error) {
@@ -47,13 +47,27 @@ export class GroupMessages {
 
   static async getAllGroupMessages(selector, value) {
     try {
-      const sql = `SELECT * FROM group_messages
+      const sql = `SELECT * FROM group_messages AS gm
+                    INNER JOIN group_message_rooms AS gmr
+                    ON gm.group_message_room_id = gmr.group_message_room_id
                     WHERE ${selector} = ?;`;
       const groupMessageValues = [value];
       const [data, _] = await conn.execute(sql, groupMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all group messages ---");
+    }
+  }
+
+  static async getGroupMessage(selector, value) {
+    try {
+      const sql = `SELECT * FROM group_messages
+                    WHERE ${selector} = ?;`;
+      const groupMessageValues = [value];
+      const [data, _] = await conn.execute(sql, groupMessageValues);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get group message ---");
     }
   }
 }

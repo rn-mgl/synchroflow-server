@@ -44,4 +44,30 @@ export class GroupMessageRooms {
       console.log(error + "--- delete group message room ---");
     }
   }
+
+  static async getAllGroupMessageRooms(selector, value) {
+    try {
+      const sql = `SELECT * FROM group_message_rooms AS gmr
+                    INNER JOIN group_message_members AS gmm
+                    ON gmr.group_message_room_id = gmm.group_message_room_id
+                    WHERE ${selector} = ?;`;
+      const groupMessageRoomValues = [value];
+      const [data, _] = await conn.execute(sql, groupMessageRoomValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all group message rooms ---");
+    }
+  }
+
+  static async getGroupMessageRoom(selector, value) {
+    try {
+      const sql = `SELECT * FROM group_message_rooms
+                    WHERE ${selector} = ?;`;
+      const groupMessageRoomValues = [value];
+      const [data, _] = await conn.execute(sql, groupMessageRoomValues);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get group message room ---");
+    }
+  }
 }
