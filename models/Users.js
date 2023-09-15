@@ -1,29 +1,20 @@
 import conn from "../db/connection";
 
 export class Users {
-  constructor(user_uuid, name, surname, email, password, image, is_verified) {
+  constructor(user_uuid, name, surname, email, password, image) {
     this.user_uuid = user_uuid;
     this.name = name;
     this.surname = surname;
     this.email = email;
     this.password = password;
     this.image = image;
-    this.is_verified = is_verified;
   }
 
   async createUser() {
     try {
       const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image, is_verified) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?);`;
-      const userValues = [
-        this.user_uuid,
-        this.name,
-        this.surname,
-        this.email,
-        this.password,
-        this.image,
-        this.is_verified,
-      ];
+                  VALUES (?, ?, ?, ?, ?, ?);`;
+      const userValues = [this.user_uuid, this.name, this.surname, this.email, this.password, this.image];
       const [data, _] = await conn.execute(sql, userValues);
       return data;
     } catch (error) {
@@ -37,7 +28,7 @@ export class Users {
                     WHERE ${selector} = ?`;
       const userValues = [value];
       const [data, _] = await conn.execute(sql, userValues);
-      return data;
+      return data[0];
     } catch (error) {
       console.log(error + "--- get user ---");
     }

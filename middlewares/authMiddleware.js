@@ -10,7 +10,7 @@ export const authMiddleware = (req, res, next) => {
 
   const verify = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
 
-  req.user = { userId: verify.id, uuid: verify.uuid, name: verify.name, email: verify.email };
+  req.user = { id: verify.id, uuid: verify.uuid, name: verify.name, email: verify.email };
 
   next();
 };
