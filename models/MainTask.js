@@ -7,7 +7,6 @@ export class MainTasks {
     main_task_name,
     main_task_description,
     main_task_priority,
-    main_task_status,
     main_task_start_date,
     main_task_end_date
   ) {
@@ -16,7 +15,6 @@ export class MainTasks {
     this.main_task_name = main_task_name;
     this.main_task_description = main_task_description;
     this.main_task_priority = main_task_priority;
-    this.main_task_status = main_task_status;
     this.main_task_start_date = main_task_start_date;
     this.main_task_end_date = main_task_end_date;
   }
@@ -29,17 +27,15 @@ export class MainTasks {
                     main_task_name,
                     main_task_description,
                     main_task_priority,
-                    main_task_status,
                     main_task_start_date,
                     main_task_end_date
-                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?);`;
       const mainTaskValues = [
         this.main_task_uuid,
         this.main_task_by,
         this.main_task_name,
         this.main_task_description,
         this.main_task_priority,
-        this.main_task_status,
         this.main_task_start_date,
         this.main_task_end_date,
       ];
@@ -101,7 +97,9 @@ export class MainTasks {
 
   static async getAllMainTasks(selector, value) {
     try {
-      const sql = `SELECT * FROM main_tasks
+      const sql = `SELECT * FROM main_tasks AS mt
+                  INNER JOIN main_task_collaborators AS mtc
+                  ON mt.task_id = mtc.main_task_id
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [value];
       const [data, _] = await conn.execute(sql, mainTaskValues);
