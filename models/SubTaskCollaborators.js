@@ -7,7 +7,7 @@ export class SubTaskCollaborators {
     this.collaborator_id = collaborator_id;
   }
 
-  async createMainTaskCollaborator() {
+  async createSubTaskCollaborator() {
     try {
       const sql = `INSERT INTO sub_task_collaborators
                      (
@@ -23,7 +23,7 @@ export class SubTaskCollaborators {
     }
   }
 
-  static async deleteMainTaskCollaborator(selector, value) {
+  static async deleteSubTaskCollaborator(selector, value) {
     try {
       const sql = `DELETE FROM sub_task_collaborators
                 WHERE ${selector} = ?;`;
@@ -32,6 +32,32 @@ export class SubTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task collaborator ---");
+    }
+  }
+
+  static async getSubTaskCollaborator(selector, value) {
+    try {
+      const sql = `SELECT * FROM sub_task_collaborators
+                WHERE ${selector} = ?;`;
+      const subTaskCollaboratorValues = [value];
+      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get sub task collaborator ---");
+    }
+  }
+
+  static async getAllSubTaskCollaborators(selector, value) {
+    try {
+      const sql = `SELECT * FROM sub_task_collaborators AS stc
+                    INNER JOIN sub_tasks AS st
+                    ON stc.sub_task_id = st.sub_task_id
+                    WHERE ${selector} = ?;`;
+      const subTaskCollaboratorValues = [value];
+      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all sub task collaborators ---");
     }
   }
 }
