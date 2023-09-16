@@ -99,7 +99,7 @@ export class MainTasks {
     try {
       const sql = `SELECT * FROM main_tasks AS mt
                   INNER JOIN main_task_collaborators AS mtc
-                  ON mt.task_id = mtc.main_task_id
+                  ON mt.main_task_id = mtc.main_task_id
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [value];
       const [data, _] = await conn.execute(sql, mainTaskValues);

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { hashPassword } from "../utils";
-import { Users } from "../models/Users.js";
+import { Users } from "../models/Users";
 import { BadRequestError, UnauthorizedError } from "../errors";
 
 export const getUser = async (req, res) => {

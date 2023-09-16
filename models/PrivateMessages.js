@@ -2,12 +2,14 @@ import conn from "../db/connection";
 
 export class PrivateMessages {
   constructor(
+    private_message_uuid,
     private_message_room_id,
     private_message_from,
     private_message_to,
     private_message,
     private_message_file
   ) {
+    this.private_message_uuid = private_message_uuid;
     this.private_message_room_id = private_message_room_id;
     this.private_message_from = private_message_from;
     this.private_message_to = private_message_to;
@@ -19,13 +21,15 @@ export class PrivateMessages {
     try {
       const sql = `INSERT INTO private_messages
                      (
+                        private_message_uuid,
                         private_message_room_id,
                         private_message_from,
                         private_message_to,
                         private_message,
                         private_message_file
-                     ) VALUES (?, ?, ?, ?, ?);`;
+                     ) VALUES (?, ?, ?, ?, ?, ?);`;
       const privateMessageValues = [
+        this.private_message_uuid,
         this.private_message_room_id,
         this.private_message_from,
         this.private_message_to,
@@ -41,9 +45,9 @@ export class PrivateMessages {
 
   static async deletePrivateMessage(selector, value) {
     try {
-      const sql = `DELETE FROM private_messages
+      const sql = `UPDATE private_messages SET private_message_is_deleted = ?
                     WHERE ${selector} = ?;`;
-      const privateMessageValues = [value];
+      const privateMessageValues = [true, value];
       const [data, _] = await conn.execute(sql, privateMessageValues);
       return data;
     } catch (error) {
@@ -60,6 +64,18 @@ export class PrivateMessages {
       return data;
     } catch (error) {
       console.log(error + "--- get all private messages ---");
+    }
+  }
+
+  static async getPrivateMessage(selector, value) {
+    try {
+      const sql = `SELECT * FROM private_messages
+                    WHERE ${selector} = ?;`;
+      const privateMessageValues = [value];
+      const [data, _] = await conn.execute(sql, privateMessageValues);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get private message ---");
     }
   }
 }

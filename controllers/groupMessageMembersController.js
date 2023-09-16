@@ -6,9 +6,9 @@ import { GroupMessageRooms } from "../models/GroupMessageRooms";
 
 export const createGroupMessageMember = async (req, res) => {
   const { memberId, roomId } = req.body;
-  const groupMemberUUID = uuidv4();
+  const groupMessageMemberUUID = uuidv4();
 
-  const groupMessageMember = new GroupMessageMembers(groupMemberUUID, memberId, roomId);
+  const groupMessageMember = new GroupMessageMembers(groupMessageMemberUUID, memberId, roomId);
 
   const newGroupMessageMember = await groupMessageMember.createGroupMessageMember();
 

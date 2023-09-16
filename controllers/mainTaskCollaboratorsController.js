@@ -8,13 +8,17 @@ export const createMainTaskCollaborator = async (req, res) => {
   const { taskId, collaboratorId } = req.body;
   const mainTaskCollaboratorUUID = uuidv4();
 
-  const mainTask = await MainTasks.getMainTask("task_id", taskId);
+  const mainTask = await MainTasks.getMainTask("main_task_id", taskId);
 
   if (!mainTask) {
     throw new NotFoundError("The main task you are assigning to does not exist.");
   }
 
-  const mainTaskCollaborator = new MainTaskCollaborators(mainTaskCollaboratorUUID, mainTask.task_id, collaboratorId);
+  const mainTaskCollaborator = new MainTaskCollaborators(
+    mainTaskCollaboratorUUID,
+    mainTask.main_task_id,
+    collaboratorId
+  );
 
   const newMainTaskCollaborator = await mainTaskCollaborator.createMainTaskCollaborator();
 

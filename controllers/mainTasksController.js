@@ -4,11 +4,19 @@ import { StatusCodes } from "http-status-codes";
 import { MainTasks } from "../models/MainTasks";
 
 export const createMainTask = async (req, res) => {
-  const { taskName, taskDescription, taskPriority, taskStartDate, taskEndData } = req.body;
-  const taskUUID = uuidv4();
+  const { mainTaskName, mainTaskDescription, maintTaskPriority, mainTaskStartDate, mainTaskEndData } = req.body;
+  const mainTaskUUID = uuidv4();
   const { id } = req.user;
 
-  const mainTask = new MainTasks(taskUUID, id, taskName, taskDescription, taskPriority, taskStartDate, taskEndData);
+  const mainTask = new MainTasks(
+    mainTaskUUID,
+    id,
+    mainTaskName,
+    mainTaskDescription,
+    maintTaskPriority,
+    mainTaskStartDate,
+    mainTaskEndData
+  );
 
   const newMainTask = await mainTask.createMainTask();
 
@@ -43,8 +51,8 @@ export const updateMainTask = async (req, res) => {
     main_task_status,
     main_task_start_date,
     main_task_end_date,
-    "task_id",
-    mainTask.task_id
+    "main_task_id",
+    mainTask.main_task_id
   );
 
   if (!updateTask) {
@@ -67,7 +75,7 @@ export const getMainTask = async (req, res) => {
 };
 
 const getAllMyMainTasks = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.user;
 
   const mainTask = await MainTasks.getMainTask("mt.main_task_by", id);
 
@@ -79,7 +87,7 @@ const getAllMyMainTasks = async (req, res) => {
 };
 
 const getAllCollaboratedMainTasks = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.user;
 
   const mainTask = await MainTasks.getMainTask("mtc.collaborator_id", id);
 
@@ -116,7 +124,7 @@ export const deleteMainTask = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  const deleteTask = await MainTasks.deleteMainTask("task_id", mainTask.task_id);
+  const deleteTask = await MainTasks.deleteMainTask("main_task_id", mainTask.main_task_id);
 
   if (!deleteTask) {
     throw new BadRequestError("Error in deleting task. Try again later.");

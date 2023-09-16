@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { BadRequestError, NotFoundError } from "../errors";
-import { CONFLICT, StatusCodes } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { MainTasks } from "../models/MainTasks";
 import { MainTaskInvites } from "../models/MainTaskInvites";
 
@@ -9,13 +9,19 @@ export const createMainTaskInvite = async (req, res) => {
   const { id } = req.user;
   const mainTaskInviteUUID = uuidv4();
 
-  const mainTask = await MainTasks.getMainTask("task_id", taskId);
+  const mainTask = await MainTasks.getMainTask("main_task_id", taskId);
 
   if (!mainTask) {
     throw new NotFoundError("The task you are inviting someone to does not exist.");
   }
 
-  const mainTaskInvite = new MainTaskInvites(mainTaskInviteUUID, mainTask.task_id, id, invitedAssociate, inviteMessage);
+  const mainTaskInvite = new MainTaskInvites(
+    mainTaskInviteUUID,
+    mainTask.main_task_id,
+    id,
+    invitedAssociate,
+    inviteMessage
+  );
 
   const newMainTaskInvite = await mainTaskInvite.createMainTaskInvite();
 

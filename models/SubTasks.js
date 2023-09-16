@@ -8,7 +8,6 @@ export class SubTasks {
     sub_task_name,
     sub_task_description,
     sub_task_priority,
-    sub_task_status,
     sub_task_start_date,
     sub_task_end_date
   ) {
@@ -18,7 +17,6 @@ export class SubTasks {
     this.sub_task_name = sub_task_name;
     this.sub_task_description = sub_task_description;
     this.sub_task_priority = sub_task_priority;
-    this.sub_task_status = sub_task_status;
     this.sub_task_start_date = sub_task_start_date;
     this.sub_task_end_date = sub_task_end_date;
   }
@@ -26,16 +24,16 @@ export class SubTasks {
   async createSubTask() {
     try {
       const sql = `INSERT INTO sub_tasks
-                  ( sub_task_uuid,
+                  ( 
+                    sub_task_uuid,
                     sub_task_by,
                     main_task_id,
                     sub_task_name,
                     sub_task_description,
                     sub_task_priority,
-                    sub_task_status,
                     sub_task_start_date,
                     sub_task_end_date
-                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+                  ) VALUES (?, ?, ?, ?, ?, ?,  ?, ?);`;
       const subTaskValues = [
         this.sub_task_uuid,
         this.sub_task_by,
@@ -43,7 +41,6 @@ export class SubTasks {
         this.sub_task_name,
         this.sub_task_description,
         this.sub_task_priority,
-        this.sub_task_status,
         this.sub_task_start_date,
         this.sub_task_end_date,
       ];
@@ -105,7 +102,9 @@ export class SubTasks {
 
   static async getAllSubTasks(selector, value) {
     try {
-      const sql = `SELECT * FROM sub_tasks
+      const sql = `SELECT * FROM sub_tasks AS st
+                  INNER JOIN sub_task_collaborators AS stc
+                  ON st.sub_task_id = stc.sub_task_id
                   WHERE ${selector} = ?;`;
       const subTaskValues = [value];
       const [data, _] = await conn.execute(sql, subTaskValues);
