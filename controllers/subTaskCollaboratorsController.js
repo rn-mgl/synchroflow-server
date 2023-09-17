@@ -56,3 +56,18 @@ export const getAllSubTaskCollaborator = async (req, res) => {
 
   res.status(StatusCodes.OK).json(allSubTaskCollaborator);
 };
+
+export const getSubTaskCollaborator = async (req, res) => {
+  const { sub_task_collaborator_uuid } = req.params;
+
+  const subTaskCollaborator = await SubTaskCollaborators.getSubTaskCollaborator(
+    "sub_task_collaborator_uuid",
+    sub_task_collaborator_uuid
+  );
+
+  if (!subTaskCollaborator) {
+    throw new NotFoundError("The task collaborator does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(subTaskCollaborator);
+};

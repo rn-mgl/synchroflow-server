@@ -66,3 +66,18 @@ export const getAllPrivateMessageMembers = async (req, res) => {
 
   res.status(StatusCodes.OK).json(allPrivateMessageMembers);
 };
+
+export const getPrivateMessageMember = async (req, res) => {
+  const { private_message_member_uuid } = req.params;
+
+  const privateMessageMember = await PrivateMessageMembers.getPrivateMessageMember(
+    "private_message_member_uuid",
+    private_message_member_uuid
+  );
+
+  if (!privateMessageMember) {
+    throw new NotFoundError("This private message member does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(privateMessageMember);
+};

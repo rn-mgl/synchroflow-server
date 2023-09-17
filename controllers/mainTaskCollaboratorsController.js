@@ -60,3 +60,18 @@ export const getAllMainTaskCollaborator = async (req, res) => {
 
   res.status(StatusCodes.OK).json(allMainTaskCollaborator);
 };
+
+export const getMainTaskCollaborator = async (req, res) => {
+  const { main_task_collaborator_uuid } = req.params;
+
+  const mainTaskCollaborator = await MainTaskCollaborators.getMainTaskCollaborator(
+    "main_task_collaborator_uuid",
+    main_task_collaborator_uuid
+  );
+
+  if (!mainTaskCollaborator) {
+    throw new NotFoundError("The task collaborator does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(mainTaskCollaborator);
+};
