@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { Associates } from "../models/Associates";
-import { BadRequestError, NotFoundError } from "../errors";
+import { Associates } from "../models/Associates.js";
+import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 
 export const createAssociate = async (req, res) => {

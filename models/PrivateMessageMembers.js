@@ -1,4 +1,4 @@
-import conn from "../db/connection";
+import conn from "../db/connection.js";
 
 export class PrivateMessageMembers {
   constructor(private_message_member_uuid, member_id, private_message_room_id) {

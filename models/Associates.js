@@ -1,4 +1,4 @@
-import conn from "../db/connection";
+import conn from "../db/connection.js";
 
 export class Associates {
   constructor(associate_uuid, associate_of, associate_is) {

@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
-import { BadRequestError, NotFoundError } from "../errors";
+import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
-import { SubTaskCollaborators } from "../models/SubTaskCollaborators";
-import { SubTasks } from "../models/SubTasks";
+import { SubTaskCollaborators } from "../models/SubTaskCollaborators.js";
+import { SubTasks } from "../models/SubTasks.js";
 
 export const createSubTaskCollaborator = async (req, res) => {
   const { taskId, collaboratorId } = req.body;

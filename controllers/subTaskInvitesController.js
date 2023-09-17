@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
-import { BadRequestError, NotFoundError } from "../errors";
+import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
-import { SubTasks } from "../models/SubTasks";
-import { SubTaskInvites } from "../models/SubTaskInvites";
+import { SubTasks } from "../models/SubTasks.js";
+import { SubTaskInvites } from "../models/SubTaskInvites.js";
 
 export const createSubTaskInvite = async (req, res) => {
   const { taskId, invitedAssociate, inviteMessage } = req.body;

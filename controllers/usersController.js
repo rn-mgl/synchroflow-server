@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { hashPassword } from "../utils";
-import { Users } from "../models/Users";
-import { BadRequestError, UnauthorizedError } from "../errors";
+import { Users } from "../models/Users.js";
+import { BadRequestError, UnauthorizedError } from "../errors/index.js";
 
 export const getUser = async (req, res) => {
   const { user_uuid } = req.params;

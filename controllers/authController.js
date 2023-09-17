@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import { v4 as uuidv4 } from "uuid";
-import { hashPassword, comparePassword, createToken, randomAvatar } from "../utils";
+import { hashPassword, comparePassword, createToken, randomAvatar } from "../utils/index.js";
 import { Users } from "../models/Users.js";
-import { BadRequestError, NotFoundError, UnauthorizedError } from "../errors";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "../errors/index.js";
 import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {

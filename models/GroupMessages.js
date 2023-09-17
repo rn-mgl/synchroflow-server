@@ -1,4 +1,4 @@
-import conn from "../db/connection";
+import conn from "../db/connection.js";
 
 export class GroupMessages {
   constructor(group_message_room_id, group_message_uuid, group_message_from, group_message, group_message_file) {

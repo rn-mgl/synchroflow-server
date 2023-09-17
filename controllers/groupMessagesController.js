@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { BadRequestError, NotFoundError } from "../errors";
+import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
-import { GroupMessages } from "../models/GroupMessages";
+import { GroupMessages } from "../models/GroupMessages.js";
 
 export const createGroupMessage = async (req, res) => {
   const { roomId, message, messageFile } = req.body;
@@ -36,6 +36,18 @@ export const deleteGroupMessage = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(deleteMessage);
+};
+
+export const getGroupMessage = async (req, res) => {
+  const { group_message_uuid } = req.params;
+
+  const groupMessage = await GroupMessages.getGroupMessage("group_message_uuid", group_message_uuid);
+
+  if (!groupMessage) {
+    throw new NotFoundError("This message does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(groupMessage);
 };
 
 export const getAllGroupMessages = async (req, res) => {

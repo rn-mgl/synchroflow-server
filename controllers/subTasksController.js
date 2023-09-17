@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { StatusCodes } from "http-status-codes";
-import { SubTasks } from "../models/SubTasks";
-import { BadRequestError, NotFoundError } from "../errors";
+import { SubTasks } from "../models/SubTasks.js";
+import { BadRequestError, NotFoundError } from "../errors/index.js";
 
 export const createSubTask = async (req, res) => {
   const { subTaskId, subTaskName, subTaskDescription, subTaskPriority, subTaskStartDate, subTaskEndDate } = req.body;

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
-import { BadRequestError, NotFoundError } from "../errors";
-import { AssociateInvites } from "../models/AssociateInvites";
+import { BadRequestError, NotFoundError } from "../errors/index.js";
+import { AssociateInvites } from "../models/AssociateInvites.js";
 import { Users } from "../models/Users.js";
 import { v4 as uuidv4 } from "uuid";
 

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { BadRequestError, NotFoundError } from "../errors";
+import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
-import { GroupMessageRooms } from "../models/GroupMessageRooms";
+import { GroupMessageRooms } from "../models/GroupMessageRooms.js";
 
 export const createGroupMessageRoom = async (req, res) => {
   const { groupMessageName } = req.body;
@@ -38,6 +38,29 @@ export const deleteGroupMessageRoom = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(deleteRoom);
+};
+
+export const updateGroupMessageRoomName = async (req, res) => {
+  const { group_message_room } = req.params;
+  const { groupMessageRoomName } = req.body;
+
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom("group_message_room", group_message_room);
+
+  if (!groupMessageRoom) {
+    throw new NotFoundError("The group message room does not exist.");
+  }
+
+  const updateRoomName = await GroupMessageRooms.updateGroupMessageName(
+    groupMessageRoomName,
+    "group_message_room_id",
+    groupMessageRoom.group_message_room_id
+  );
+
+  if (!updateRoomName) {
+    throw new BadRequestError("Error in updating group message room name. Try again later.");
+  }
+
+  res.status(StatusCodes.OK).json(updateRoomName);
 };
 
 export const getGroupMessageRoom = async (req, res) => {

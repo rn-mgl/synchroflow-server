@@ -1,4 +1,4 @@
-import conn from "../db/connection";
+import conn from "../db/connection.js";
 
 export class MainTaskCollaborators {
   constructor(main_task_collaborator_uuid, main_task_id, collaborator_id) {

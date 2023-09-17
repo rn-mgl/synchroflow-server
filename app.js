@@ -11,10 +11,21 @@ import { v2 as cloudinary } from "cloudinary";
 import { Server } from "socket.io";
 import { createServer } from "http";
 
+import { authMiddleware } from "./middlewares/authMiddleware.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { notFoundMiddleware } from "./middlewares/notFoundMiddleware.js";
 
+// api routes
+import authRouter from "./routers/authRouter.js";
+
+import associateInvitesRouter from "./routers/associateInvitesRouter.js";
+import associatesRouter from "./routers/associatesRouter.js";
+
+import groupMessageMembersRouter from "./routers/groupMessageMembersRouter.js";
+
 dotenv.config();
+
+//drivers
 
 const app = express();
 const httpsServer = createServer(app);
@@ -32,6 +43,16 @@ cloudinary.config({
 });
 
 sendgrid.setApiKey(process.env.SENDGRID_SECRET);
+
+// api routes
+app.use("/auth", authRouter);
+
+app.use("/associates", authMiddleware, associatesRouter);
+app.use("/associate_invites", authMiddleware, associateInvitesRouter);
+
+app.use("/group_message_members", authMiddleware, groupMessageMembersRouter);
+
+// web sockets
 
 io.on("connection", (socket) => {
   console.log(socket.id);

@@ -1,4 +1,4 @@
-import conn from "../db/connection";
+import conn from "../db/connection.js";
 
 export class Users {
   constructor(user_uuid, name, surname, email, password, image) {

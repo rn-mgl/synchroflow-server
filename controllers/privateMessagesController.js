@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { BadRequestError, NotFoundError } from "../errors";
+import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
-import { PrivateMessages } from "../models/PrivateMessages";
+import { PrivateMessages } from "../models/PrivateMessages.js";
 
 export const createPrivateMessage = async (req, res) => {
   const { roomId, messageTo, message, messageFile } = req.body;
