@@ -15,18 +15,33 @@ import { authMiddleware } from "./middlewares/authMiddleware.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { notFoundMiddleware } from "./middlewares/notFoundMiddleware.js";
 
-// api routes
+// api routes //////////////////////////////////////////////////////////////////////////////
 import authRouter from "./routers/authRouter.js";
 
 import associateInvitesRouter from "./routers/associateInvitesRouter.js";
 import associatesRouter from "./routers/associatesRouter.js";
 
 import groupMessageMembersRouter from "./routers/groupMessageMembersRouter.js";
+import groupMessageRoomsRouter from "./routers/groupMessageRoomsRouter.js";
+import groupMessagesRouter from "./routers/groupMessagesRouter.js";
+
+import mainTaskCollaboratorsRouter from "./routers/mainTaskCollaboratorsRouter.js";
+import mainTaskInvitesRouter from "./routers/mainTaskInvitesRouter.js";
+import mainTasksRouter from "./routers/mainTasksRouter.js";
+
+import privateMessageMembersRouter from "./routers/privateMessageMembersRouter.js";
+import privateMessageRoomsRouter from "./routers/privateMessageRoomsRouter.js";
+import privateMessagesRouter from "./routers/privateMessagesRouter.js";
+
+import subTaskCollaboratorsRouter from "./routers/subTaskCollaboratorsRouter.js";
+import subTaskInvitesRouter from "./routers/subTaskInvitesRouter.js";
+import subTasksRouter from "./routers/subTasksRouter.js";
+
+import usersRouter from "./routers/usersRouter.js";
 
 dotenv.config();
 
-//drivers
-
+//drivers //////////////////////////////////////////////////////////////////////////////
 const app = express();
 const httpsServer = createServer(app);
 const io = new Server(httpsServer);
@@ -44,16 +59,31 @@ cloudinary.config({
 
 sendgrid.setApiKey(process.env.SENDGRID_SECRET);
 
-// api routes
+// api routes //////////////////////////////////////////////////////////////////////////////
 app.use("/auth", authRouter);
 
 app.use("/associates", authMiddleware, associatesRouter);
 app.use("/associate_invites", authMiddleware, associateInvitesRouter);
 
+app.use("/main_task_collaborators", authMiddleware, mainTaskCollaboratorsRouter);
+app.use("/main_task_invites", authMiddleware, mainTaskInvitesRouter);
+app.use("/main_tasks", authMiddleware, mainTasksRouter);
+
+app.use("/sub_task_collaborators", authMiddleware, subTaskCollaboratorsRouter);
+app.use("/sub_task_invites", authMiddleware, subTaskInvitesRouter);
+app.use("/sub_tasks", authMiddleware, subTasksRouter);
+
+app.use("/private_message_members", authMiddleware, privateMessageMembersRouter);
+app.use("/private_message_rooms", authMiddleware, privateMessageRoomsRouter);
+app.use("/private_messages", authMiddleware, privateMessagesRouter);
+
 app.use("/group_message_members", authMiddleware, groupMessageMembersRouter);
+app.use("/group_message_rooms", authMiddleware, groupMessageRoomsRouter);
+app.use("/group_messages", authMiddleware, groupMessagesRouter);
 
-// web sockets
+app.use("/users", authMiddleware, usersRouter);
 
+// web sockets //////////////////////////////////////////////////////////////////////////////
 io.on("connection", (socket) => {
   console.log(socket.id);
 });

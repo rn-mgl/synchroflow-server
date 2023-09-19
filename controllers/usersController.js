@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { hashPassword } from "../utils";
+import { hashPassword } from "../utils/index.js";
 import { Users } from "../models/Users.js";
 import { BadRequestError, UnauthorizedError } from "../errors/index.js";
 
