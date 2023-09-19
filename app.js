@@ -44,7 +44,7 @@ dotenv.config();
 //drivers //////////////////////////////////////////////////////////////////////////////
 const app = express();
 const httpsServer = createServer(app);
-const io = new Server(httpsServer);
+const io = new Server(httpsServer, { cors: { origin: "*" } });
 
 app.use(express.json({ limit: "100mb" }));
 app.use(helmet());
