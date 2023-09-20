@@ -1,5 +1,5 @@
 import { randomAvatar } from "./avatarUtils.js";
 import { hashPassword, comparePassword } from "./passwordUtils.js";
-import { createToken } from "./tokenUtils.js";
+import { createLoginToken } from "./tokenUtils.js";
 
-export { randomAvatar, hashPassword, comparePassword, createToken };
+export { randomAvatar, hashPassword, comparePassword, createLoginToken };

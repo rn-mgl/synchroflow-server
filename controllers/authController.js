@@ -1,16 +1,18 @@
 import { StatusCodes } from "http-status-codes";
 import { v4 as uuidv4 } from "uuid";
-import { hashPassword, comparePassword, createToken, randomAvatar } from "../utils/index.js";
+import { hashPassword, comparePassword, createLoginToken, randomAvatar } from "../utils/index.js";
 import { Users } from "../models/Users.js";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "../errors/index.js";
 import jwt from "jsonwebtoken";
+import { sendVerificationMail } from "./mailController.js";
+import { createEmailToken } from "../utils/tokenUtils.js";
 
 export const registerUser = async (req, res) => {
-  const { userData } = req.body;
-  const { name, surname, email, password } = userData;
+  const { registerCredentials } = req.body;
+  const { name, surname, email, password } = registerCredentials;
 
   const userUUID = uuidv4();
-  const hashedPassword = hashPassword(password);
+  const hashedPassword = await hashPassword(password);
   const image = randomAvatar();
 
   const user = new Users(userUUID, name, surname, email, hashedPassword, image);
@@ -21,9 +23,11 @@ export const registerUser = async (req, res) => {
     throw new BadRequestError("Error in creating your account. Try again later.");
   }
 
-  const token = createToken(newUser.insertId, userUUID, `${name} ${surname}`, email);
+  const token = createEmailToken(newUser.insertId, userUUID, `${name} ${surname}`, email);
 
   res.status(StatusCodes.OK).json(token);
+
+  const data = await sendVerificationMail(`${name} ${surname}`, email, token);
 };
 
 export const loginUser = async (req, res) => {
@@ -44,7 +48,7 @@ export const loginUser = async (req, res) => {
     throw new UnauthorizedError(`The email and password does not match.`);
   }
 
-  const token = createToken(user_id, user_uuid, `${name} ${surname}`, email);
+  const token = createLoginToken(user_id, user_uuid, `${name} ${surname}`, email);
 
   res.status(StatusCodes.OK).json(token);
 };

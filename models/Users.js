@@ -12,10 +12,10 @@ export class Users {
 
   async createUser() {
     try {
-      const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image, is_verified) 
+      const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image) 
                   VALUES (?, ?, ?, ?, ?, ?);`;
       const userValues = [this.user_uuid, this.name, this.surname, this.email, this.password, this.image];
-      const [data, _] = await conn.execute(sql, userValues);
+      const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {
       console.log(error + "--- create user ---");
@@ -27,7 +27,7 @@ export class Users {
       const sql = `SELECT * FROM users 
                     WHERE ${selector} = ?`;
       const userValues = [value];
-      const [data, _] = await conn.execute(sql, userValues);
+      const [data, _] = await conn.query(sql, userValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get user ---");
@@ -39,7 +39,7 @@ export class Users {
       const sql = `UPDATE users SET name = ?, surname = ?, email = ?
                     WHERE ${selector} = ?`;
       const userValues = [name, surname, email, value];
-      const [data, _] = await conn.execute(sql, userValues);
+      const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");
@@ -51,7 +51,7 @@ export class Users {
       const sql = `UPDATE users SET password = ?
                     WHERE ${selector} = ?`;
       const userValues = [password, value];
-      const [data, _] = await conn.execute(sql, userValues);
+      const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");
@@ -63,7 +63,7 @@ export class Users {
       const sql = `UPDATE users SET is_verified = ?
                     WHERE ${selector} = ?`;
       const userValues = [true, value];
-      const [data, _] = await conn.execute(sql, userValues);
+      const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");

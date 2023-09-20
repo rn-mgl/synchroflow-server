@@ -26,7 +26,7 @@ export class MainTaskInvites {
         this.invited_associate,
         this.main_task_invite_message,
       ];
-      const [data, _] = await conn.execute(sql, mainTaskInviteValues);
+      const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- create main task invite ---");
@@ -38,7 +38,7 @@ export class MainTaskInvites {
       const sql = `DELETE FROM main_task_invites
                   WHERE '${selector}' = ?`;
       const mainTaskInviteValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskInviteValues);
+      const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");
@@ -50,7 +50,7 @@ export class MainTaskInvites {
       const sql = `UPDATE main_task_invites SET main_task_invite_status = ?
                   WHERE '${selector}' = ?`;
       const mainTaskInviteValues = [main_task_invite_status, value];
-      const [data, _] = await conn.execute(sql, mainTaskInviteValues);
+      const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");
@@ -62,7 +62,7 @@ export class MainTaskInvites {
       const sql = `SELECT * FROM main_task_invites
                     WHERE ${selector} = ?;`;
       const mainTaskInviteValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskInviteValues);
+      const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get main task invite ---");
@@ -74,7 +74,7 @@ export class MainTaskInvites {
       const sql = `SELECT * FROM main_task_invites
                     WHERE ${selector} = ?;`;
       const mainTaskInviteValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskInviteValues);
+      const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all main task invites ---");

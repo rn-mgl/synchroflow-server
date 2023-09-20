@@ -26,7 +26,7 @@ export class GroupMessages {
         this.group_message,
         this.group_message_file,
       ];
-      const [data, _] = await conn.execute(sql, groupMessageValues);
+      const [data, _] = await conn.query(sql, groupMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- create group message ---");
@@ -38,7 +38,7 @@ export class GroupMessages {
       const sql = `UPDATE group_messages SET group_message_is_deleted = ?
                     WHERE ${selector} = ?;`;
       const groupMessageValues = [true, value];
-      const [data, _] = await conn.execute(sql, groupMessageValues);
+      const [data, _] = await conn.query(sql, groupMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message ---");
@@ -52,7 +52,7 @@ export class GroupMessages {
                     ON gm.group_message_room_id = gmr.group_message_room_id
                     WHERE ${selector} = ?;`;
       const groupMessageValues = [value];
-      const [data, _] = await conn.execute(sql, groupMessageValues);
+      const [data, _] = await conn.query(sql, groupMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all group messages ---");
@@ -64,7 +64,7 @@ export class GroupMessages {
       const sql = `SELECT * FROM group_messages
                     WHERE ${selector} = ?;`;
       const groupMessageValues = [value];
-      const [data, _] = await conn.execute(sql, groupMessageValues);
+      const [data, _] = await conn.query(sql, groupMessageValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get group message ---");

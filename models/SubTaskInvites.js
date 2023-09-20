@@ -26,7 +26,7 @@ export class SubTaskInvites {
         this.invited_associate,
         this.sub_task_invite_message,
       ];
-      const [data, _] = await conn.execute(sql, subTaskInviteValues);
+      const [data, _] = await conn.query(sql, subTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- create sub task invite ---");
@@ -38,7 +38,7 @@ export class SubTaskInvites {
       const sql = `DELETE FROM sub_task_invites
                   WHERE '${selector}' = ?`;
       const subTaskInviteValues = [value];
-      const [data, _] = await conn.execute(sql, subTaskInviteValues);
+      const [data, _] = await conn.query(sql, subTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task invite ---");
@@ -50,7 +50,7 @@ export class SubTaskInvites {
       const sql = `UPDATE sub_task_invites SET sub_task_invite_status = ?
                   WHERE '${selector}' = ?`;
       const subTaskInviteValues = [sub_task_invite_status, value];
-      const [data, _] = await conn.execute(sql, subTaskInviteValues);
+      const [data, _] = await conn.query(sql, subTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- update sub task invite ---");
@@ -62,7 +62,7 @@ export class SubTaskInvites {
       const sql = `SELECT * FROM sub_task_invites
                   WHERE '${selector}' = ?`;
       const subTaskInviteValues = [value];
-      const [data, _] = await conn.execute(sql, subTaskInviteValues);
+      const [data, _] = await conn.query(sql, subTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- getll all sub task invite ---");
@@ -74,7 +74,7 @@ export class SubTaskInvites {
       const sql = `SELECT * FROM sub_task_invites
                   WHERE '${selector}' = ?`;
       const subTaskInviteValues = [value];
-      const [data, _] = await conn.execute(sql, subTaskInviteValues);
+      const [data, _] = await conn.query(sql, subTaskInviteValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- getll all sub task invite ---");

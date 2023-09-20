@@ -16,7 +16,7 @@ export class SubTaskCollaborators {
                         collaborator_id
                      ) VALUES (?, ?, ?);`;
       const subTaskCollaboratorValues = [this.sub_task_collaborator_uuid, this.sub_task_id, this.collaborator_id];
-      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
+      const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- create sub task collaborator ---");
@@ -28,7 +28,7 @@ export class SubTaskCollaborators {
       const sql = `DELETE FROM sub_task_collaborators
                 WHERE ${selector} = ?;`;
       const subTaskCollaboratorValues = [value];
-      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
+      const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task collaborator ---");
@@ -40,7 +40,7 @@ export class SubTaskCollaborators {
       const sql = `SELECT * FROM sub_task_collaborators
                 WHERE ${selector} = ?;`;
       const subTaskCollaboratorValues = [value];
-      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
+      const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get sub task collaborator ---");
@@ -54,7 +54,7 @@ export class SubTaskCollaborators {
                     ON stc.sub_task_id = st.sub_task_id
                     WHERE ${selector} = ?;`;
       const subTaskCollaboratorValues = [value];
-      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
+      const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all sub task collaborators ---");

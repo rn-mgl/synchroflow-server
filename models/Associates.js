@@ -12,7 +12,7 @@ export class Associates {
       const sql = `INSERT INTO associates (associate_uuid, associate_of, associate_is) 
                     VALUES (?, ?, ?);`;
       const associateValues = [this.associate_uuid, this.associate_of, this.associate_is];
-      const [data, _] = await conn.execute(sql, associateValues);
+      const [data, _] = await conn.query(sql, associateValues);
       return data;
     } catch (error) {
       console.log(error + "--- create associate ---");
@@ -24,7 +24,7 @@ export class Associates {
       const sql = `DELETE FROM associates
                     WHERE ${selector} = ?`;
       const associateValues = [value];
-      const [data, _] = await conn.execute(sql, associateValues);
+      const [data, _] = await conn.query(sql, associateValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete associate ---");
@@ -36,7 +36,7 @@ export class Associates {
       const sql = `SELECT * FROM associates
                     WHERE ${selector} = ?`;
       const associateValues = [value];
-      const [data, _] = await conn.execute(sql, associateValues);
+      const [data, _] = await conn.query(sql, associateValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all associates ---");
@@ -48,7 +48,7 @@ export class Associates {
       const sql = `SELECT * FROM associates
                     WHERE ${selector} = ?`;
       const associateValues = [value];
-      const [data, _] = await conn.execute(sql, associateValues);
+      const [data, _] = await conn.query(sql, associateValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get associate ---");

@@ -14,7 +14,7 @@ export class GroupMessageRooms {
                         group_message_name
                     ) VALUES (?, ?);`;
       const groupMessageRoomValues = [this.group_message_room, this.group_message_name];
-      const [data, _] = await conn.execute(sql, groupMessageRoomValues);
+      const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- create group message room ---");
@@ -26,7 +26,7 @@ export class GroupMessageRooms {
       const sql = `DELETE FROM group_message_rooms
                     WHERE ${selector} = ?;`;
       const groupMessageRoomValues = [value];
-      const [data, _] = await conn.execute(sql, groupMessageRoomValues);
+      const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message room ---");
@@ -38,7 +38,7 @@ export class GroupMessageRooms {
       const sql = `UPDATE group_message_rooms SET group_message_name = ?
                     WHERE ${selector} = ?;`;
       const groupMessageRoomValues = [group_message_name, value];
-      const [data, _] = await conn.execute(sql, groupMessageRoomValues);
+      const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message room ---");
@@ -52,7 +52,7 @@ export class GroupMessageRooms {
                     ON gmr.group_message_room_id = gmm.group_message_room_id
                     WHERE ${selector} = ?;`;
       const groupMessageRoomValues = [value];
-      const [data, _] = await conn.execute(sql, groupMessageRoomValues);
+      const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all group message rooms ---");
@@ -64,7 +64,7 @@ export class GroupMessageRooms {
       const sql = `SELECT * FROM group_message_rooms
                     WHERE ${selector} = ?;`;
       const groupMessageRoomValues = [value];
-      const [data, _] = await conn.execute(sql, groupMessageRoomValues);
+      const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get group message room ---");

@@ -40,7 +40,7 @@ export class MainTasks {
         this.main_task_end_date,
       ];
 
-      const [data, _] = await conn.execute(sql, mainTaskValues);
+      const [data, _] = await conn.query(sql, mainTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- create main task ---");
@@ -76,7 +76,7 @@ export class MainTasks {
         main_task_end_date,
         value,
       ];
-      const [data, _] = await conn.execute(sql, mainTaskValues);
+      const [data, _] = await conn.query(sql, mainTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- update main task ---");
@@ -88,7 +88,7 @@ export class MainTasks {
       const sql = `SELECT * FROM main_tasks
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskValues);
+      const [data, _] = await conn.query(sql, mainTaskValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get main task ---");
@@ -102,7 +102,7 @@ export class MainTasks {
                   ON mt.main_task_id = mtc.main_task_id
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskValues);
+      const [data, _] = await conn.query(sql, mainTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all main tasks ---");
@@ -114,7 +114,7 @@ export class MainTasks {
       const sql = `DELETE FROM main_tasks
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskValues);
+      const [data, _] = await conn.query(sql, mainTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task ---");

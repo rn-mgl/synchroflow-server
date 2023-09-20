@@ -16,7 +16,7 @@ export class MainTaskCollaborators {
                         collaborator_id
                      ) VALUES (?, ?, ?);`;
       const mainTaskCollaboratorValues = [this.main_task_collaborator_uuid, this.main_task_id, this.collaborator_id];
-      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
+      const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- create main task collaborator ---");
@@ -28,7 +28,7 @@ export class MainTaskCollaborators {
       const sql = `DELETE FROM main_task_collaborators
                 WHERE ${selector} = ?;`;
       const mainTaskCollaboratorValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
+      const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task collaborator ---");
@@ -40,7 +40,7 @@ export class MainTaskCollaborators {
       const sql = `SELECT * FROM main_task_collaborators
                 WHERE ${selector} = ?;`;
       const mainTaskCollaboratorValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
+      const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get main task collaborator ---");
@@ -54,7 +54,7 @@ export class MainTaskCollaborators {
                     ON mtc.main_task_id = mt.main_task_id
                     WHERE ${selector} = ?;`;
       const mainTaskCollaboratorValues = [value];
-      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
+      const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all main task collaborators ---");

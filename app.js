@@ -1,5 +1,5 @@
 import "express-async-errors";
-import dotenv from "dotenv";
+import "dotenv/config";
 
 import express from "express";
 import helmet from "helmet";
@@ -38,8 +38,6 @@ import subTaskInvitesRouter from "./routers/subTaskInvitesRouter.js";
 import subTasksRouter from "./routers/subTasksRouter.js";
 
 import usersRouter from "./routers/usersRouter.js";
-
-dotenv.config();
 
 //drivers //////////////////////////////////////////////////////////////////////////////
 const app = express();

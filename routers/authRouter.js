@@ -5,6 +5,6 @@ const router = Router();
 
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
-router.route("/verify").patch(verifyUser);
+router.route("/verify/:token").patch(verifyUser);
 
 export default router;

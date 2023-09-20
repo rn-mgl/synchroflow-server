@@ -16,7 +16,7 @@ export class GroupMessageMembers {
                         group_message_room_id
                     ) VALUES (?, ?, ?);`;
       const groupMessageMemberValues = [this.group_message_member_uuid, this.member_id, this.group_message_room_id];
-      const [data, _] = await conn.execute(sql, groupMessageMemberValues);
+      const [data, _] = await conn.query(sql, groupMessageMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- create group message  member ---");
@@ -28,7 +28,7 @@ export class GroupMessageMembers {
       const sql = `DELETE FROM group_message_members
                     WHERE ${selector} = ?;`;
       const groupMessageMemberValues = [value];
-      const [data, _] = await conn.execute(sql, groupMessageMemberValues);
+      const [data, _] = await conn.query(sql, groupMessageMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message  member ---");
@@ -40,7 +40,7 @@ export class GroupMessageMembers {
       const sql = `SELECT * FROM group_message_members
                     WHERE ${selector} = ?;`;
       const groupMessageMemberValues = [value];
-      const [data, _] = await conn.execute(sql, groupMessageMemberValues);
+      const [data, _] = await conn.query(sql, groupMessageMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all group message members ---");
@@ -52,7 +52,7 @@ export class GroupMessageMembers {
       const sql = `SELECT * FROM group_message_members
                     WHERE ${selector} = ?;`;
       const groupMessageMemberValues = [value];
-      const [data, _] = await conn.execute(sql, groupMessageMemberValues);
+      const [data, _] = await conn.query(sql, groupMessageMemberValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get group message  member ---");

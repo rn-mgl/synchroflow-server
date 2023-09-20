@@ -12,7 +12,7 @@ export class PrivateMessageRooms {
                         private_message_room
                     ) VALUES (?);`;
       const privateMessageRoomValues = [this.private_message_room];
-      const [data, _] = await conn.execute(sql, privateMessageRoomValues);
+      const [data, _] = await conn.query(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- create private message room ---");
@@ -24,7 +24,7 @@ export class PrivateMessageRooms {
       const sql = `DELETE FROM private_message_rooms
                     WHERE ${selector} = ?;`;
       const privateMessageRoomValues = [value];
-      const [data, _] = await conn.execute(sql, privateMessageRoomValues);
+      const [data, _] = await conn.query(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete private message room ---");
@@ -38,7 +38,7 @@ export class PrivateMessageRooms {
                     ON pmr.private_message_room_id = pmm.private_message_room_id
                     WHERE ${selector} = ?;`;
       const privateMessageRoomValues = [value];
-      const [data, _] = await conn.execute(sql, privateMessageRoomValues);
+      const [data, _] = await conn.query(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all private message room ---");
@@ -50,7 +50,7 @@ export class PrivateMessageRooms {
       const sql = `SELECT * FROM private_message_rooms
                     WHERE ${selector} = ?;`;
       const privateMessageRoomValues = [value];
-      const [data, _] = await conn.execute(sql, privateMessageRoomValues);
+      const [data, _] = await conn.query(sql, privateMessageRoomValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get private message room ---");

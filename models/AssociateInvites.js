@@ -13,7 +13,7 @@ export class AssociateInvites {
                   (associate_invite_uuid, associate_invite_from, associate_invite_to) 
                   VALUES (?, ?, ?);`;
       const associateInviteValues = [this.associate_invite_uuid, this.associate_invite_from, this.associate_invite_to];
-      const [data, _] = await conn.execute(sql, associateInviteValues);
+      const [data, _] = await conn.query(sql, associateInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- create associate ---");
@@ -25,7 +25,7 @@ export class AssociateInvites {
       const sql = `UPDATE associate_invites SET associate_invite_status = ?
                     WHERE ${selector} = ?`;
       const associateInviteValues = [associate_invite_status, value];
-      const [data, _] = await conn.execute(sql, associateInviteValues);
+      const [data, _] = await conn.query(sql, associateInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- update associate invite ---");
@@ -37,7 +37,7 @@ export class AssociateInvites {
       const sql = `DELETE FROM associate_invites
                     WHERE ${selector} = ?`;
       const associateInviteValues = [value];
-      const [data, _] = await conn.execute(sql, associateInviteValues);
+      const [data, _] = await conn.query(sql, associateInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete associate ---");
@@ -49,7 +49,7 @@ export class AssociateInvites {
       const sql = `SELECT * FROM associate_invites
                     WHERE ${selector} = ?;`;
       const associateInviteValues = [value];
-      const [data, _] = await conn.execute(sql, associateInviteValues);
+      const [data, _] = await conn.query(sql, associateInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all associate invites ---");
@@ -61,7 +61,7 @@ export class AssociateInvites {
       const sql = `SELECT * FROM associate_invites
                     WHERE ${selector} = ?;`;
       const associateInviteValues = [value];
-      const [data, _] = await conn.execute(sql, associateInviteValues);
+      const [data, _] = await conn.query(sql, associateInviteValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get associate invites ---");

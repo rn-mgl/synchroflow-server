@@ -20,7 +20,7 @@ export class PrivateMessageMembers {
         this.member_id,
         this.private_message_room_id,
       ];
-      const [data, _] = await conn.execute(sql, privateMessageMemberValues);
+      const [data, _] = await conn.query(sql, privateMessageMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- create private message  member ---");
@@ -32,7 +32,7 @@ export class PrivateMessageMembers {
       const sql = `DELETE FROM private_message_members
                     WHERE ${selector} = ?;`;
       const privateMessageMemberValues = [value];
-      const [data, _] = await conn.execute(sql, privateMessageMemberValues);
+      const [data, _] = await conn.query(sql, privateMessageMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete private message  member ---");
@@ -44,7 +44,7 @@ export class PrivateMessageMembers {
       const sql = `SELECT * FROM private_message_members
                     WHERE ${selector} = ?;`;
       const privateMessageMemberValues = [value];
-      const [data, _] = await conn.execute(sql, privateMessageMemberValues);
+      const [data, _] = await conn.query(sql, privateMessageMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all private message members ---");
@@ -56,7 +56,7 @@ export class PrivateMessageMembers {
       const sql = `SELECT * FROM private_message_members
                     WHERE ${selector} = ?;`;
       const privateMessageMemberValues = [value];
-      const [data, _] = await conn.execute(sql, privateMessageMemberValues);
+      const [data, _] = await conn.query(sql, privateMessageMemberValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get private message  member ---");
