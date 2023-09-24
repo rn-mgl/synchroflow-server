@@ -42,7 +42,7 @@ import usersRouter from "./routers/usersRouter.js";
 //drivers //////////////////////////////////////////////////////////////////////////////
 const app = express();
 const httpsServer = createServer(app);
-const io = new Server(httpsServer, { cors: { origin: "*" } });
+const io = new Server(httpsServer, { cors: { origin: "http://localhost:3000" } });
 
 app.use(express.json({ limit: "100mb" }));
 app.use(helmet());

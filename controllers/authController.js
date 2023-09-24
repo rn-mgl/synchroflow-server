@@ -50,7 +50,9 @@ export const loginUser = async (req, res) => {
 
   const token = createLoginToken(user_id, user_uuid, `${name} ${surname}`, email);
 
-  res.status(StatusCodes.OK).json(token);
+  const primary = { id: user_id, uuid: user_uuid, name: `${name} ${surname}`, email, token: `Bearer ${token}` };
+
+  res.status(StatusCodes.OK).json(primary);
 };
 
 export const verifyUser = async (req, res) => {
