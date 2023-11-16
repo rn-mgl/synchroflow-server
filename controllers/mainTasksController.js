@@ -4,18 +4,29 @@ import { StatusCodes } from "http-status-codes";
 import { MainTasks } from "../models/MainTasks.js";
 
 export const createMainTask = async (req, res) => {
-  const { mainTaskName, mainTaskDescription, maintTaskPriority, mainTaskStartDate, mainTaskEndData } = req.body;
+  const { mainTaskData } = req.body;
+  const {
+    mainTaskBanner,
+    mainTaskTitle,
+    mainTaskSubtitle,
+    mainTaskDescription,
+    maintTaskPriority,
+    mainTaskStartDate,
+    mainTaskEndDate,
+  } = mainTaskData;
   const mainTaskUUID = uuidv4();
   const { id } = req.user;
 
   const mainTask = new MainTasks(
     mainTaskUUID,
     id,
-    mainTaskName,
+    mainTaskBanner,
+    mainTaskTitle,
+    mainTaskSubtitle,
     mainTaskDescription,
     maintTaskPriority,
     mainTaskStartDate,
-    mainTaskEndData
+    mainTaskEndDate
   );
 
   const newMainTask = await mainTask.createMainTask();

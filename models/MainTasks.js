@@ -4,7 +4,9 @@ export class MainTasks {
   constructor(
     main_task_uuid,
     main_task_by,
-    main_task_name,
+    main_task_banner,
+    main_task_title,
+    main_task_subtitle,
     main_task_description,
     main_task_priority,
     main_task_start_date,
@@ -12,7 +14,9 @@ export class MainTasks {
   ) {
     this.main_task_uuid = main_task_uuid;
     this.main_task_by = main_task_by;
-    this.main_task_name = main_task_name;
+    this.main_task_banner = main_task_banner;
+    this.main_task_title = main_task_title;
+    this.main_task_subtitle = main_task_subtitle;
     this.main_task_description = main_task_description;
     this.main_task_priority = main_task_priority;
     this.main_task_start_date = main_task_start_date;
@@ -24,16 +28,20 @@ export class MainTasks {
       const sql = `INSERT INTO main_tasks
                   ( main_task_uuid,
                     main_task_by,
-                    main_task_name,
+                    main_task_banner,
+                    main_task_title,
+                    main_task_subtitle,
                     main_task_description,
                     main_task_priority,
                     main_task_start_date,
                     main_task_end_date
-                  ) VALUES (?, ?, ?, ?, ?, ?, ?);`;
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
       const mainTaskValues = [
         this.main_task_uuid,
         this.main_task_by,
-        this.main_task_name,
+        this.main_task_banner,
+        this.main_task_title,
+        this.main_task_subtitle,
         this.main_task_description,
         this.main_task_priority,
         this.main_task_start_date,
@@ -48,7 +56,9 @@ export class MainTasks {
   }
 
   static async updateMainTask(
-    main_task_name,
+    main_task_banner,
+    main_task_title,
+    main_task_subtitle,
     main_task_description,
     main_task_priority,
     main_task_status,
@@ -60,7 +70,9 @@ export class MainTasks {
     try {
       const sql = `UPDATE main_tasks 
                   SET 
-                    main_task_name= ?,
+                    main_task_banner= ?,
+                    main_task_title= ?,
+                    main_task_subtitle= ?,
                     main_task_description= ?,
                     main_task_priority= ?,
                     main_task_status= ?,
@@ -68,7 +80,9 @@ export class MainTasks {
                     main_task_end_date= ?
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [
-        main_task_name,
+        main_task_banner,
+        main_task_title,
+        main_task_subtitle,
         main_task_description,
         main_task_priority,
         main_task_status,

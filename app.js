@@ -17,6 +17,7 @@ import { notFoundMiddleware } from "./middlewares/notFoundMiddleware.js";
 
 // api routes //////////////////////////////////////////////////////////////////////////////
 import authRouter from "./routers/authRouter.js";
+import fileRouter from "./routers/fileRouter.js";
 
 import associateInvitesRouter from "./routers/associateInvitesRouter.js";
 import associatesRouter from "./routers/associatesRouter.js";
@@ -59,6 +60,7 @@ sendgrid.setApiKey(process.env.SENDGRID_SECRET);
 
 // api routes //////////////////////////////////////////////////////////////////////////////
 app.use("/auth", authRouter);
+app.use("/files", authMiddleware, fileRouter);
 
 app.use("/associates", authMiddleware, associatesRouter);
 app.use("/associate_invites", authMiddleware, associateInvitesRouter);
