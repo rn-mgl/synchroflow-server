@@ -99,7 +99,7 @@ export class MainTasks {
 
   static async getMainTask(selector, value) {
     try {
-      const sql = `SELECT * FROM main_tasks
+      const sql = `SELECT * FROM main_tasks AS mt
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [value];
       const [data, _] = await conn.query(sql, mainTaskValues);
@@ -112,8 +112,8 @@ export class MainTasks {
   static async getAllMainTasks(selector, value) {
     try {
       const sql = `SELECT * FROM main_tasks AS mt
-                  INNER JOIN main_task_collaborators AS mtc
-                  ON mt.main_task_id = mtc.main_task_id
+                  LEFT JOIN main_task_collaborators AS mtc
+                  ON mt.main_task_id = mtc.main_task_fk_id
                   WHERE ${selector} = ?;`;
       const mainTaskValues = [value];
       const [data, _] = await conn.query(sql, mainTaskValues);

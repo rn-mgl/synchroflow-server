@@ -88,7 +88,7 @@ export const getMainTask = async (req, res) => {
 const getAllMyMainTasks = async (req, res) => {
   const { id } = req.user;
 
-  const mainTask = await MainTasks.getMainTask("mt.main_task_by", id);
+  const mainTask = await MainTasks.getAllMainTasks("mt.main_task_by", id);
 
   if (!mainTask) {
     throw new NotFoundError("This task does not exist.");
@@ -100,7 +100,9 @@ const getAllMyMainTasks = async (req, res) => {
 const getAllCollaboratedMainTasks = async (req, res) => {
   const { id } = req.user;
 
-  const mainTask = await MainTasks.getMainTask("mtc.collaborator_id", id);
+  const mainTask = await MainTasks.getAllMainTasks("mtc.collaborator_id", id);
+
+  console.log(id);
 
   if (!mainTask) {
     throw new NotFoundError("This task does not exist.");
