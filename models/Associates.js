@@ -33,7 +33,8 @@ export class Associates {
 
   static async getAllAssociates(selector, value) {
     try {
-      const sql = `SELECT * FROM associates
+      const sql = `SELECT * FROM associates AS a
+                    INNER JOIN users AS u ON a.associate_is = u.user_id
                     WHERE ${selector} = ?`;
       const associateValues = [value];
       const [data, _] = await conn.query(sql, associateValues);

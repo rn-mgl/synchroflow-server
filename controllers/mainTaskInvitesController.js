@@ -3,33 +3,46 @@ import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { MainTasks } from "../models/MainTasks.js";
 import { MainTaskInvites } from "../models/MainTaskInvites.js";
+import { Users } from "../models/Users.js";
 
 export const createMainTaskInvite = async (req, res) => {
-  const { taskId, invitedAssociate, inviteMessage } = req.body;
+  const { taskUUID, associatesToInvite, inviteMessage } = req.body;
   const { id } = req.user;
   const mainTaskInviteUUID = uuidv4();
 
-  const mainTask = await MainTasks.getMainTask("main_task_id", taskId);
+  const mainTask = await MainTasks.getMainTask("main_task_uuid", taskUUID);
+
+  console.log(taskUUID);
 
   if (!mainTask) {
     throw new NotFoundError("The task you are inviting someone to does not exist.");
   }
 
-  const mainTaskInvite = new MainTaskInvites(
-    mainTaskInviteUUID,
-    mainTask.main_task_id,
-    id,
-    invitedAssociate,
-    inviteMessage
-  );
+  associatesToInvite.map(async (associate) => {
+    const invitedUser = await Users.getUser("user_uuid", associate);
 
-  const newMainTaskInvite = await mainTaskInvite.createMainTaskInvite();
+    console.log(associate);
 
-  if (!newMainTaskInvite) {
-    throw new BadRequestError("Error in inviting someone. Try again later.");
-  }
+    if (!invitedUser) {
+      throw new NotFoundError(`A user does not exist in Synchroflow.`);
+    }
 
-  res.status(StatusCodes.OK).json(newMainTaskInvite);
+    const mainTaskInvite = new MainTaskInvites(
+      mainTaskInviteUUID,
+      mainTask.main_task_id,
+      id,
+      invitedUser.user_id,
+      inviteMessage
+    );
+
+    const newMainTaskInvite = await mainTaskInvite.createMainTaskInvite();
+
+    if (!newMainTaskInvite) {
+      throw new BadRequestError("Error in inviting someone. Try again later.");
+    }
+  });
+
+  res.status(StatusCodes.OK).json({ msg: "Sent successfully" });
 };
 
 export const deleteMainTaskInvite = async (req, res) => {

@@ -102,8 +102,6 @@ const getAllCollaboratedMainTasks = async (req, res) => {
 
   const mainTask = await MainTasks.getAllMainTasks("mtc.collaborator_id", id);
 
-  console.log(id);
-
   if (!mainTask) {
     throw new NotFoundError("This task does not exist.");
   }
