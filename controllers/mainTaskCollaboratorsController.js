@@ -50,9 +50,18 @@ export const deleteMainTaskCollaborator = async (req, res) => {
 };
 
 export const getAllMainTaskCollaborator = async (req, res) => {
-  const { taskId } = req.query;
+  const { mainTaskUUID } = req.query;
 
-  const allMainTaskCollaborator = await MainTaskCollaborators.getAllMainTaskCollaborators("mtc.main_task_id", taskId);
+  const mainTask = await MainTasks.getMainTask("mt.main_task_uuid", mainTaskUUID);
+
+  if (!mainTask) {
+    throw new NotFoundError(`The task you are trying to find collaborators from does not exist.`);
+  }
+
+  const allMainTaskCollaborator = await MainTaskCollaborators.getAllMainTaskCollaborators(
+    "mtc.main_task_fk_id",
+    mainTask.main_task_id
+  );
 
   if (!allMainTaskCollaborator) {
     throw new BadRequestError("Error in getting all main task collaborators.");
