@@ -114,7 +114,8 @@ export class MainTasks {
       const sql = `SELECT * FROM main_tasks AS mt
                   LEFT JOIN main_task_collaborators AS mtc
                   ON mt.main_task_id = mtc.main_task_fk_id
-                  WHERE ${selector} = ?;`;
+                  WHERE ${selector} = ?
+                  ORDER BY mt.main_task_end_date;`;
       const mainTaskValues = [value];
       const [data, _] = await conn.query(sql, mainTaskValues);
       return data;
