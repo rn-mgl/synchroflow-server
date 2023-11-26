@@ -110,8 +110,8 @@ export class SubTasks {
   static async getAllSubTasks(selector, value) {
     try {
       const sql = `SELECT * FROM sub_tasks AS st
-                  INNER JOIN sub_task_collaborators AS stc
-                  ON st.sub_task_id = stc.sub_task_id
+                  LEFT JOIN sub_task_collaborators AS stc
+                  ON st.sub_task_id = stc.sub_task_fk_id
                   WHERE ${selector} = ?;`;
       const subTaskValues = [value];
       const [data, _] = await conn.query(sql, subTaskValues);

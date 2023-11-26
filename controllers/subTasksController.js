@@ -85,19 +85,19 @@ export const getSubTask = async (req, res) => {
 const getAllMySubTasks = async (req, res) => {
   const { id } = req.user;
 
-  const subTask = await SubTasks.getSubTask("st.sub_task_by", id);
+  const subTasks = await SubTasks.getAllSubTasks("sub_task_by", id);
 
-  if (!subTask) {
+  if (!subTasks) {
     throw new NotFoundError("This task does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(subTask);
+  res.status(StatusCodes.OK).json(subTasks);
 };
 
 const getAllCollaboratedSubTasks = async (req, res) => {
   const { id } = req.user;
 
-  const subTask = await SubTasks.getSubTask("stc.collaborator_id", id);
+  const subTask = await SubTasks.getAllSubTasks("stc.collaborator_id", id);
 
   if (!subTask) {
     throw new NotFoundError("This task does not exist.");
