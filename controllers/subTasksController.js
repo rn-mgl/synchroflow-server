@@ -2,17 +2,23 @@ import { v4 as uuidv4 } from "uuid";
 import { StatusCodes } from "http-status-codes";
 import { SubTasks } from "../models/SubTasks.js";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
+import { MainTasks } from "../models/MainTasks.js";
 
 export const createSubTask = async (req, res) => {
-  const { subTaskId, subTaskName, subTaskDescription, subTaskPriority, subTaskStartDate, subTaskEndDate } = req.body;
+  const { subTaskData, mainTaskUUID } = req.body;
+  const { subTaskTitle, subTaskSubtitle, subTaskDescription, subTaskPriority, subTaskStartDate, subTaskEndDate } =
+    subTaskData;
   const { id } = req.user;
   const subTaskUUID = uuidv4();
+
+  const mainTask = await MainTasks.getMainTask("main_task_uuid", mainTaskUUID);
 
   const subTask = new SubTasks(
     subTaskUUID,
     id,
-    subTaskId,
-    subTaskName,
+    mainTask.main_task_id,
+    subTaskTitle,
+    subTaskSubtitle,
     subTaskDescription,
     subTaskPriority,
     subTaskStartDate,
@@ -30,7 +36,8 @@ export const createSubTask = async (req, res) => {
 
 export const updateSubTask = async (req, res) => {
   const {
-    sub_task_name,
+    sub_task_title,
+    sub_task_subtitle,
     sub_task_description,
     sub_task_priority,
     sub_task_status,
@@ -46,7 +53,8 @@ export const updateSubTask = async (req, res) => {
   }
 
   const updateSubTask = await SubTasks.updateSubTask(
-    sub_task_name,
+    sub_task_title,
+    sub_task_subtitle,
     sub_task_description,
     sub_task_priority,
     sub_task_status,

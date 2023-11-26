@@ -4,8 +4,9 @@ export class SubTasks {
   constructor(
     sub_task_uuid,
     sub_task_by,
-    main_task_id,
-    sub_task_name,
+    main_task_fk_id,
+    sub_task_title,
+    sub_task_subtitle,
     sub_task_description,
     sub_task_priority,
     sub_task_start_date,
@@ -13,8 +14,9 @@ export class SubTasks {
   ) {
     this.sub_task_uuid = sub_task_uuid;
     this.sub_task_by = sub_task_by;
-    this.main_task_id = main_task_id;
-    this.sub_task_name = sub_task_name;
+    this.main_task_fk_id = main_task_fk_id;
+    this.sub_task_title = sub_task_title;
+    this.sub_task_subtitle = sub_task_subtitle;
     this.sub_task_description = sub_task_description;
     this.sub_task_priority = sub_task_priority;
     this.sub_task_start_date = sub_task_start_date;
@@ -27,18 +29,20 @@ export class SubTasks {
                   ( 
                     sub_task_uuid,
                     sub_task_by,
-                    main_task_id,
-                    sub_task_name,
+                    main_task_fk_id,
+                    sub_task_title,
+                    sub_task_subtitle,
                     sub_task_description,
                     sub_task_priority,
                     sub_task_start_date,
                     sub_task_end_date
-                  ) VALUES (?, ?, ?, ?, ?, ?,  ?, ?);`;
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
       const subTaskValues = [
         this.sub_task_uuid,
         this.sub_task_by,
-        this.main_task_id,
-        this.sub_task_name,
+        this.main_task_fk_id,
+        this.sub_task_title,
+        this.sub_task_subtitle,
         this.sub_task_description,
         this.sub_task_priority,
         this.sub_task_start_date,
@@ -53,7 +57,8 @@ export class SubTasks {
   }
 
   static async updateSubTask(
-    sub_task_name,
+    sub_task_title,
+    sub_task_subtitle,
     sub_task_description,
     sub_task_priority,
     sub_task_status,
@@ -65,7 +70,8 @@ export class SubTasks {
     try {
       const sql = `UPDATE sub_tasks 
                   SET 
-                    sub_task_name= ?,
+                    sub_task_title= ?,
+                    sub_task_subtitle= ?,
                     sub_task_description= ?,
                     sub_task_priority= ?,
                     sub_task_status= ?,
@@ -73,7 +79,8 @@ export class SubTasks {
                     sub_task_end_date= ?
                   WHERE ${selector} = ?;`;
       const subTaskValues = [
-        sub_task_name,
+        sub_task_title,
+        sub_task_subtitle,
         sub_task_description,
         sub_task_priority,
         sub_task_status,
