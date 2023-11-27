@@ -49,11 +49,27 @@ export class MainTaskCollaborators {
 
   static async getAllMainTaskCollaborators(selector, value) {
     try {
-      const sql = `SELECT * FROM main_task_collaborators AS mtc
+      const sql = `SELECT u.name, u.surname, u.image, u.user_uuid,
+                    stc.sub_task_collaborator_uuid,
+                    CASE
+                      WHEN stc.sub_task_collaborator_id IS NULL 
+                          THEN 0 ELSE 1
+                    END AS is_sub_task_collaborator
+
+                    FROM main_task_collaborators AS mtc
+
                     INNER JOIN main_tasks AS mt
                     ON mtc.main_task_fk_id = mt.main_task_id
+
                     INNER JOIN users AS u
                     ON mtc.collaborator_id = u.user_id
+
+                    LEFT JOIN sub_tasks AS st
+                    ON mt.main_task_id = st.main_task_fk_id
+
+                    LEFT JOIN sub_task_collaborators AS stc
+                    ON st.sub_task_id = stc.sub_task_fk_id
+
                     WHERE ${selector} = ?;`;
       const mainTaskCollaboratorValues = [value];
       const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
