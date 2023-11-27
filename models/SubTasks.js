@@ -112,6 +112,8 @@ export class SubTasks {
       const sql = `SELECT * FROM sub_tasks AS st
                   LEFT JOIN sub_task_collaborators AS stc
                   ON st.sub_task_id = stc.sub_task_fk_id
+                  INNER JOIN main_tasks AS mt
+                  ON st.main_task_fk_id = mt.main_task_id
                   WHERE ${selector} = ?;`;
       const subTaskValues = [value];
       const [data, _] = await conn.query(sql, subTaskValues);

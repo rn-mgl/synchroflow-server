@@ -3,18 +3,25 @@ import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { SubTaskCollaborators } from "../models/SubTaskCollaborators.js";
 import { SubTasks } from "../models/SubTasks.js";
+import { Users } from "../models/Users.js";
 
 export const createSubTaskCollaborator = async (req, res) => {
-  const { taskId, collaboratorId } = req.body;
+  const { subTaskUUID, collaboratorUUID } = req.body;
   const subTaskCollaboratorUUID = uuidv4();
 
-  const subTask = await SubTasks.getSubTask("sub_task_id", taskId);
+  const subTask = await SubTasks.getSubTask("sub_task_uuid", subTaskUUID);
 
   if (!subTask) {
     throw new NotFoundError("The sub task you are assigning to does not exist.");
   }
 
-  const subTaskCollaborator = new SubTaskCollaborators(subTaskCollaboratorUUID, subTask.sub_task_id, collaboratorId);
+  const user = await Users.getUser("user_uuid", collaboratorUUID);
+
+  if (!user) {
+    throw new NotFoundError("The user you are assigning does not exist.");
+  }
+
+  const subTaskCollaborator = new SubTaskCollaborators(subTaskCollaboratorUUID, subTask.sub_task_id, user.user_id);
 
   const newSubTaskCollaborator = await subTaskCollaborator.createSubTaskCollaborator();
 
@@ -46,9 +53,18 @@ export const deleteSubTaskCollaborator = async (req, res) => {
 };
 
 export const getAllSubTaskCollaborator = async (req, res) => {
-  const { taskId } = req.query;
+  const { subTaskUUID } = req.query;
 
-  const allSubTaskCollaborator = await SubTaskCollaborators.getAllSubTaskCollaborators("stc.sub_task_id", taskId);
+  const subTask = await SubTasks.getSubTask("sub_task_uuid", subTaskUUID);
+
+  if (!subTask) {
+    throw new NotFoundError(`The sub task you are trying to get does not exist.`);
+  }
+
+  const allSubTaskCollaborator = await SubTaskCollaborators.getAllSubTaskCollaborators(
+    "st.sub_task_id",
+    subTask.sub_task_id
+  );
 
   if (!allSubTaskCollaborator) {
     throw new BadRequestError("Error in getting all sub task collaborators.");

@@ -1,15 +1,15 @@
-import "express-async-errors";
 import "dotenv/config";
+import "express-async-errors";
 
-import express from "express";
-import helmet from "helmet";
-import cors from "cors";
-import fileUpload from "express-fileupload";
 import sendgrid from "@sendgrid/mail";
+import cors from "cors";
+import express from "express";
+import fileUpload from "express-fileupload";
+import helmet from "helmet";
 
 import { v2 as cloudinary } from "cloudinary";
-import { Server } from "socket.io";
 import { createServer } from "http";
+import { Server } from "socket.io";
 
 import { authMiddleware } from "./middlewares/authMiddleware.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
@@ -35,7 +35,6 @@ import privateMessageRoomsRouter from "./routers/privateMessageRoomsRouter.js";
 import privateMessagesRouter from "./routers/privateMessagesRouter.js";
 
 import subTaskCollaboratorsRouter from "./routers/subTaskCollaboratorsRouter.js";
-import subTaskInvitesRouter from "./routers/subTaskInvitesRouter.js";
 import subTasksRouter from "./routers/subTasksRouter.js";
 
 import usersRouter from "./routers/usersRouter.js";
@@ -70,7 +69,6 @@ app.use("/main_task_invites", authMiddleware, mainTaskInvitesRouter);
 app.use("/main_tasks", authMiddleware, mainTasksRouter);
 
 app.use("/sub_task_collaborators", authMiddleware, subTaskCollaboratorsRouter);
-app.use("/sub_task_invites", authMiddleware, subTaskInvitesRouter);
 app.use("/sub_tasks", authMiddleware, subTasksRouter);
 
 app.use("/private_message_members", authMiddleware, privateMessageMembersRouter);

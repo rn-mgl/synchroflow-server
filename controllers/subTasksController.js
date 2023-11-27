@@ -106,6 +106,25 @@ const getAllCollaboratedSubTasks = async (req, res) => {
   res.status(StatusCodes.OK).json(subTask);
 };
 
+const getAllMainTaskSubTasks = async (req, res) => {
+  const { id } = req.user;
+  const { mainTaskUUID } = req.query;
+
+  const mainTask = await MainTasks.getMainTask("main_task_uuid", mainTaskUUID);
+
+  if (!mainTask) {
+    throw new NotFoundError(`The main task you are trying to access does not exist.`);
+  }
+
+  const subTask = await SubTasks.getAllSubTasks("mt.main_task_id", mainTask.main_task_id);
+
+  if (!subTask) {
+    throw new NotFoundError("This task does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(subTask);
+};
+
 export const getAllSubTasks = async (req, res) => {
   const { type } = req.query;
 
@@ -116,6 +135,10 @@ export const getAllSubTasks = async (req, res) => {
 
     case "collaborated":
       await getAllCollaboratedSubTasks(req, res);
+      return;
+
+    case "main task":
+      await getAllMainTaskSubTasks(req, res);
       return;
 
     default:

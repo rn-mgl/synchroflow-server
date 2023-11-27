@@ -1,9 +1,9 @@
 import conn from "../db/connection.js";
 
 export class SubTaskCollaborators {
-  constructor(sub_task_collaborator_uuid, sub_task_id, collaborator_id) {
+  constructor(sub_task_collaborator_uuid, sub_task_fk_id, collaborator_id) {
     this.sub_task_collaborator_uuid = sub_task_collaborator_uuid;
-    this.sub_task_id = sub_task_id;
+    this.sub_task_fk_id = sub_task_fk_id;
     this.collaborator_id = collaborator_id;
   }
 
@@ -12,10 +12,10 @@ export class SubTaskCollaborators {
       const sql = `INSERT INTO sub_task_collaborators
                      (
                         sub_task_collaborator_uuid, 
-                        sub_task_id, 
+                        sub_task_fk_id, 
                         collaborator_id
                      ) VALUES (?, ?, ?);`;
-      const subTaskCollaboratorValues = [this.sub_task_collaborator_uuid, this.sub_task_id, this.collaborator_id];
+      const subTaskCollaboratorValues = [this.sub_task_collaborator_uuid, this.sub_task_fk_id, this.collaborator_id];
       const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
@@ -51,7 +51,11 @@ export class SubTaskCollaborators {
     try {
       const sql = `SELECT * FROM sub_task_collaborators AS stc
                     INNER JOIN sub_tasks AS st
-                    ON stc.sub_task_id = st.sub_task_id
+                    ON stc.sub_task_fk_id = st.sub_task_id
+                    INNER JOIN main_task_collaborators AS mtc
+                    ON mtc.main_task_fk_id = st.main_task_fk_id
+                    INNER JOIN users AS u
+                    ON u.user_id = stc.collaborator_id
                     WHERE ${selector} = ?;`;
       const subTaskCollaboratorValues = [value];
       const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
