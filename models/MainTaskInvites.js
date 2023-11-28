@@ -1,9 +1,9 @@
 import conn from "../db/connection.js";
 
 export class MainTaskInvites {
-  constructor(main_task_invite_uuid, main_task_id, invited_by, invited_associate, main_task_invite_message) {
+  constructor(main_task_invite_uuid, main_task_fk_id, invited_by, invited_associate, main_task_invite_message) {
     this.main_task_invite_uuid = main_task_invite_uuid;
-    this.main_task_id = main_task_id;
+    this.main_task_fk_id = main_task_fk_id;
     this.invited_by = invited_by;
     this.invited_associate = invited_associate;
     this.main_task_invite_message = main_task_invite_message;
@@ -14,14 +14,14 @@ export class MainTaskInvites {
       const sql = `INSERT INTO main_task_invites
                   (
                     main_task_invite_uuid, 
-                    main_task_id, 
+                    main_task_fk_id, 
                     invited_by, 
                     invited_associate, 
                     main_task_invite_message
                   ) VALUES (?, ?, ?, ?, ?);`;
       const mainTaskInviteValues = [
         this.main_task_invite_uuid,
-        this.main_task_id,
+        this.main_task_fk_id,
         this.invited_by,
         this.invited_associate,
         this.main_task_invite_message,
@@ -78,6 +78,28 @@ export class MainTaskInvites {
       return data;
     } catch (error) {
       console.log(error + "--- get all main task invites ---");
+    }
+  }
+
+  static async getAllAssociatesToInvite(selector, value) {
+    try {
+      const sql = `SELECT u.name, u.surname, u.image, u.user_uuid
+
+                  FROM associates AS a
+
+                  INNER JOIN users AS u
+                  ON u.user_id = a.associate_is
+
+                  LEFT JOIN main_task_invites AS mti
+                  ON mti.invited_associate = a.associate_is
+
+                  WHERE ${selector} = ?
+                  AND mti.main_task_invite_id IS NULL;`;
+      const mainAssociatestToInviteValues = [value];
+      const [data, _] = await conn.query(sql, mainAssociatestToInviteValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all associates to invite ---");
     }
   }
 }

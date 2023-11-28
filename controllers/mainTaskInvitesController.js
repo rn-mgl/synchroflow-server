@@ -12,16 +12,12 @@ export const createMainTaskInvite = async (req, res) => {
 
   const mainTask = await MainTasks.getMainTask("main_task_uuid", taskUUID);
 
-  console.log(taskUUID);
-
   if (!mainTask) {
     throw new NotFoundError("The task you are inviting someone to does not exist.");
   }
 
   associatesToInvite.map(async (associate) => {
     const invitedUser = await Users.getUser("user_uuid", associate);
-
-    console.log(associate);
 
     if (!invitedUser) {
       throw new NotFoundError(`A user does not exist in Synchroflow.`);
@@ -125,6 +121,25 @@ const getAllReceivedMainTaskInvites = async (req, res) => {
   res.status(StatusCodes.OK).json(allMainTaskInvites);
 };
 
+const getAllAssociatesToInvite = async (req, res) => {
+  const { id } = req.user;
+  const { mainTaskUUID } = req.query;
+
+  const mainTask = await MainTasks.getMainTask("main_task_uuid", mainTaskUUID);
+
+  if (!mainTask) {
+    throw new NotFoundError(`The main task you are inviting someone to does not exist.`);
+  }
+
+  const allMainTaskInvites = await MainTaskInvites.getAllAssociatesToInvite("a.associate_of", id);
+
+  if (!allMainTaskInvites) {
+    throw new BadRequestError("Error in getting all your received main task invites.");
+  }
+
+  res.status(StatusCodes.OK).json(allMainTaskInvites);
+};
+
 export const getAllMainTaskInvites = async (req, res) => {
   const { type } = req.query;
 
@@ -135,6 +150,10 @@ export const getAllMainTaskInvites = async (req, res) => {
 
     case "received":
       await getAllReceivedMainTaskInvites(req, res);
+      return;
+
+    case "invite associates":
+      await getAllAssociatesToInvite(req, res);
       return;
 
     default:
