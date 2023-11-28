@@ -81,22 +81,21 @@ export class MainTaskInvites {
     }
   }
 
-  static async getAllAssociatesToInvite(selector, value) {
+  static async getAllAssociatesToInvite(associateOf, mainTaskId) {
     try {
-      const sql = `SELECT u.name, u.surname, u.image, u.user_uuid
-
+      const sql = `SELECT *
                   FROM associates AS a
 
                   INNER JOIN users AS u
                   ON u.user_id = a.associate_is
 
-                  LEFT JOIN main_task_invites AS mti
-                  ON mti.invited_associate = a.associate_is
+                  WHERE a.associate_of = '${associateOf}'
+                  AND a.associate_is NOT IN (
+                    SELECT invited_associate FROM main_task_invites
+                    WHERE main_task_fk_id = '${mainTaskId}'
+                  );`;
 
-                  WHERE ${selector} = ?
-                  AND mti.main_task_invite_id IS NULL;`;
-      const mainAssociatestToInviteValues = [value];
-      const [data, _] = await conn.query(sql, mainAssociatestToInviteValues);
+      const [data, _] = await conn.execute(sql);
       return data;
     } catch (error) {
       console.log(error + "--- get all associates to invite ---");
