@@ -146,12 +146,12 @@ export const getAllMainTasks = async (req, res) => {
     return;
   }
 
-  if (type === "my") {
+  if (type === "my" && which === "all") {
     await getAllMyMainTasks(req, res);
     return;
   }
 
-  if (type === "my") {
+  if (type === "collaborated" && which === "all") {
     await getAllCollaboratedMainTasks(req, res);
     return;
   }
