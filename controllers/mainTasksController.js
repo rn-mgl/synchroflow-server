@@ -87,7 +87,6 @@ export const getMainTask = async (req, res) => {
 
 const getAllMyMainTasks = async (req, res) => {
   const { id } = req.user;
-  const { dateRange } = req.query;
 
   const mainTask = await MainTasks.getAllMainTasks(["mt.main_task_by"], [id]);
 
@@ -100,7 +99,6 @@ const getAllMyMainTasks = async (req, res) => {
 
 const getAllCollaboratedMainTasks = async (req, res) => {
   const { id } = req.user;
-  const { dateRange } = req.query;
 
   const mainTask = await MainTasks.getAllMainTasks(["mtc.collaborator_id"], [id]);
 
@@ -111,20 +109,51 @@ const getAllCollaboratedMainTasks = async (req, res) => {
   res.status(StatusCodes.OK).json(mainTask);
 };
 
+const getAllMyMainTasksToday = async (req, res) => {
+  const { id } = req.user;
+
+  const mainTask = await MainTasks.getAllMainTasksToday(["mt.main_task_by"], [id]);
+
+  if (!mainTask) {
+    throw new NotFoundError("This task does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(mainTask);
+};
+
+const getAllCollaboratedMainTasksToday = async (req, res) => {
+  const { id } = req.user;
+
+  const mainTask = await MainTasks.getAllMainTasksToday(["mtc.collaborator_id"], [id]);
+
+  if (!mainTask) {
+    throw new NotFoundError("This task does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(mainTask);
+};
+
 export const getAllMainTasks = async (req, res) => {
-  const { type } = req.query;
+  const { type, which } = req.query;
 
-  switch (type) {
-    case "my":
-      await getAllMyMainTasks(req, res);
-      return;
+  if (type === "my" && which === "today") {
+    await getAllMyMainTasksToday(req, res);
+    return;
+  }
 
-    case "collaborated":
-      await getAllCollaboratedMainTasks(req, res);
-      return;
+  if (type === "collaborated" && which === "today") {
+    await getAllCollaboratedMainTasksToday(req, res);
+    return;
+  }
 
-    default:
-      return;
+  if (type === "my") {
+    await getAllMyMainTasks(req, res);
+    return;
+  }
+
+  if (type === "my") {
+    await getAllCollaboratedMainTasks(req, res);
+    return;
   }
 };
 
