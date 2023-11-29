@@ -8,7 +8,7 @@ export const createMainTaskCollaborator = async (req, res) => {
   const { taskId, collaboratorId } = req.body;
   const mainTaskCollaboratorUUID = uuidv4();
 
-  const mainTask = await MainTasks.getMainTask("main_task_id", taskId);
+  const mainTask = await MainTasks.getMainTask(["main_task_id"], [taskId]);
 
   if (!mainTask) {
     throw new NotFoundError("The main task you are assigning to does not exist.");
@@ -33,8 +33,8 @@ export const deleteMainTaskCollaborator = async (req, res) => {
   const { main_task_collaborator_uuid } = req.params;
 
   const mainTaskCollaborator = await MainTaskCollaborators.getMainTaskCollaborator(
-    "main_task_collaborator_uuid",
-    main_task_collaborator_uuid
+    ["main_task_collaborator_uuid"],
+    [main_task_collaborator_uuid]
   );
 
   if (!mainTaskCollaborator) {
@@ -42,8 +42,8 @@ export const deleteMainTaskCollaborator = async (req, res) => {
   }
 
   const deleteCollaborator = await MainTaskCollaborators.deleteMainTaskCollaborator(
-    "main_task_collaborator_id",
-    mainTaskCollaborator.main_task_collaborator_id
+    ["main_task_collaborator_id"],
+    [mainTaskCollaborator.main_task_collaborator_id]
   );
 
   res.status(StatusCodes.OK).json(deleteCollaborator);
@@ -52,15 +52,15 @@ export const deleteMainTaskCollaborator = async (req, res) => {
 export const getAllMainTaskCollaborator = async (req, res) => {
   const { mainTaskUUID } = req.query;
 
-  const mainTask = await MainTasks.getMainTask("mt.main_task_uuid", mainTaskUUID);
+  const mainTask = await MainTasks.getMainTask(["mt.main_task_uuid"], [mainTaskUUID]);
 
   if (!mainTask) {
     throw new NotFoundError(`The task you are trying to find collaborators from does not exist.`);
   }
 
   const allMainTaskCollaborator = await MainTaskCollaborators.getAllMainTaskCollaborators(
-    "mtc.main_task_fk_id",
-    mainTask.main_task_id
+    ["mtc.main_task_fk_id"],
+    [mainTask.main_task_id]
   );
 
   if (!allMainTaskCollaborator) {
@@ -74,8 +74,8 @@ export const getMainTaskCollaborator = async (req, res) => {
   const { main_task_collaborator_uuid } = req.params;
 
   const mainTaskCollaborator = await MainTaskCollaborators.getMainTaskCollaborator(
-    "main_task_collaborator_uuid",
-    main_task_collaborator_uuid
+    ["main_task_collaborator_uuid"],
+    [main_task_collaborator_uuid]
   );
 
   if (!mainTaskCollaborator) {

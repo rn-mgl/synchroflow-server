@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class PrivateMessageMembers {
   constructor(private_message_member_uuid, member_id, private_message_room_id) {
@@ -28,11 +29,13 @@ export class PrivateMessageMembers {
   }
 
   static async deletePrivateMessageMember(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `DELETE FROM private_message_members
-                    WHERE ${whereConditions} = ?;`;
-      const privateMessageMemberValues = [whereValues];
-      const [data, _] = await conn.query(sql, privateMessageMemberValues);
+                    WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete private message  member ---");
@@ -43,8 +46,8 @@ export class PrivateMessageMembers {
     try {
       const sql = `SELECT * FROM private_message_members
                     WHERE ${whereConditions} = ?;`;
-      const privateMessageMemberValues = [whereValues];
-      const [data, _] = await conn.query(sql, privateMessageMemberValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all private message members ---");
@@ -55,8 +58,8 @@ export class PrivateMessageMembers {
     try {
       const sql = `SELECT * FROM private_message_members
                     WHERE ${whereConditions} = ?;`;
-      const privateMessageMemberValues = [whereValues];
-      const [data, _] = await conn.query(sql, privateMessageMemberValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get private message  member ---");

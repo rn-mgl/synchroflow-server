@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class GroupMessageRooms {
   constructor(group_message_room, group_message_name) {
@@ -22,11 +23,12 @@ export class GroupMessageRooms {
   }
 
   static async deleteGroupMessageRoom(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `DELETE FROM group_message_rooms
-                    WHERE ${whereConditions} = ?;`;
-      const groupMessageRoomValues = [whereValues];
-      const [data, _] = await conn.query(sql, groupMessageRoomValues);
+                    WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message room ---");
@@ -37,8 +39,8 @@ export class GroupMessageRooms {
     try {
       const sql = `UPDATE group_message_rooms SET group_message_name = ?
                     WHERE ${whereConditions} = ?;`;
-      const groupMessageRoomValues = [group_message_name, whereValues];
-      const [data, _] = await conn.query(sql, groupMessageRoomValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message room ---");
@@ -51,8 +53,8 @@ export class GroupMessageRooms {
                     INNER JOIN group_message_members AS gmm
                     ON gmr.group_message_room_id = gmm.group_message_room_id
                     WHERE ${whereConditions} = ?;`;
-      const groupMessageRoomValues = [whereValues];
-      const [data, _] = await conn.query(sql, groupMessageRoomValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all group message rooms ---");
@@ -63,8 +65,8 @@ export class GroupMessageRooms {
     try {
       const sql = `SELECT * FROM group_message_rooms
                     WHERE ${whereConditions} = ?;`;
-      const groupMessageRoomValues = [whereValues];
-      const [data, _] = await conn.query(sql, groupMessageRoomValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get group message room ---");

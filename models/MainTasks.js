@@ -68,6 +68,7 @@ export class MainTasks {
     whereConditions,
     whereValues
   ) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `UPDATE main_tasks 
                   SET 
@@ -79,8 +80,8 @@ export class MainTasks {
                     main_task_status= ?,
                     main_task_start_date= ?,
                     main_task_end_date= ?
-                  WHERE ${whereConditions} = ?;`;
-      const mainTaskValues = [
+                  WHERE ${mappedWhereConditions};`;
+      const whereValues = [
         main_task_banner,
         main_task_title,
         main_task_subtitle,
@@ -89,9 +90,8 @@ export class MainTasks {
         main_task_status,
         main_task_start_date,
         main_task_end_date,
-        whereValues,
       ];
-      const [data, _] = await conn.query(sql, mainTaskValues);
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- update main task ---");
@@ -99,11 +99,13 @@ export class MainTasks {
   }
 
   static async getMainTask(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM main_tasks AS mt
-                  WHERE ${whereConditions} = ?;`;
-      const mainTaskValues = [whereValues];
-      const [data, _] = await conn.query(sql, mainTaskValues);
+                  WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get main task ---");
@@ -111,13 +113,13 @@ export class MainTasks {
   }
 
   static async getAllMainTasks(whereConditions, whereValues) {
-    const mappedConditions = mapWhereConditions(whereConditions);
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
       const sql = `SELECT * FROM main_tasks AS mt
                   LEFT JOIN main_task_collaborators AS mtc
                   ON mt.main_task_id = mtc.main_task_fk_id
-                  WHERE ${mappedConditions}
+                  WHERE ${mappedWhereConditions}
                   ORDER BY mt.main_task_end_date;`;
 
       const [data, _] = await conn.query(sql, whereValues);
@@ -129,13 +131,13 @@ export class MainTasks {
   }
 
   static async getAllMainTasksToday(whereConditions, whereValues) {
-    const mappedConditions = mapWhereConditions(whereConditions);
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
       const sql = `SELECT * FROM main_tasks AS mt
                   LEFT JOIN main_task_collaborators AS mtc
                   ON mt.main_task_id = mtc.main_task_fk_id
-                  WHERE ${mappedConditions}
+                  WHERE ${mappedWhereConditions}
                   AND CAST(mt.main_task_end_date AS DATE) = CURDATE()
                   ORDER BY mt.main_task_end_date;`;
 
@@ -148,11 +150,13 @@ export class MainTasks {
   }
 
   static async deleteMainTask(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `DELETE FROM main_tasks
-                  WHERE ${whereConditions} = ?;`;
-      const mainTaskValues = [whereValues];
-      const [data, _] = await conn.query(sql, mainTaskValues);
+                  WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task ---");

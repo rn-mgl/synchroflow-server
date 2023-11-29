@@ -22,13 +22,13 @@ export const createAssociate = async (req, res) => {
 export const deleteAssociate = async (req, res) => {
   const { associate_uuid } = req.params;
 
-  const associate = await Associates.getAssociate("associate_uuid", associate_uuid);
+  const associate = await Associates.getAssociate(["associate_uuid"], [associate_uuid]);
 
   if (!associate) {
     throw new NotFoundError("This associate connection no longer exist.");
   }
 
-  const deleteConnection = await Associates.deleteAssociate("associate_id", associate.associate_id);
+  const deleteConnection = await Associates.deleteAssociate(["associate_id"], [associate.associate_id]);
 
   if (!deleteConnection) {
     throw new NotFoundError("Error in deleting associate connection. Try again later.");
@@ -40,7 +40,7 @@ export const deleteAssociate = async (req, res) => {
 export const getAllAssociates = async (req, res) => {
   const { id } = req.user;
 
-  const associates = await Associates.getAllAssociates("associate_of", id);
+  const associates = await Associates.getAllAssociates(["associate_of"], [id]);
 
   if (!associates) {
     throw new BadRequestError("Error in getting your associates. Try again later.");

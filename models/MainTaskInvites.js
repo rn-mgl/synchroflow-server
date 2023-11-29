@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class MainTaskInvites {
   constructor(main_task_invite_uuid, main_task_fk_id, invited_by, invited_associate, main_task_invite_message) {
@@ -34,11 +35,13 @@ export class MainTaskInvites {
   }
 
   static async deleteMainTaskInvite(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `DELETE FROM main_task_invites
-                  WHERE '${whereConditions}' = ?`;
-      const mainTaskInviteValues = [whereValues];
-      const [data, _] = await conn.query(sql, mainTaskInviteValues);
+                  WHERE '${mappedWhereConditions}';`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");
@@ -46,11 +49,13 @@ export class MainTaskInvites {
   }
 
   static async updateMainTaskInviteStatus(main_task_invite_status, whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `UPDATE main_task_invites SET main_task_invite_status = ?
-                  WHERE '${whereConditions}' = ?`;
-      const mainTaskInviteValues = [main_task_invite_status, whereValues];
-      const [data, _] = await conn.query(sql, mainTaskInviteValues);
+                  WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereConditions);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");
@@ -61,8 +66,8 @@ export class MainTaskInvites {
     try {
       const sql = `SELECT * FROM main_task_invites
                     WHERE ${whereConditions} = ?;`;
-      const mainTaskInviteValues = [whereValues];
-      const [data, _] = await conn.query(sql, mainTaskInviteValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get main task invite ---");
@@ -73,8 +78,8 @@ export class MainTaskInvites {
     try {
       const sql = `SELECT * FROM main_task_invites
                     WHERE ${whereConditions} = ?;`;
-      const mainTaskInviteValues = [whereValues];
-      const [data, _] = await conn.query(sql, mainTaskInviteValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all main task invites ---");

@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class SubTasks {
   constructor(
@@ -67,6 +68,7 @@ export class SubTasks {
     whereConditions,
     whereValues
   ) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `UPDATE sub_tasks 
                   SET 
@@ -77,8 +79,8 @@ export class SubTasks {
                     sub_task_status= ?,
                     sub_task_start_date= ?,
                     sub_task_end_date= ?
-                  WHERE ${whereConditions} = ?;`;
-      const subTaskValues = [
+                  WHERE ${mappedWhereConditions};`;
+      const whereValues = [
         sub_task_title,
         sub_task_subtitle,
         sub_task_description,
@@ -88,7 +90,7 @@ export class SubTasks {
         sub_task_end_date,
         whereValues,
       ];
-      const [data, _] = await conn.query(sql, subTaskValues);
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- update sub task ---");
@@ -96,11 +98,13 @@ export class SubTasks {
   }
 
   static async getSubTask(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM sub_tasks
-                  WHERE ${whereConditions} = ?;`;
-      const subTaskValues = [whereValues];
-      const [data, _] = await conn.query(sql, subTaskValues);
+                  WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get sub task ---");
@@ -108,6 +112,8 @@ export class SubTasks {
   }
 
   static async getAllSubTasks(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM sub_tasks AS st
 
@@ -117,9 +123,9 @@ export class SubTasks {
                   LEFT JOIN sub_task_collaborators AS stc
                   ON stc.sub_task_fk_id = st.sub_task_id
                   
-                  WHERE ${whereConditions} = ?;`;
-      const subTaskValues = [whereValues];
-      const [data, _] = await conn.query(sql, subTaskValues);
+                  WHERE ${mappedWhereConditions};;`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all sub tasks ---");
@@ -127,11 +133,13 @@ export class SubTasks {
   }
 
   static async deleteSubTask(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `DELETE FROM sub_tasks
-                  WHERE ${whereConditions} = ?;`;
-      const subTaskValues = [whereValues];
-      const [data, _] = await conn.query(sql, subTaskValues);
+                  WHERE ${mappedWhereConditions};;`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task ---");

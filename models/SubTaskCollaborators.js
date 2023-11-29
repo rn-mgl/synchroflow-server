@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class SubTaskCollaborators {
   constructor(sub_task_collaborator_uuid, sub_task_fk_id, collaborator_id) {
@@ -24,11 +25,12 @@ export class SubTaskCollaborators {
   }
 
   static async deleteSubTaskCollaborator(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `DELETE FROM sub_task_collaborators
-                WHERE ${whereConditions} = ?;`;
-      const subTaskCollaboratorValues = [whereValues];
-      const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
+                WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task collaborator ---");
@@ -39,8 +41,8 @@ export class SubTaskCollaborators {
     try {
       const sql = `SELECT * FROM sub_task_collaborators
                 WHERE ${whereConditions} = ?;`;
-      const subTaskCollaboratorValues = [whereValues];
-      const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get sub task collaborator ---");
@@ -62,8 +64,8 @@ export class SubTaskCollaborators {
                     ON u.user_id = stc.collaborator_id
                     
                     WHERE ${whereConditions} = ?;`;
-      const subTaskCollaboratorValues = [whereValues];
-      const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all sub task collaborators ---");

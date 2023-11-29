@@ -23,8 +23,8 @@ export const deleteGroupMessageMember = async (req, res) => {
   const { group_message_member_uuid } = req.params;
 
   const groupMessageMember = await GroupMessageMembers.getGroupMessageMember(
-    "group_message_member_uuid",
-    group_message_member_uuid
+    ["group_message_member_uuid"],
+    [group_message_member_uuid]
   );
 
   if (!groupMessageMember) {
@@ -32,8 +32,8 @@ export const deleteGroupMessageMember = async (req, res) => {
   }
 
   const deleteMember = await GroupMessageMembers.deleteGroupMessageMember(
-    "group_message_member_id",
-    groupMessageMember.group_message_member_id
+    ["group_message_member_id"],
+    [groupMessageMember.group_message_member_id]
   );
 
   if (!deleteMember) {
@@ -46,15 +46,15 @@ export const deleteGroupMessageMember = async (req, res) => {
 export const getAllGroupMessageMembers = async (req, res) => {
   const { groupMessageRoomId } = req.body;
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom("group_message_room_id", groupMessageRoomId);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["group_message_room_id"], [groupMessageRoomId]);
 
   if (!groupMessageRoom) {
     throw new NotFoundError("This group message room does not exist.");
   }
 
   const allGroupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
-    "group_message_room_id",
-    groupMessageRoomId
+    ["group_message_room_id"],
+    [groupMessageRoomId]
   );
 
   if (!allGroupMessageMembers) {
@@ -68,8 +68,8 @@ export const getGroupMessageMember = async (req, res) => {
   const { group_message_member_uuid } = req.params;
 
   const groupMessageMember = await GroupMessageMembers.getGroupMessageMember(
-    "group_message_member_uuid",
-    group_message_member_uuid
+    ["group_message_member_uuid"],
+    [group_message_member_uuid]
   );
 
   if (!groupMessageMember) {

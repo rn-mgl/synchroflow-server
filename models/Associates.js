@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class Associates {
   constructor(associate_uuid, associate_of, associate_is) {
@@ -20,11 +21,12 @@ export class Associates {
   }
 
   static async deleteAssociate(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `DELETE FROM associates
-                    WHERE ${whereConditions} = ?`;
-      const associateValues = [whereValues];
-      const [data, _] = await conn.query(sql, associateValues);
+                    WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete associate ---");
@@ -37,8 +39,8 @@ export class Associates {
                     INNER JOIN users AS u 
                     ON a.associate_is = u.user_id
                     WHERE ${whereConditions} = ?`;
-      const associateValues = [whereValues];
-      const [data, _] = await conn.query(sql, associateValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all associates ---");
@@ -49,8 +51,8 @@ export class Associates {
     try {
       const sql = `SELECT * FROM associates
                     WHERE ${whereConditions} = ?`;
-      const associateValues = [whereValues];
-      const [data, _] = await conn.query(sql, associateValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get associate ---");

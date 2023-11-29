@@ -22,15 +22,15 @@ export const createPrivateMessage = async (req, res) => {
 export const deletePrivateMessage = async (req, res) => {
   const { private_message_uuid } = req.params;
 
-  const privateMessage = await PrivateMessages.getPrivateMessage("private_message_uuid", private_message_uuid);
+  const privateMessage = await PrivateMessages.getPrivateMessage(["private_message_uuid"], [private_message_uuid]);
 
   if (!privateMessage) {
     throw new NotFoundError("This private message does not exist.");
   }
 
   const deleteMessage = await PrivateMessages.deletePrivateMessage(
-    "private_message_id",
-    privateMessage.private_message_id
+    ["private_message_id"],
+    [privateMessage.private_message_id]
   );
 
   if (!deleteMessage) {
@@ -43,7 +43,7 @@ export const deletePrivateMessage = async (req, res) => {
 export const getAllPrivateMessages = async (req, res) => {
   const { roomId } = req.body;
 
-  const privateMessages = await PrivateMessages.getAllPrivateMessages("private_message_room_id ", roomId);
+  const privateMessages = await PrivateMessages.getAllPrivateMessages(["private_message_room_id"], [roomId]);
 
   if (!privateMessages) {
     throw new BadRequestError("Error in getting private messages. Try again later.");

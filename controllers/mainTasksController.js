@@ -49,7 +49,7 @@ export const updateMainTask = async (req, res) => {
     main_task_end_date,
   } = req.body;
 
-  const mainTask = await MainTasks.getMainTask("main_task_uuid", main_task_uuid);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [main_task_uuid]);
 
   if (!mainTask) {
     throw new NotFoundError("This task does not exist.");
@@ -62,8 +62,8 @@ export const updateMainTask = async (req, res) => {
     main_task_status,
     main_task_start_date,
     main_task_end_date,
-    "main_task_id",
-    mainTask.main_task_id
+    ["main_task_id"],
+    [mainTask.main_task_id]
   );
 
   if (!updateTask) {
@@ -76,7 +76,7 @@ export const updateMainTask = async (req, res) => {
 export const getMainTask = async (req, res) => {
   const { main_task_uuid } = req.params;
 
-  const mainTask = await MainTasks.getMainTask("main_task_uuid", main_task_uuid);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [main_task_uuid]);
 
   if (!mainTask) {
     throw new NotFoundError("This task does not exist.");
@@ -160,13 +160,13 @@ export const getAllMainTasks = async (req, res) => {
 export const deleteMainTask = async (req, res) => {
   const { main_task_uuid } = req.params;
 
-  const mainTask = await MainTasks.getMainTask("main_task_uuid", main_task_uuid);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"][main_task_uuid]);
 
   if (!mainTask) {
     throw new NotFoundError("This task does not exist.");
   }
 
-  const deleteTask = await MainTasks.deleteMainTask("main_task_id", mainTask.main_task_id);
+  const deleteTask = await MainTasks.deleteMainTask(["main_task_id"], [mainTask.main_task_id]);
 
   if (!deleteTask) {
     throw new BadRequestError("Error in deleting task. Try again later.");

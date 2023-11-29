@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class Users {
   constructor(user_uuid, name, surname, email, password, image) {
@@ -14,8 +15,8 @@ export class Users {
     try {
       const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image) 
                   VALUES (?, ?, ?, ?, ?, ?);`;
-      const userValues = [this.user_uuid, this.name, this.surname, this.email, this.password, this.image];
-      const [data, _] = await conn.query(sql, userValues);
+      const whereValues = [this.user_uuid, this.name, this.surname, this.email, this.password, this.image];
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- create user ---");
@@ -23,11 +24,12 @@ export class Users {
   }
 
   static async getUser(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM users 
-                    WHERE ${whereConditions} = ?`;
-      const userValues = [whereValues];
-      const [data, _] = await conn.query(sql, userValues);
+                    WHERE ${mappedWhereConditions}`;
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get user ---");
@@ -38,20 +40,20 @@ export class Users {
     try {
       const sql = `UPDATE users SET name = ?, surname = ?, email = ?
                     WHERE ${whereConditions} = ?`;
-      const userValues = [name, surname, email, whereValues];
-      const [data, _] = await conn.query(sql, userValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");
     }
   }
 
-  static async updateUserPassword(password, whereConditions, whereValues) {
+  static async updateUserPassword(whereConditions, whereValues) {
     try {
       const sql = `UPDATE users SET password = ?
                     WHERE ${whereConditions} = ?`;
-      const userValues = [password, whereValues];
-      const [data, _] = await conn.query(sql, userValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");
@@ -59,11 +61,13 @@ export class Users {
   }
 
   static async updateUserVerification(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `UPDATE users SET is_verified = ?
-                    WHERE ${whereConditions} = ?`;
-      const userValues = [true, whereValues];
-      const [data, _] = await conn.query(sql, userValues);
+                    WHERE ${mappedWhereConditions}`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");

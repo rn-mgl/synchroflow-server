@@ -10,14 +10,14 @@ export const createMainTaskInvite = async (req, res) => {
   const { id } = req.user;
   const mainTaskInviteUUID = uuidv4();
 
-  const mainTask = await MainTasks.getMainTask("main_task_uuid", taskUUID);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [taskUUID]);
 
   if (!mainTask) {
     throw new NotFoundError("The task you are inviting someone to does not exist.");
   }
 
   associatesToInvite.map(async (associate) => {
-    const invitedUser = await Users.getUser("user_uuid", associate);
+    const invitedUser = await Users.getUser(["user_uuid"], [associate]);
 
     if (!invitedUser) {
       throw new NotFoundError(`A user does not exist in Synchroflow.`);
@@ -44,15 +44,15 @@ export const createMainTaskInvite = async (req, res) => {
 export const deleteMainTaskInvite = async (req, res) => {
   const { main_task_invite_uuid } = req.params;
 
-  const mainTaskInvite = await MainTaskInvites.getMainTaskInvite("main_task_invite_uuid", main_task_invite_uuid);
+  const mainTaskInvite = await MainTaskInvites.getMainTaskInvite(["main_task_invite_uuid"], [main_task_invite_uuid]);
 
   if (!mainTaskInvite) {
     throw new NotFoundError("The invite does not exist.");
   }
 
   const deleteInvite = await MainTaskInvites.deleteMainTaskInvite(
-    "main_task_invite_id",
-    mainTaskInvite.main_task_invite_id
+    ["main_task_invite_id"],
+    [mainTaskInvite.main_task_invite_id]
   );
 
   if (!deleteInvite) {
@@ -66,16 +66,16 @@ export const updateMainTaskInviteStatus = async (req, res) => {
   const { inviteStatus } = req.body;
   const { main_task_invite_uuid } = req.params;
 
-  const mainTaskInvite = await MainTaskInvites.getMainTaskInvite("main_task_invite_uuid", main_task_invite_uuid);
+  const mainTaskInvite = await MainTaskInvites.getMainTaskInvite(["main_task_invite_uuid"], [main_task_invite_uuid]);
 
   if (!mainTaskInvite) {
     throw new NotFoundError("The invite does not exist.");
   }
 
   const updateInvite = await MainTaskInvites.updateMainTaskInviteStatus(
-    inviteStatus,
-    "main_task_invite_id",
-    mainTaskInvite.main_task_invite_id
+    [inviteStatus],
+    ["main_task_invite_id"],
+    [mainTaskInvite.main_task_invite_id]
   );
 
   if (!updateInvite) {
@@ -88,7 +88,7 @@ export const updateMainTaskInviteStatus = async (req, res) => {
 export const getMainTaskInvite = async (req, res) => {
   const { main_task_invite_uuid } = req.params;
 
-  const mainTaskInvite = await MainTaskInvites.getMainTaskInvite("main_task_invite_uuid", main_task_invite_uuid);
+  const mainTaskInvite = await MainTaskInvites.getMainTaskInvite(["main_task_invite_uuid"], [main_task_invite_uuid]);
 
   if (!mainTaskInvite) {
     throw new NotFoundError("The invite does not exist.");
@@ -100,7 +100,7 @@ export const getMainTaskInvite = async (req, res) => {
 const getAllSentMainTaskInvites = async (req, res) => {
   const { id } = req.user;
 
-  const allMainTaskInvites = await MainTaskInvites.getAllMainTaskInvites("invited_by", id);
+  const allMainTaskInvites = await MainTaskInvites.getAllMainTaskInvites(["invited_by"], [id]);
 
   if (!allMainTaskInvites) {
     throw new BadRequestError("Error in getting all your sent main task invites.");
@@ -112,7 +112,7 @@ const getAllSentMainTaskInvites = async (req, res) => {
 const getAllReceivedMainTaskInvites = async (req, res) => {
   const { id } = req.user;
 
-  const allMainTaskInvites = await MainTaskInvites.getAllMainTaskInvites("invited_associate", id);
+  const allMainTaskInvites = await MainTaskInvites.getAllMainTaskInvites(["invited_associate"], [id]);
 
   if (!allMainTaskInvites) {
     throw new BadRequestError("Error in getting all your received main task invites.");
@@ -125,7 +125,7 @@ const getAllAssociatesToInvite = async (req, res) => {
   const { id } = req.user;
   const { mainTaskUUID } = req.query;
 
-  const mainTask = await MainTasks.getMainTask("main_task_uuid", mainTaskUUID);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
 
   if (!mainTask) {
     throw new NotFoundError(`The main task you are inviting someone to does not exist.`);

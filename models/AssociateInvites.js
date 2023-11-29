@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class AssociateInvites {
   constructor(associate_invite_uuid, associate_invite_from, associate_invite_to) {
@@ -12,56 +13,64 @@ export class AssociateInvites {
       const sql = `INSERT INTO associate_invites 
                   (associate_invite_uuid, associate_invite_from, associate_invite_to) 
                   VALUES (?, ?, ?);`;
-      const associateInviteValues = [this.associate_invite_uuid, this.associate_invite_from, this.associate_invite_to];
-      const [data, _] = await conn.query(sql, associateInviteValues);
+      const whereValues = [this.associate_invite_uuid, this.associate_invite_from, this.associate_invite_to];
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- create associate ---");
     }
   }
 
-  static async updateAssociateInviteStatus(associate_invite_status, whereConditions, value) {
+  static async updateAssociateInviteStatus(associate_invite_status, whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `UPDATE associate_invites SET associate_invite_status = ?
-                    WHERE ${whereConditions} = ?`;
-      const associateInviteValues = [associate_invite_status, value];
-      const [data, _] = await conn.query(sql, associateInviteValues);
+                    WHERE ${mappedWhereConditions}`;
+
+      const [data, _] = await conn.query(sql, associate_invite_status, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- update associate invite ---");
     }
   }
 
-  static async deleteAssociateInvite(whereConditions, value) {
+  static async deleteAssociateInvite(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `DELETE FROM associate_invites
-                    WHERE ${whereConditions} = ?`;
-      const associateInviteValues = [value];
-      const [data, _] = await conn.query(sql, associateInviteValues);
+                    WHERE ${mappedWhereConditions}`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete associate ---");
     }
   }
 
-  static async getAllAssociateInvites(whereConditions, value) {
+  static async getAllAssociateInvites(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM associate_invites
-                    WHERE ${whereConditions} = ?;`;
-      const associateInviteValues = [value];
-      const [data, _] = await conn.query(sql, associateInviteValues);
+                    WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all associate invites ---");
     }
   }
 
-  static async getAssociateInvite(whereConditions, value) {
+  static async getAssociateInvite(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM associate_invites
-                    WHERE ${whereConditions} = ?;`;
-      const associateInviteValues = [value];
-      const [data, _] = await conn.query(sql, associateInviteValues);
+                    WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get associate invites ---");

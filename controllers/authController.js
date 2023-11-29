@@ -34,7 +34,7 @@ export const loginUser = async (req, res) => {
   const { loginCredentials } = req.body;
   const { candidateEmail, candidatePassword } = loginCredentials;
 
-  const userEmail = await Users.getUser("email", candidateEmail);
+  const userEmail = await Users.getUser(["email"], [candidateEmail]);
 
   if (!userEmail) {
     throw new BadRequestError("There is no account found with the given email.");
@@ -68,13 +68,13 @@ export const verifyUser = async (req, res) => {
     throw new BadRequestError(`Your token is not valid for verification.`);
   }
 
-  const user = await Users.getUser("user_id", verify.id);
+  const user = await Users.getUser(["user_id"], [verify.id]);
 
   if (!user) {
     throw new NotFoundError(`This account does not exist.`);
   }
 
-  const verifyUser = await Users.updateUserVerification("user_id", verify.id);
+  const verifyUser = await Users.updateUserVerification(["user_id"], [user.user_id]);
 
   if (!verifyUser) {
     throw new BadRequestError(`Error in verifying the account. Try again later.`);

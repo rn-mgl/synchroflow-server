@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class GroupMessageMembers {
   constructor(group_message_member_uuid, member_id, group_message_room_id) {
@@ -24,11 +25,13 @@ export class GroupMessageMembers {
   }
 
   static async deleteGroupMessageMember(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `DELETE FROM group_message_members
-                    WHERE ${whereConditions} = ?;`;
-      const groupMessageMemberValues = [whereValues];
-      const [data, _] = await conn.query(sql, groupMessageMemberValues);
+                    WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message  member ---");
@@ -39,8 +42,8 @@ export class GroupMessageMembers {
     try {
       const sql = `SELECT * FROM group_message_members
                     WHERE ${whereConditions} = ?;`;
-      const groupMessageMemberValues = [whereValues];
-      const [data, _] = await conn.query(sql, groupMessageMemberValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all group message members ---");
@@ -51,8 +54,8 @@ export class GroupMessageMembers {
     try {
       const sql = `SELECT * FROM group_message_members
                     WHERE ${whereConditions} = ?;`;
-      const groupMessageMemberValues = [whereValues];
-      const [data, _] = await conn.query(sql, groupMessageMemberValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get group message  member ---");

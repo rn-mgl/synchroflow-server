@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class MainTaskCollaborators {
   constructor(main_task_collaborator_uuid, main_task_id, collaborator_id) {
@@ -24,10 +25,12 @@ export class MainTaskCollaborators {
   }
 
   static async deleteMainTaskCollaborator(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `DELETE FROM main_task_collaborators
-                WHERE ${whereConditions} = ?;`;
-      const mainTaskCollaboratorValues = [whereValues];
+                WHERE ${mappedWhereConditions};`;
+
       const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {
@@ -36,10 +39,12 @@ export class MainTaskCollaborators {
   }
 
   static async getMainTaskCollaborator(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM main_task_collaborators
-                WHERE ${whereConditions} = ?;`;
-      const mainTaskCollaboratorValues = [whereValues];
+                WHERE ${whereConditions};`;
+
       const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data[0];
     } catch (error) {
@@ -48,6 +53,8 @@ export class MainTaskCollaborators {
   }
 
   static async getAllMainTaskCollaborators(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT u.name, u.surname, u.image, u.user_uuid,
                     stc.sub_task_collaborator_uuid,
@@ -70,9 +77,9 @@ export class MainTaskCollaborators {
                     LEFT JOIN sub_task_collaborators AS stc
                     ON st.sub_task_id = stc.sub_task_fk_id
 
-                    WHERE ${whereConditions} = ?;`;
-      const mainTaskCollaboratorValues = [whereValues];
-      const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
+                    WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all main task collaborators ---");

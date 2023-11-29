@@ -11,7 +11,7 @@ export const createSubTask = async (req, res) => {
   const { id } = req.user;
   const subTaskUUID = uuidv4();
 
-  const mainTask = await MainTasks.getMainTask("main_task_uuid", mainTaskUUID);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
 
   const subTask = new SubTasks(
     subTaskUUID,
@@ -46,7 +46,7 @@ export const updateSubTask = async (req, res) => {
   } = req.body;
   const { sub_task_uuid } = req.params;
 
-  const subTask = await SubTasks.getSubTask("sub_task_uuid", sub_task_uuid);
+  const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [sub_task_uuid]);
 
   if (!subTask) {
     throw new NotFoundError("This sub task does not exist.");
@@ -60,8 +60,8 @@ export const updateSubTask = async (req, res) => {
     sub_task_status,
     sub_task_start_date,
     sub_task_end_date,
-    "sub_task_id",
-    subTask.sub_task_id
+    ["sub_task_id"],
+    [subTask.sub_task_id]
   );
 
   if (!updateSubTask) {
@@ -74,7 +74,7 @@ export const updateSubTask = async (req, res) => {
 export const getSubTask = async (req, res) => {
   const { sub_task_uuid } = req.params;
 
-  const subTask = await SubTasks.getSubTask("sub_task_uuid", sub_task_uuid);
+  const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [sub_task_uuid]);
 
   if (!subTask) {
     throw new NotFoundError("This sub task does not exist.");
@@ -85,7 +85,7 @@ export const getSubTask = async (req, res) => {
 const getAllMySubTasks = async (req, res) => {
   const { id } = req.user;
 
-  const subTasks = await SubTasks.getAllSubTasks("sub_task_by", id);
+  const subTasks = await SubTasks.getAllSubTasks(["sub_task_by"], [id]);
 
   if (!subTasks) {
     throw new NotFoundError("This task does not exist.");
@@ -97,7 +97,7 @@ const getAllMySubTasks = async (req, res) => {
 const getAllCollaboratedSubTasks = async (req, res) => {
   const { id } = req.user;
 
-  const subTask = await SubTasks.getAllSubTasks("stc.collaborator_id", id);
+  const subTask = await SubTasks.getAllSubTasks(["stc.collaborator_id"], [id]);
 
   if (!subTask) {
     throw new NotFoundError("This task does not exist.");
@@ -110,13 +110,13 @@ const getAllMainTaskSubTasks = async (req, res) => {
   const { id } = req.user;
   const { mainTaskUUID } = req.query;
 
-  const mainTask = await MainTasks.getMainTask("main_task_uuid", mainTaskUUID);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
 
   if (!mainTask) {
     throw new NotFoundError(`The main task you are trying to access does not exist.`);
   }
 
-  const subTask = await SubTasks.getAllSubTasks("mt.main_task_id", mainTask.main_task_id);
+  const subTask = await SubTasks.getAllSubTasks(["mt.main_task_id"], [mainTask.main_task_id]);
 
   if (!subTask) {
     throw new NotFoundError("This task does not exist.");
@@ -149,13 +149,13 @@ export const getAllSubTasks = async (req, res) => {
 export const deleteSubTask = async (req, res) => {
   const { sub_task_uuid } = req.params;
 
-  const subTask = await SubTasks.getSubTask("sub_task_uuid", sub_task_uuid);
+  const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [sub_task_uuid]);
 
   if (!subTask) {
     throw new NotFoundError("This task does not exist.");
   }
 
-  const deleteTask = await SubTasks.deleteSubTask("sub_task_id", subTask.sub_task_id);
+  const deleteTask = await SubTasks.deleteSubTask(["sub_task_id"], [subTask.sub_task_id]);
 
   if (!deleteTask) {
     throw new BadRequestError("Error in deleting task. Try again later.");

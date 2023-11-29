@@ -9,13 +9,13 @@ export const createSubTaskCollaborator = async (req, res) => {
   const { subTaskUUID, collaboratorUUID } = req.body;
   const subTaskCollaboratorUUID = uuidv4();
 
-  const subTask = await SubTasks.getSubTask("sub_task_uuid", subTaskUUID);
+  const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [subTaskUUID]);
 
   if (!subTask) {
     throw new NotFoundError("The sub task you are assigning to does not exist.");
   }
 
-  const user = await Users.getUser("user_uuid", collaboratorUUID);
+  const user = await Users.getUser(["user_uuid"], [collaboratorUUID]);
 
   if (!user) {
     throw new NotFoundError("The user you are assigning does not exist.");
@@ -36,8 +36,8 @@ export const deleteSubTaskCollaborator = async (req, res) => {
   const { sub_task_collaborator_uuid } = req.params;
 
   const subTaskCollaborator = await SubTaskCollaborators.getSubTaskCollaborator(
-    "sub_task_collaborator_uuid",
-    sub_task_collaborator_uuid
+    ["sub_task_collaborator_uuid"],
+    [sub_task_collaborator_uuid]
   );
 
   if (!subTaskCollaborator) {
@@ -45,8 +45,8 @@ export const deleteSubTaskCollaborator = async (req, res) => {
   }
 
   const deleteCollaborator = await SubTaskCollaborators.deleteSubTaskCollaborator(
-    "sub_task_collaborator_id",
-    subTaskCollaborator.sub_task_collaborator_id
+    ["sub_task_collaborator_id"],
+    [subTaskCollaborator.sub_task_collaborator_id]
   );
 
   res.status(StatusCodes.OK).json(deleteCollaborator);
@@ -55,15 +55,15 @@ export const deleteSubTaskCollaborator = async (req, res) => {
 export const getAllSubTaskCollaborator = async (req, res) => {
   const { subTaskUUID } = req.query;
 
-  const subTask = await SubTasks.getSubTask("sub_task_uuid", subTaskUUID);
+  const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [subTaskUUID]);
 
   if (!subTask) {
     throw new NotFoundError(`The sub task you are trying to get does not exist.`);
   }
 
   const allSubTaskCollaborator = await SubTaskCollaborators.getAllSubTaskCollaborators(
-    "st.sub_task_id",
-    subTask.sub_task_id
+    ["st.sub_task_id"],
+    [subTask.sub_task_id]
   );
 
   if (!allSubTaskCollaborator) {
@@ -77,8 +77,8 @@ export const getSubTaskCollaborator = async (req, res) => {
   const { sub_task_collaborator_uuid } = req.params;
 
   const subTaskCollaborator = await SubTaskCollaborators.getSubTaskCollaborator(
-    "sub_task_collaborator_uuid",
-    sub_task_collaborator_uuid
+    ["sub_task_collaborator_uuid"],
+    [sub_task_collaborator_uuid]
   );
 
   if (!subTaskCollaborator) {

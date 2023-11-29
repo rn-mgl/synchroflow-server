@@ -1,14 +1,16 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
-class Dashboard {
+export class Dashboard {
   constructor() {}
 
-  static async getDashboardData(whereValues) {
+  static async getDashboardData(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sqlMainTask = `SELECT * FROM main_tasks AS mt
-                            WHERE mt.main_task_by = ?;`;
-      const mainTaskValues = [whereValues];
-      const [mainTaskData, _mt] = await conn.query(sqlMainTask, mainTaskValues);
+                            WHERE ${mappedWhereConditions};`;
+
+      const [mainTaskData, _mt] = await conn.query(sqlMainTask, whereValues);
 
       return { mainTaskData };
     } catch (error) {

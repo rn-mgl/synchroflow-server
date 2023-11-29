@@ -7,7 +7,7 @@ export const getUser = async (req, res) => {
   const { user_uuid } = req.params;
   const { id } = req.user;
 
-  const user = await Users.getUser("user_uuid", user_uuid);
+  const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
   if (user.user_id !== id) {
     throw new UnauthorizedError("You are not allowed to access other account.");
@@ -26,7 +26,7 @@ const updateUserIdentifier = async (req, res) => {
   const { id } = req.user;
   const { name, surname, email } = userData;
 
-  const user = await Users.getUser("user_uuid", user_uuid);
+  const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
   if (user.user_id !== id) {
     throw new UnauthorizedError("You are not allowed to access other account.");
@@ -47,7 +47,7 @@ const updateUserPassword = async (req, res) => {
   const { id } = req.user;
   const { password } = userData;
 
-  const user = await Users.getUser("user_uuid", user_uuid);
+  const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
   if (user.user_id !== id) {
     throw new UnauthorizedError("You are not allowed to access other account.");
@@ -68,7 +68,7 @@ export const updateUser = async (req, res) => {
   const { user_uuid } = req.params;
   const { type } = req.query;
 
-  const user = await Users.getUser("user_uuid", user_uuid);
+  const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
   if (user.user_id !== id) {
     throw new UnauthorizedError("You are not allowed to access other account.");
