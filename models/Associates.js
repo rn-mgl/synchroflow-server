@@ -67,11 +67,16 @@ export class Associates {
   }
 
   static async getAssociate(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
-      const sql = `SELECT * FROM associates
-                    WHERE ${whereConditions} = ?`;
+      const sql = `SELECT * FROM associates AS a
+                  INNER JOIN users AS u
+                  ON u.user_id = a.associate_is
+                  WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
+
       return data[0];
     } catch (error) {
       console.log(error + "--- get associate ---");

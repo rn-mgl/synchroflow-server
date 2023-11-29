@@ -37,6 +37,18 @@ export const deleteAssociate = async (req, res) => {
   res.status(StatusCodes.OK).json(deleteConnection);
 };
 
+export const getAssociate = async (req, res) => {
+  const { associate_uuid } = req.params;
+
+  const associate = await Associates.getAssociate(["a.associate_uuid"], [associate_uuid]);
+
+  if (!associate) {
+    throw new NotFoundError("This associate connection no longer exist.");
+  }
+
+  res.status(StatusCodes.OK).json(associate);
+};
+
 const getAllRecentAssociates = async (req, res) => {
   const { id } = req.user;
 
