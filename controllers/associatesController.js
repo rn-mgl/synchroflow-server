@@ -37,7 +37,19 @@ export const deleteAssociate = async (req, res) => {
   res.status(StatusCodes.OK).json(deleteConnection);
 };
 
-export const getAllAssociates = async (req, res) => {
+const getAllRecentAssociates = async (req, res) => {
+  const { id } = req.user;
+
+  const associates = await Associates.getAllRecentAssociates(["associate_of"], [id]);
+
+  if (!associates) {
+    throw new BadRequestError("Error in getting your associates. Try again later.");
+  }
+
+  res.status(StatusCodes.OK).json(associates);
+};
+
+const getAllMyAssociates = async (req, res) => {
   const { id } = req.user;
 
   const associates = await Associates.getAllAssociates(["associate_of"], [id]);
@@ -47,4 +59,18 @@ export const getAllAssociates = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(associates);
+};
+
+export const getAllAssociates = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "all") {
+    await getAllMyAssociates(req, res);
+    return;
+  }
+
+  if (type === "recent") {
+    await getAllRecentAssociates(req, res);
+    return;
+  }
 };
