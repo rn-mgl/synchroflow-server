@@ -33,11 +33,11 @@ export class MainTaskInvites {
     }
   }
 
-  static async deleteMainTaskInvite(selector, value) {
+  static async deleteMainTaskInvite(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM main_task_invites
-                  WHERE '${selector}' = ?`;
-      const mainTaskInviteValues = [value];
+                  WHERE '${whereConditions}' = ?`;
+      const mainTaskInviteValues = [whereValues];
       const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data;
     } catch (error) {
@@ -45,11 +45,11 @@ export class MainTaskInvites {
     }
   }
 
-  static async updateMainTaskInviteStatus(main_task_invite_status, selector, value) {
+  static async updateMainTaskInviteStatus(main_task_invite_status, whereConditions, whereValues) {
     try {
       const sql = `UPDATE main_task_invites SET main_task_invite_status = ?
-                  WHERE '${selector}' = ?`;
-      const mainTaskInviteValues = [main_task_invite_status, value];
+                  WHERE '${whereConditions}' = ?`;
+      const mainTaskInviteValues = [main_task_invite_status, whereValues];
       const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data;
     } catch (error) {
@@ -57,11 +57,11 @@ export class MainTaskInvites {
     }
   }
 
-  static async getMainTaskInvite(selector, value) {
+  static async getMainTaskInvite(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM main_task_invites
-                    WHERE ${selector} = ?;`;
-      const mainTaskInviteValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const mainTaskInviteValues = [whereValues];
       const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data[0];
     } catch (error) {
@@ -69,11 +69,11 @@ export class MainTaskInvites {
     }
   }
 
-  static async getAllMainTaskInvites(selector, value) {
+  static async getAllMainTaskInvites(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM main_task_invites
-                    WHERE ${selector} = ?;`;
-      const mainTaskInviteValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const mainTaskInviteValues = [whereValues];
       const [data, _] = await conn.query(sql, mainTaskInviteValues);
       return data;
     } catch (error) {

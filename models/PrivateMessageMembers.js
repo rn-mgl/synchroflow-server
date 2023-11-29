@@ -27,11 +27,11 @@ export class PrivateMessageMembers {
     }
   }
 
-  static async deletePrivateMessageMember(selector, value) {
+  static async deletePrivateMessageMember(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM private_message_members
-                    WHERE ${selector} = ?;`;
-      const privateMessageMemberValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const privateMessageMemberValues = [whereValues];
       const [data, _] = await conn.query(sql, privateMessageMemberValues);
       return data;
     } catch (error) {
@@ -39,11 +39,11 @@ export class PrivateMessageMembers {
     }
   }
 
-  static async getAllPrivateMessageMembers(selector, value) {
+  static async getAllPrivateMessageMembers(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM private_message_members
-                    WHERE ${selector} = ?;`;
-      const privateMessageMemberValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const privateMessageMemberValues = [whereValues];
       const [data, _] = await conn.query(sql, privateMessageMemberValues);
       return data;
     } catch (error) {
@@ -51,11 +51,11 @@ export class PrivateMessageMembers {
     }
   }
 
-  static async getPrivateMessageMember(selector, value) {
+  static async getPrivateMessageMember(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM private_message_members
-                    WHERE ${selector} = ?;`;
-      const privateMessageMemberValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const privateMessageMemberValues = [whereValues];
       const [data, _] = await conn.query(sql, privateMessageMemberValues);
       return data[0];
     } catch (error) {

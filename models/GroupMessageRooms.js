@@ -21,11 +21,11 @@ export class GroupMessageRooms {
     }
   }
 
-  static async deleteGroupMessageRoom(selector, value) {
+  static async deleteGroupMessageRoom(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM group_message_rooms
-                    WHERE ${selector} = ?;`;
-      const groupMessageRoomValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageRoomValues = [whereValues];
       const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data;
     } catch (error) {
@@ -33,11 +33,11 @@ export class GroupMessageRooms {
     }
   }
 
-  static async updateGroupMessageName(group_message_name, selector, value) {
+  static async updateGroupMessageName(group_message_name, whereConditions, whereValues) {
     try {
       const sql = `UPDATE group_message_rooms SET group_message_name = ?
-                    WHERE ${selector} = ?;`;
-      const groupMessageRoomValues = [group_message_name, value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageRoomValues = [group_message_name, whereValues];
       const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data;
     } catch (error) {
@@ -45,13 +45,13 @@ export class GroupMessageRooms {
     }
   }
 
-  static async getAllGroupMessageRooms(selector, value) {
+  static async getAllGroupMessageRooms(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM group_message_rooms AS gmr
                     INNER JOIN group_message_members AS gmm
                     ON gmr.group_message_room_id = gmm.group_message_room_id
-                    WHERE ${selector} = ?;`;
-      const groupMessageRoomValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageRoomValues = [whereValues];
       const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data;
     } catch (error) {
@@ -59,11 +59,11 @@ export class GroupMessageRooms {
     }
   }
 
-  static async getGroupMessageRoom(selector, value) {
+  static async getGroupMessageRoom(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM group_message_rooms
-                    WHERE ${selector} = ?;`;
-      const groupMessageRoomValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageRoomValues = [whereValues];
       const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data[0];
     } catch (error) {

@@ -19,11 +19,11 @@ export class PrivateMessageRooms {
     }
   }
 
-  static async deletePrivateMessageRoom(selector, value) {
+  static async deletePrivateMessageRoom(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM private_message_rooms
-                    WHERE ${selector} = ?;`;
-      const privateMessageRoomValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const privateMessageRoomValues = [whereValues];
       const [data, _] = await conn.query(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
@@ -31,13 +31,13 @@ export class PrivateMessageRooms {
     }
   }
 
-  static async getAllPrivateMessageRooms(selector, value) {
+  static async getAllPrivateMessageRooms(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM private_message_rooms AS pmr
                     INNER JOIN private_message_members AS pmm
                     ON pmr.private_message_room_id = pmm.private_message_room_id
-                    WHERE ${selector} = ?;`;
-      const privateMessageRoomValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const privateMessageRoomValues = [whereValues];
       const [data, _] = await conn.query(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
@@ -45,11 +45,11 @@ export class PrivateMessageRooms {
     }
   }
 
-  static async getPrivateMessageRoom(selector, value) {
+  static async getPrivateMessageRoom(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM private_message_rooms
-                    WHERE ${selector} = ?;`;
-      const privateMessageRoomValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const privateMessageRoomValues = [whereValues];
       const [data, _] = await conn.query(sql, privateMessageRoomValues);
       return data[0];
     } catch (error) {

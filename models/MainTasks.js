@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class MainTasks {
   constructor(
@@ -64,8 +65,8 @@ export class MainTasks {
     main_task_status,
     main_task_start_date,
     main_task_end_date,
-    selector,
-    value
+    whereConditions,
+    whereValues
   ) {
     try {
       const sql = `UPDATE main_tasks 
@@ -78,7 +79,7 @@ export class MainTasks {
                     main_task_status= ?,
                     main_task_start_date= ?,
                     main_task_end_date= ?
-                  WHERE ${selector} = ?;`;
+                  WHERE ${whereConditions} = ?;`;
       const mainTaskValues = [
         main_task_banner,
         main_task_title,
@@ -88,7 +89,7 @@ export class MainTasks {
         main_task_status,
         main_task_start_date,
         main_task_end_date,
-        value,
+        whereValues,
       ];
       const [data, _] = await conn.query(sql, mainTaskValues);
       return data;
@@ -97,11 +98,11 @@ export class MainTasks {
     }
   }
 
-  static async getMainTask(selector, value) {
+  static async getMainTask(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM main_tasks AS mt
-                  WHERE ${selector} = ?;`;
-      const mainTaskValues = [value];
+                  WHERE ${whereConditions} = ?;`;
+      const mainTaskValues = [whereValues];
       const [data, _] = await conn.query(sql, mainTaskValues);
       return data[0];
     } catch (error) {
@@ -109,26 +110,29 @@ export class MainTasks {
     }
   }
 
-  static async getAllMainTasks(selector, value) {
+  static async getAllMainTasks(whereConditions, whereValues) {
+    const mappedConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM main_tasks AS mt
                   LEFT JOIN main_task_collaborators AS mtc
                   ON mt.main_task_id = mtc.main_task_fk_id
-                  WHERE ${selector} = ?
+                  WHERE ${mappedConditions}
                   ORDER BY mt.main_task_end_date;`;
-      const mainTaskValues = [value];
-      const [data, _] = await conn.query(sql, mainTaskValues);
+
+      const [data, _] = await conn.query(sql, whereValues);
+
       return data;
     } catch (error) {
       console.log(error + "--- get all main tasks ---");
     }
   }
 
-  static async deleteMainTask(selector, value) {
+  static async deleteMainTask(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM main_tasks
-                  WHERE ${selector} = ?;`;
-      const mainTaskValues = [value];
+                  WHERE ${whereConditions} = ?;`;
+      const mainTaskValues = [whereValues];
       const [data, _] = await conn.query(sql, mainTaskValues);
       return data;
     } catch (error) {

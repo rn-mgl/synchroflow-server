@@ -23,11 +23,11 @@ export class SubTaskCollaborators {
     }
   }
 
-  static async deleteSubTaskCollaborator(selector, value) {
+  static async deleteSubTaskCollaborator(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM sub_task_collaborators
-                WHERE ${selector} = ?;`;
-      const subTaskCollaboratorValues = [value];
+                WHERE ${whereConditions} = ?;`;
+      const subTaskCollaboratorValues = [whereValues];
       const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
@@ -35,11 +35,11 @@ export class SubTaskCollaborators {
     }
   }
 
-  static async getSubTaskCollaborator(selector, value) {
+  static async getSubTaskCollaborator(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM sub_task_collaborators
-                WHERE ${selector} = ?;`;
-      const subTaskCollaboratorValues = [value];
+                WHERE ${whereConditions} = ?;`;
+      const subTaskCollaboratorValues = [whereValues];
       const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data[0];
     } catch (error) {
@@ -47,7 +47,7 @@ export class SubTaskCollaborators {
     }
   }
 
-  static async getAllSubTaskCollaborators(selector, value) {
+  static async getAllSubTaskCollaborators(whereConditions, whereValues) {
     try {
       const sql = `SELECT u.name, u.surname, u.user_uuid, u.image
                     FROM sub_task_collaborators AS stc
@@ -61,8 +61,8 @@ export class SubTaskCollaborators {
                     LEFT JOIN users AS u
                     ON u.user_id = stc.collaborator_id
                     
-                    WHERE ${selector} = ?;`;
-      const subTaskCollaboratorValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const subTaskCollaboratorValues = [whereValues];
       const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {

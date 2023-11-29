@@ -64,8 +64,8 @@ export class SubTasks {
     sub_task_status,
     sub_task_start_date,
     sub_task_end_date,
-    selector,
-    value
+    whereConditions,
+    whereValues
   ) {
     try {
       const sql = `UPDATE sub_tasks 
@@ -77,7 +77,7 @@ export class SubTasks {
                     sub_task_status= ?,
                     sub_task_start_date= ?,
                     sub_task_end_date= ?
-                  WHERE ${selector} = ?;`;
+                  WHERE ${whereConditions} = ?;`;
       const subTaskValues = [
         sub_task_title,
         sub_task_subtitle,
@@ -86,7 +86,7 @@ export class SubTasks {
         sub_task_status,
         sub_task_start_date,
         sub_task_end_date,
-        value,
+        whereValues,
       ];
       const [data, _] = await conn.query(sql, subTaskValues);
       return data;
@@ -95,11 +95,11 @@ export class SubTasks {
     }
   }
 
-  static async getSubTask(selector, value) {
+  static async getSubTask(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM sub_tasks
-                  WHERE ${selector} = ?;`;
-      const subTaskValues = [value];
+                  WHERE ${whereConditions} = ?;`;
+      const subTaskValues = [whereValues];
       const [data, _] = await conn.query(sql, subTaskValues);
       return data[0];
     } catch (error) {
@@ -107,7 +107,7 @@ export class SubTasks {
     }
   }
 
-  static async getAllSubTasks(selector, value) {
+  static async getAllSubTasks(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM sub_tasks AS st
 
@@ -117,8 +117,8 @@ export class SubTasks {
                   LEFT JOIN sub_task_collaborators AS stc
                   ON stc.sub_task_fk_id = st.sub_task_id
                   
-                  WHERE ${selector} = ?;`;
-      const subTaskValues = [value];
+                  WHERE ${whereConditions} = ?;`;
+      const subTaskValues = [whereValues];
       const [data, _] = await conn.query(sql, subTaskValues);
       return data;
     } catch (error) {
@@ -126,11 +126,11 @@ export class SubTasks {
     }
   }
 
-  static async deleteSubTask(selector, value) {
+  static async deleteSubTask(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM sub_tasks
-                  WHERE ${selector} = ?;`;
-      const subTaskValues = [value];
+                  WHERE ${whereConditions} = ?;`;
+      const subTaskValues = [whereValues];
       const [data, _] = await conn.query(sql, subTaskValues);
       return data;
     } catch (error) {

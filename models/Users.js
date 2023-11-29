@@ -22,11 +22,11 @@ export class Users {
     }
   }
 
-  static async getUser(selector, value) {
+  static async getUser(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM users 
-                    WHERE ${selector} = ?`;
-      const userValues = [value];
+                    WHERE ${whereConditions} = ?`;
+      const userValues = [whereValues];
       const [data, _] = await conn.query(sql, userValues);
       return data[0];
     } catch (error) {
@@ -34,11 +34,11 @@ export class Users {
     }
   }
 
-  static async updateUserIdentifier(name, surname, email, selector, value) {
+  static async updateUserIdentifier(name, surname, email, whereConditions, whereValues) {
     try {
       const sql = `UPDATE users SET name = ?, surname = ?, email = ?
-                    WHERE ${selector} = ?`;
-      const userValues = [name, surname, email, value];
+                    WHERE ${whereConditions} = ?`;
+      const userValues = [name, surname, email, whereValues];
       const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {
@@ -46,11 +46,11 @@ export class Users {
     }
   }
 
-  static async updateUserPassword(password, selector, value) {
+  static async updateUserPassword(password, whereConditions, whereValues) {
     try {
       const sql = `UPDATE users SET password = ?
-                    WHERE ${selector} = ?`;
-      const userValues = [password, value];
+                    WHERE ${whereConditions} = ?`;
+      const userValues = [password, whereValues];
       const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {
@@ -58,11 +58,11 @@ export class Users {
     }
   }
 
-  static async updateUserVerification(selector, value) {
+  static async updateUserVerification(whereConditions, whereValues) {
     try {
       const sql = `UPDATE users SET is_verified = ?
-                    WHERE ${selector} = ?`;
-      const userValues = [true, value];
+                    WHERE ${whereConditions} = ?`;
+      const userValues = [true, whereValues];
       const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {

@@ -19,11 +19,11 @@ export class Associates {
     }
   }
 
-  static async deleteAssociate(selector, value) {
+  static async deleteAssociate(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM associates
-                    WHERE ${selector} = ?`;
-      const associateValues = [value];
+                    WHERE ${whereConditions} = ?`;
+      const associateValues = [whereValues];
       const [data, _] = await conn.query(sql, associateValues);
       return data;
     } catch (error) {
@@ -31,13 +31,13 @@ export class Associates {
     }
   }
 
-  static async getAllAssociates(selector, value) {
+  static async getAllAssociates(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM associates AS a
                     INNER JOIN users AS u 
                     ON a.associate_is = u.user_id
-                    WHERE ${selector} = ?`;
-      const associateValues = [value];
+                    WHERE ${whereConditions} = ?`;
+      const associateValues = [whereValues];
       const [data, _] = await conn.query(sql, associateValues);
       return data;
     } catch (error) {
@@ -45,11 +45,11 @@ export class Associates {
     }
   }
 
-  static async getAssociate(selector, value) {
+  static async getAssociate(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM associates
-                    WHERE ${selector} = ?`;
-      const associateValues = [value];
+                    WHERE ${whereConditions} = ?`;
+      const associateValues = [whereValues];
       const [data, _] = await conn.query(sql, associateValues);
       return data[0];
     } catch (error) {

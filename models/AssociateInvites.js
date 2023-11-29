@@ -20,10 +20,10 @@ export class AssociateInvites {
     }
   }
 
-  static async updateAssociateInviteStatus(associate_invite_status, selector, value) {
+  static async updateAssociateInviteStatus(associate_invite_status, whereConditions, value) {
     try {
       const sql = `UPDATE associate_invites SET associate_invite_status = ?
-                    WHERE ${selector} = ?`;
+                    WHERE ${whereConditions} = ?`;
       const associateInviteValues = [associate_invite_status, value];
       const [data, _] = await conn.query(sql, associateInviteValues);
       return data;
@@ -32,10 +32,10 @@ export class AssociateInvites {
     }
   }
 
-  static async deleteAssociateInvite(selector, value) {
+  static async deleteAssociateInvite(whereConditions, value) {
     try {
       const sql = `DELETE FROM associate_invites
-                    WHERE ${selector} = ?`;
+                    WHERE ${whereConditions} = ?`;
       const associateInviteValues = [value];
       const [data, _] = await conn.query(sql, associateInviteValues);
       return data;
@@ -44,10 +44,10 @@ export class AssociateInvites {
     }
   }
 
-  static async getAllAssociateInvites(selector, value) {
+  static async getAllAssociateInvites(whereConditions, value) {
     try {
       const sql = `SELECT * FROM associate_invites
-                    WHERE ${selector} = ?;`;
+                    WHERE ${whereConditions} = ?;`;
       const associateInviteValues = [value];
       const [data, _] = await conn.query(sql, associateInviteValues);
       return data;
@@ -56,10 +56,10 @@ export class AssociateInvites {
     }
   }
 
-  static async getAssociateInvite(selector, value) {
+  static async getAssociateInvite(whereConditions, value) {
     try {
       const sql = `SELECT * FROM associate_invites
-                    WHERE ${selector} = ?;`;
+                    WHERE ${whereConditions} = ?;`;
       const associateInviteValues = [value];
       const [data, _] = await conn.query(sql, associateInviteValues);
       return data[0];

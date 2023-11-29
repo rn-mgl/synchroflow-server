@@ -23,11 +23,11 @@ export class MainTaskCollaborators {
     }
   }
 
-  static async deleteMainTaskCollaborator(selector, value) {
+  static async deleteMainTaskCollaborator(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM main_task_collaborators
-                WHERE ${selector} = ?;`;
-      const mainTaskCollaboratorValues = [value];
+                WHERE ${whereConditions} = ?;`;
+      const mainTaskCollaboratorValues = [whereValues];
       const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {
@@ -35,11 +35,11 @@ export class MainTaskCollaborators {
     }
   }
 
-  static async getMainTaskCollaborator(selector, value) {
+  static async getMainTaskCollaborator(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM main_task_collaborators
-                WHERE ${selector} = ?;`;
-      const mainTaskCollaboratorValues = [value];
+                WHERE ${whereConditions} = ?;`;
+      const mainTaskCollaboratorValues = [whereValues];
       const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data[0];
     } catch (error) {
@@ -47,7 +47,7 @@ export class MainTaskCollaborators {
     }
   }
 
-  static async getAllMainTaskCollaborators(selector, value) {
+  static async getAllMainTaskCollaborators(whereConditions, whereValues) {
     try {
       const sql = `SELECT u.name, u.surname, u.image, u.user_uuid,
                     stc.sub_task_collaborator_uuid,
@@ -70,8 +70,8 @@ export class MainTaskCollaborators {
                     LEFT JOIN sub_task_collaborators AS stc
                     ON st.sub_task_id = stc.sub_task_fk_id
 
-                    WHERE ${selector} = ?;`;
-      const mainTaskCollaboratorValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const mainTaskCollaboratorValues = [whereValues];
       const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {

@@ -33,11 +33,11 @@ export class GroupMessages {
     }
   }
 
-  static async deleteGroupMessage(selector, value) {
+  static async deleteGroupMessage(whereConditions, whereValues) {
     try {
       const sql = `UPDATE group_messages SET group_message_is_deleted = ?
-                    WHERE ${selector} = ?;`;
-      const groupMessageValues = [true, value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageValues = [true, whereValues];
       const [data, _] = await conn.query(sql, groupMessageValues);
       return data;
     } catch (error) {
@@ -45,13 +45,13 @@ export class GroupMessages {
     }
   }
 
-  static async getAllGroupMessages(selector, value) {
+  static async getAllGroupMessages(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM group_messages AS gm
                     INNER JOIN group_message_rooms AS gmr
                     ON gm.group_message_room_id = gmr.group_message_room_id
-                    WHERE ${selector} = ?;`;
-      const groupMessageValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageValues = [whereValues];
       const [data, _] = await conn.query(sql, groupMessageValues);
       return data;
     } catch (error) {
@@ -59,11 +59,11 @@ export class GroupMessages {
     }
   }
 
-  static async getGroupMessage(selector, value) {
+  static async getGroupMessage(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM group_messages
-                    WHERE ${selector} = ?;`;
-      const groupMessageValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageValues = [whereValues];
       const [data, _] = await conn.query(sql, groupMessageValues);
       return data[0];
     } catch (error) {

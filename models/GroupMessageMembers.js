@@ -23,11 +23,11 @@ export class GroupMessageMembers {
     }
   }
 
-  static async deleteGroupMessageMember(selector, value) {
+  static async deleteGroupMessageMember(whereConditions, whereValues) {
     try {
       const sql = `DELETE FROM group_message_members
-                    WHERE ${selector} = ?;`;
-      const groupMessageMemberValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageMemberValues = [whereValues];
       const [data, _] = await conn.query(sql, groupMessageMemberValues);
       return data;
     } catch (error) {
@@ -35,11 +35,11 @@ export class GroupMessageMembers {
     }
   }
 
-  static async getAllGroupMessageMembers(selector, value) {
+  static async getAllGroupMessageMembers(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM group_message_members
-                    WHERE ${selector} = ?;`;
-      const groupMessageMemberValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageMemberValues = [whereValues];
       const [data, _] = await conn.query(sql, groupMessageMemberValues);
       return data;
     } catch (error) {
@@ -47,11 +47,11 @@ export class GroupMessageMembers {
     }
   }
 
-  static async getGroupMessageMember(selector, value) {
+  static async getGroupMessageMember(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM group_message_members
-                    WHERE ${selector} = ?;`;
-      const groupMessageMemberValues = [value];
+                    WHERE ${whereConditions} = ?;`;
+      const groupMessageMemberValues = [whereValues];
       const [data, _] = await conn.query(sql, groupMessageMemberValues);
       return data[0];
     } catch (error) {
