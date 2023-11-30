@@ -38,10 +38,33 @@ export class Users {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
-      const sql = `SELECT * FROM users 
+      const sql = `SELECT * FROM users
+            
                     WHERE ${mappedWhereConditions}`;
       const [data, _] = await conn.query(sql, whereValues);
       return data[0];
+    } catch (error) {
+      console.log(error + "--- get user ---");
+    }
+  }
+
+  static async getUsers(userId) {
+    try {
+      const sql = `SELECT u.user_uuid, u.name, u.surname, u.email, u.image, u.role, u.status,
+                    ai.associate_invite_uuid
+
+                    FROM users AS u
+
+                    LEFT JOIN associate_invites AS ai
+                    ON ai.associate_invite_to = u.user_id
+                    
+                    WHERE u.user_id <> '${userId}'
+                    AND u.user_id NOT IN (
+                      SELECT associate_is FROM associates
+                      WHERE associate_of = '${userId}'
+                    );`;
+      const [data, _] = await conn.execute(sql);
+      return data;
     } catch (error) {
       console.log(error + "--- get user ---");
     }

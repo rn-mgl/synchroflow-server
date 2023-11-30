@@ -20,6 +20,18 @@ export const getUser = async (req, res) => {
   res.status(StatusCodes.OK).json(user);
 };
 
+export const getUsers = async (req, res) => {
+  const { id } = req.user;
+
+  const users = await Users.getUsers(id);
+
+  if (!users) {
+    throw new BadRequestError(`Error in getting users. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(users);
+};
+
 const updateUserIdentifier = async (req, res) => {
   const { userData } = req.body;
   const { user_uuid } = req.params;

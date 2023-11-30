@@ -8,7 +8,7 @@ export const createAssociateInvite = async (req, res) => {
   const { inviteTo } = req.body;
   const { id } = req.user;
 
-  const invitedUser = await Users.getUser(["user_id"], [inviteTo]);
+  const invitedUser = await Users.getUser(["user_uuid"], [inviteTo]);
 
   if (!invitedUser) {
     throw new BadRequestError(`This user does not exist in Synchroflow.`);
@@ -16,7 +16,7 @@ export const createAssociateInvite = async (req, res) => {
 
   const associateInviteUUID = uuidv4();
 
-  const associateInvites = new AssociateInvites(associateInviteUUID, id, inviteTo);
+  const associateInvites = new AssociateInvites(associateInviteUUID, id, invitedUser.user_id);
 
   const newAssociateInvite = await associateInvites.createAssociateInvite();
 
