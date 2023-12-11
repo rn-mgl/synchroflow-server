@@ -76,7 +76,11 @@ export class MainTaskInvites {
 
   static async getAllMainTaskInvites(whereConditions, whereValues) {
     try {
-      const sql = `SELECT * FROM main_task_invites
+      const sql = `SELECT * FROM main_task_invites AS mti
+                    INNER JOIN users AS u
+                    ON mti.invited_associate = u.user_id
+                    INNER JOIN main_tasks AS mt
+                    ON mti.main_task_fk_id = mt.main_task_id
                     WHERE ${whereConditions} = ?;`;
 
       const [data, _] = await conn.query(sql, whereValues);

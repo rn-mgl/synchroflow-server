@@ -49,11 +49,29 @@ export class AssociateInvites {
     }
   }
 
-  static async getAllAssociateInvites(whereConditions, whereValues) {
+  static async getAllSentAssociateInvites(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
-      const sql = `SELECT * FROM associate_invites
+      const sql = `SELECT * FROM associate_invites AS ai
+                    INNER JOIN users AS u
+                    ON ai.associate_invite_to = u.user_id
+                    WHERE ${mappedWhereConditions};`;
+
+      const [data, _] = await conn.query(sql, whereValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all associate invites ---");
+    }
+  }
+
+  static async getAllReceivedAssociateInvites(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
+    try {
+      const sql = `SELECT * FROM associate_invites AS ai
+                    INNER JOIN users AS u
+                    ON ai.associate_invite_from = u.user_id
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);

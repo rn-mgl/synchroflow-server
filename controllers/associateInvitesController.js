@@ -65,7 +65,7 @@ export const getAssociateInvite = async (req, res) => {
 const getAllSentAssociateInvite = async (req, res) => {
   const { id } = req.user;
 
-  const associateInvites = await AssociateInvites.getAllAssociateInvites(["associate_invite_from"], [id]);
+  const associateInvites = await AssociateInvites.getAllSentAssociateInvites(["associate_invite_from"], [id]);
 
   if (!associateInvites) {
     throw new BadRequestError("Error in getting all associate invites.");
@@ -77,7 +77,7 @@ const getAllSentAssociateInvite = async (req, res) => {
 const getAllReceivedAssociateInvite = async (req, res) => {
   const { id } = req.user;
 
-  const associateInvites = await AssociateInvites.getAllAssociateInvites(["associate_invite_to"], [id]);
+  const associateInvites = await AssociateInvites.getAllReceivedAssociateInvites(["associate_invite_to"], [id]);
 
   if (!associateInvites) {
     throw new BadRequestError("Error in getting all associate invites.");
