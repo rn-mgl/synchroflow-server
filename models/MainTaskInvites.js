@@ -39,9 +39,10 @@ export class MainTaskInvites {
 
     try {
       const sql = `DELETE FROM main_task_invites
-                  WHERE '${mappedWhereConditions}';`;
+                  WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
+
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");

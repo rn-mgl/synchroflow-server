@@ -106,7 +106,16 @@ export const getAllAssociateInvites = async (req, res) => {
 export const deleteAssociateInvite = async (req, res) => {
   const { associate_invite_uuid } = req.params;
 
-  const deleteInvite = await AssociateInvites.deleteAssociateInvite(["associate_invite_uuid"], [associate_invite_uuid]);
+  const associateInvite = await AssociateInvites.getAssociateInvite(["associate_invite_uuid"], [associate_invite_uuid]);
+
+  if (!associateInvite) {
+    throw new BadRequestError("The invite you are trying to delete does not exist.");
+  }
+
+  const deleteInvite = await AssociateInvites.deleteAssociateInvite(
+    ["associate_invite_id"],
+    [associateInvite.associate_invite_id]
+  );
 
   if (!deleteAssociateInvite) {
     throw new BadRequestError("Error in deleting the invite. Try again later.");
