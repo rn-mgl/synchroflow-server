@@ -39,8 +39,8 @@ export class Users {
 
     try {
       const sql = `SELECT * FROM users
-            
                     WHERE ${mappedWhereConditions}`;
+
       const [data, _] = await conn.query(sql, whereValues);
       return data[0];
     } catch (error) {

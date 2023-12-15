@@ -2,9 +2,9 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class MainTaskCollaborators {
-  constructor(main_task_collaborator_uuid, main_task_id, collaborator_id) {
+  constructor(main_task_collaborator_uuid, main_task_fk_id, collaborator_id) {
     this.main_task_collaborator_uuid = main_task_collaborator_uuid;
-    this.main_task_id = main_task_id;
+    this.main_task_fk_id = main_task_fk_id;
     this.collaborator_id = collaborator_id;
   }
 
@@ -13,10 +13,10 @@ export class MainTaskCollaborators {
       const sql = `INSERT INTO main_task_collaborators
                      (
                         main_task_collaborator_uuid, 
-                        main_task_id, 
+                        main_task_fk_id, 
                         collaborator_id
                      ) VALUES (?, ?, ?);`;
-      const mainTaskCollaboratorValues = [this.main_task_collaborator_uuid, this.main_task_id, this.collaborator_id];
+      const mainTaskCollaboratorValues = [this.main_task_collaborator_uuid, this.main_task_fk_id, this.collaborator_id];
       const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {

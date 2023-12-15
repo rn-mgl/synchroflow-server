@@ -2,14 +2,21 @@ import { v4 as uuidv4 } from "uuid";
 import { Associates } from "../models/Associates.js";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
+import { Users } from "../models/Users.js";
 
 export const createAssociate = async (req, res) => {
-  const { associateIs } = req.body;
+  const { userUUID } = req.body;
   const { id } = req.user;
+
+  const user = await Users.getUser(["user_uuid"], [userUUID]);
+
+  if (!user) {
+    throw new NotFoundError("The user your are trying to associate with does not exist.");
+  }
 
   const associateUUID = uuidv4();
 
-  const associate = new Associates(associateUUID, id, associateIs);
+  const associate = new Associates(associateUUID, id, user.user_id);
   const newAssociate = await associate.createAssociate();
 
   if (!newAssociate) {
@@ -64,7 +71,7 @@ const getAllRecentAssociates = async (req, res) => {
 const getAllMyAssociates = async (req, res) => {
   const { id } = req.user;
 
-  const associates = await Associates.getAllAssociates(["associate_of"], [id]);
+  const associates = await Associates.getAllAssociates(id);
 
   if (!associates) {
     throw new BadRequestError("Error in getting your associates. Try again later.");

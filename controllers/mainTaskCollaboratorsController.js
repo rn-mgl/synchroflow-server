@@ -3,21 +3,30 @@ import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { MainTaskCollaborators } from "../models/MainTaskCollaborators.js";
 import { MainTasks } from "../models/MainTasks.js";
+import { Users } from "../models/Users.js";
 
 export const createMainTaskCollaborator = async (req, res) => {
-  const { taskId, collaboratorId } = req.body;
+  const { mainTaskUUID, collaboratorUUID } = req.body;
   const mainTaskCollaboratorUUID = uuidv4();
 
-  const mainTask = await MainTasks.getMainTask(["main_task_id"], [taskId]);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
 
   if (!mainTask) {
     throw new NotFoundError("The main task you are assigning to does not exist.");
   }
 
+  console.log(mainTask);
+
+  const collaborator = await Users.getUser(["user_uuid"], [collaboratorUUID]);
+
+  if (!collaborator) {
+    throw new NotFoundError("The collaborator you are assigning does not exist.");
+  }
+
   const mainTaskCollaborator = new MainTaskCollaborators(
     mainTaskCollaboratorUUID,
     mainTask.main_task_id,
-    collaboratorId
+    collaborator.user_id
   );
 
   const newMainTaskCollaborator = await mainTaskCollaborator.createMainTaskCollaborator();
