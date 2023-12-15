@@ -59,7 +59,7 @@ export const getAssociate = async (req, res) => {
 const getAllRecentAssociates = async (req, res) => {
   const { id } = req.user;
 
-  const associates = await Associates.getAllRecentAssociates(["associate_of"], [id]);
+  const associates = await Associates.getAllRecentAssociates(id);
 
   if (!associates) {
     throw new BadRequestError("Error in getting your associates. Try again later.");
