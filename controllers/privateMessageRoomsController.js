@@ -44,7 +44,7 @@ export const deletePrivateMessageRoom = async (req, res) => {
 export const getAllPrivateMessageRooms = async (req, res) => {
   const { id } = req.user;
 
-  const privateMessageRooms = await PrivateMessageRooms.getAllPrivateMessageRooms(["pmm.member_id"], [id]);
+  const privateMessageRooms = await PrivateMessageRooms.getAllPrivateMessageRooms(id);
 
   if (!privateMessageRooms) {
     throw new NotFoundError("This room does not exist.");

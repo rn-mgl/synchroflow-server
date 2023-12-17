@@ -4,14 +4,14 @@ import { mapWhereConditions } from "../utils/sqlUtils.js";
 export class PrivateMessages {
   constructor(
     private_message_uuid,
-    private_message_room_id,
+    private_message_room_fk_id,
     private_message_from,
     private_message_to,
     private_message,
     private_message_file
   ) {
     this.private_message_uuid = private_message_uuid;
-    this.private_message_room_id = private_message_room_id;
+    this.private_message_room_fk_id = private_message_room_fk_id;
     this.private_message_from = private_message_from;
     this.private_message_to = private_message_to;
     this.private_message = private_message;
@@ -23,7 +23,7 @@ export class PrivateMessages {
       const sql = `INSERT INTO private_messages
                      (
                         private_message_uuid,
-                        private_message_room_id,
+                        private_message_room_fk_id,
                         private_message_from,
                         private_message_to,
                         private_message,
@@ -31,7 +31,7 @@ export class PrivateMessages {
                      ) VALUES (?, ?, ?, ?, ?, ?);`;
       const privateMessageValues = [
         this.private_message_uuid,
-        this.private_message_room_id,
+        this.private_message_room_fk_id,
         this.private_message_from,
         this.private_message_to,
         this.private_message,

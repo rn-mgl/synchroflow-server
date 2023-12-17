@@ -3,6 +3,8 @@ import { Associates } from "../models/Associates.js";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { Users } from "../models/Users.js";
+import { PrivateMessageRooms } from "../models/PrivateMessageRooms.js";
+import { PrivateMessageMembers } from "../models/PrivateMessageMembers.js";
 
 export const createAssociate = async (req, res) => {
   const { userUUID } = req.body;
@@ -21,6 +23,41 @@ export const createAssociate = async (req, res) => {
 
   if (!newAssociate) {
     throw new BadRequestError("Error in establishing associate connection. Try again later.");
+  }
+
+  const privateMessageRoomUUID = uuidv4();
+  const myPrivateMessageMemberUUID = uuidv4();
+  const associatePrivateMessageMemberUUID = uuidv4();
+
+  const privateMessageRoom = new PrivateMessageRooms(privateMessageRoomUUID);
+
+  const newPrivateMessageRoom = await privateMessageRoom.createPrivateMessageRoom();
+
+  if (!newPrivateMessageRoom) {
+    throw new BadRequestError("Error in establishing private room for messages. Try again later.");
+  }
+
+  const myPrivateMessageMember = new PrivateMessageMembers(
+    myPrivateMessageMemberUUID,
+    id,
+    newPrivateMessageRoom.insertId
+  );
+  const associatePrivateMessageMember = new PrivateMessageMembers(
+    associatePrivateMessageMemberUUID,
+    user.user_id,
+    newPrivateMessageRoom.insertId
+  );
+
+  const newMyPrivateMessageMember = myPrivateMessageMember.createPrivateMessageMember();
+
+  if (!newMyPrivateMessageMember) {
+    throw new BadRequestError("Error in entering private room for messages. Try again later.");
+  }
+
+  const newAssociatePrivateMessageMember = associatePrivateMessageMember.createPrivateMessageMember();
+
+  if (!newAssociatePrivateMessageMember) {
+    throw new BadRequestError("Error in entering private room for messages. Try again later.");
   }
 
   res.status(StatusCodes.OK).json(newAssociate);
