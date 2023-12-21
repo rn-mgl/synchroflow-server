@@ -2,13 +2,30 @@ import { v4 as uuidv4 } from "uuid";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { PrivateMessages } from "../models/PrivateMessages.js";
+import { PrivateMessageRooms } from "../models/PrivateMessageRooms.js";
+import { Users } from "../models/Users.js";
 
 export const createPrivateMessage = async (req, res) => {
-  const { roomId, messageTo, message, messageFile } = req.body;
+  const { messageRoom, messageToUUID, message, messageFile } = req.body;
   const { id } = req.user;
   const privateMessageUUID = uuidv4();
 
-  const privateMessage = new PrivateMessages(privateMessageUUID, roomId, id, messageTo, message, messageFile);
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["private_message_room"], [messageRoom]);
+
+  if (!privateMessageRoom) {
+    throw new NotFoundError(`The room you are trying to access does not exist.`);
+  }
+
+  const messageTo = await Users.getUser(["user_uuid"], [messageToUUID]);
+
+  const privateMessage = new PrivateMessages(
+    privateMessageUUID,
+    privateMessageRoom.private_message_room_id,
+    id,
+    messageTo.user_id,
+    message,
+    messageFile
+  );
 
   const newPrivateMessage = await privateMessage.createPrivateMessage();
 

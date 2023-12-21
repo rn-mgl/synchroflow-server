@@ -3,12 +3,12 @@ import {
   createPrivateMessageRoom,
   deletePrivateMessageRoom,
   getAllPrivateMessageRooms,
-  getPrivateMessageRoom,
+  getPrivateMessageRoomMessages,
 } from "../controllers/privateMessageRoomsController.js";
 
 const router = Router();
 
 router.route("/").post(createPrivateMessageRoom).get(getAllPrivateMessageRooms);
-router.route("/:private_message_room").get(getPrivateMessageRoom).delete(deletePrivateMessageRoom);
+router.route("/:private_message_room").get(getPrivateMessageRoomMessages).delete(deletePrivateMessageRoom);
 
 export default router;

@@ -46,7 +46,7 @@ export const deletePrivateMessageMember = async (req, res) => {
 export const getAllPrivateMessageMembers = async (req, res) => {
   const { privateMessageRoomId } = req.body;
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMessages(
     ["private_message_room_id"],
     [privateMessageRoomId]
   );

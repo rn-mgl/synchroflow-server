@@ -20,7 +20,7 @@ export const createPrivateMessageRoom = async (req, res) => {
 export const deletePrivateMessageRoom = async (req, res) => {
   const { private_message_room } = req.params;
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMessages(
     ["private_message_room"],
     [private_message_room]
   );
@@ -53,10 +53,10 @@ export const getAllPrivateMessageRooms = async (req, res) => {
   res.status(StatusCodes.OK).json(privateMessageRooms);
 };
 
-export const getPrivateMessageRoom = async (req, res) => {
+export const getPrivateMessageRoomMessages = async (req, res) => {
   const { private_message_room } = req.params;
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMessages(
     ["private_message_room"],
     [private_message_room]
   );
