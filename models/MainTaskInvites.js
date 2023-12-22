@@ -91,19 +91,36 @@ export class MainTaskInvites {
     }
   }
 
-  static async getAllAssociatesToInvite(associateOf, mainTaskId) {
+  static async getAllAssociatesToInvite(userId, mainTaskId) {
     try {
-      const sql = `SELECT *
-                  FROM associates AS a
+      const sql = `SELECT * FROM associates AS a
 
                   INNER JOIN users AS u
-                  ON u.user_id = a.associate_is
+                  ON u.user_id <> '${userId}'
 
-                  WHERE a.associate_of = '${associateOf}'
+                  WHERE (
+                          (a.associate_of <> '${userId}' 
+                          AND a.associate_is = '${userId}') 
+                          OR 
+                          (a.associate_is <> '${userId}' 
+                          AND a.associate_of = '${userId}')
+                        )
                   AND a.associate_is NOT IN (
                     SELECT invited_associate FROM main_task_invites
                     WHERE main_task_fk_id = '${mainTaskId}'
-                  );`;
+                  )
+                  AND a.associate_of NOT IN (
+                    SELECT invited_associate FROM main_task_invites
+                    WHERE main_task_fk_id = '${mainTaskId}'
+                  )
+                  AND a.associate_is NOT IN (
+                    SELECT collaborator_id FROM main_task_collaborators
+                    WHERE main_task_fk_id = '${mainTaskId}'
+                  )
+                  AND a.associate_of NOT IN (
+                    SELECT collaborator_id FROM main_task_collaborators
+                    WHERE main_task_fk_id = '${mainTaskId}'
+                  ) ;`;
 
       const [data, _] = await conn.execute(sql);
       return data;

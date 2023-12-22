@@ -15,8 +15,6 @@ export const createMainTaskCollaborator = async (req, res) => {
     throw new NotFoundError("The main task you are assigning to does not exist.");
   }
 
-  console.log(mainTask);
-
   const collaborator = await Users.getUser(["user_uuid"], [collaboratorUUID]);
 
   if (!collaborator) {

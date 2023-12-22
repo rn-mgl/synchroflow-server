@@ -57,11 +57,7 @@ export class MainTaskCollaborators {
 
     try {
       const sql = `SELECT u.name, u.surname, u.image, u.user_uuid,
-                    stc.sub_task_collaborator_uuid,
-                    CASE
-                      WHEN stc.sub_task_collaborator_id IS NULL 
-                          THEN 0 ELSE 1
-                    END AS is_sub_task_collaborator
+                    mtc.main_task_collaborator_uuid
 
                     FROM main_task_collaborators AS mtc
 
@@ -70,13 +66,6 @@ export class MainTaskCollaborators {
 
                     INNER JOIN users AS u
                     ON mtc.collaborator_id = u.user_id
-
-                    LEFT JOIN sub_tasks AS st
-                    ON mt.main_task_id = st.main_task_fk_id
-
-                    LEFT JOIN sub_task_collaborators AS stc
-                    ON st.sub_task_id = stc.sub_task_fk_id
-
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
