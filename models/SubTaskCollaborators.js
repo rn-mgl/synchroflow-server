@@ -50,7 +50,6 @@ export class SubTaskCollaborators {
   }
 
   static async getAllSubTaskCollaborators(subTaskID, mainTaskID) {
-    // fix this mf. need to get available sub task collaborators
     try {
       const sql = `SELECT u.name, u.surname, u.user_uuid, u.image,
                     CASE WHEN
