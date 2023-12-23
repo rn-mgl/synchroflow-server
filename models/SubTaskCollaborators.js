@@ -49,23 +49,31 @@ export class SubTaskCollaborators {
     }
   }
 
-  static async getAllSubTaskCollaborators(whereConditions, whereValues) {
+  static async getAllSubTaskCollaborators(subTaskID, mainTaskID) {
+    // fix this mf. need to get available sub task collaborators
     try {
-      const sql = `SELECT u.name, u.surname, u.user_uuid, u.image
-                    FROM sub_task_collaborators AS stc
+      const sql = `SELECT u.name, u.surname, u.user_uuid, u.image,
+                    CASE WHEN
+                      stc.sub_task_collaborator_id IS NULL THEN 0 ELSE 1
+                    END AS is_sub_task_collaborator
+                    FROM main_task_collaborators AS mtc
 
-                    INNER JOIN sub_tasks AS st
-                    ON stc.sub_task_fk_id = st.sub_task_id
-
-                    LEFT JOIN main_task_collaborators AS mtc
-                    ON st.main_task_fk_id = mtc.main_task_fk_id
-
-                    LEFT JOIN users AS u
-                    ON u.user_id = stc.collaborator_id
+                    INNER JOIN users AS u
+                    ON mtc.collaborator_id = u.user_id
                     
-                    WHERE ${whereConditions} = ?;`;
+                    INNER JOIN main_tasks AS mt
+                    ON mt.main_task_id = mtc.main_task_fk_id
+                    
+                    LEFT JOIN sub_tasks AS st
+                    ON mt.main_task_id = st.main_task_fk_id
+                    
+                    LEFT JOIN sub_task_collaborators AS stc
+                    ON st.sub_task_id = stc.sub_task_fk_id
+                    
+                    WHERE mt.main_task_id = '${mainTaskID}'
+                    AND st.sub_task_id = '${subTaskID}';`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql);
       return data;
     } catch (error) {
       console.log(error + "--- get all sub task collaborators ---");

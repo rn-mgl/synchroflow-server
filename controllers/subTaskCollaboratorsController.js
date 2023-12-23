@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { SubTaskCollaborators } from "../models/SubTaskCollaborators.js";
 import { SubTasks } from "../models/SubTasks.js";
 import { Users } from "../models/Users.js";
+import { MainTasks } from "../models/MainTasks.js";
 
 export const createSubTaskCollaborator = async (req, res) => {
   const { subTaskUUID, collaboratorUUID } = req.body;
@@ -52,8 +53,14 @@ export const deleteSubTaskCollaborator = async (req, res) => {
   res.status(StatusCodes.OK).json(deleteCollaborator);
 };
 
-export const getAllSubTaskCollaborator = async (req, res) => {
-  const { subTaskUUID } = req.query;
+export const getAllSubTaskCollaborators = async (req, res) => {
+  const { subTaskUUID, mainTaskUUID } = req.query;
+
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
+
+  if (!mainTask) {
+    throw new NotFoundError(`The main task you are trying to get does not exist.`);
+  }
 
   const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [subTaskUUID]);
 
@@ -62,8 +69,8 @@ export const getAllSubTaskCollaborator = async (req, res) => {
   }
 
   const allSubTaskCollaborator = await SubTaskCollaborators.getAllSubTaskCollaborators(
-    ["st.sub_task_id"],
-    [subTask.sub_task_id]
+    subTask.sub_task_id,
+    mainTask.main_task_id
   );
 
   if (!allSubTaskCollaborator) {
