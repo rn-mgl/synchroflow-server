@@ -40,14 +40,17 @@ export const createMainTask = async (req, res) => {
 
 export const updateMainTask = async (req, res) => {
   const { main_task_uuid } = req.params;
+  const { mainTaskData } = req.body;
   const {
-    main_task_name,
-    main_task_description,
-    main_task_priority,
-    main_task_status,
-    main_task_start_date,
-    main_task_end_date,
-  } = req.body;
+    mainTaskTitle,
+    mainTaskBanner,
+    mainTaskSubtitle,
+    mainTaskDescription,
+    mainTaskStatus,
+    mainTaskPriority,
+    mainTaskStartDate,
+    mainTaskEndDate,
+  } = mainTaskData;
 
   const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [main_task_uuid]);
 
@@ -56,14 +59,15 @@ export const updateMainTask = async (req, res) => {
   }
 
   const updateTask = await MainTasks.updateMainTask(
-    main_task_name,
-    main_task_description,
-    main_task_priority,
-    main_task_status,
-    main_task_start_date,
-    main_task_end_date,
-    ["main_task_id"],
-    [mainTask.main_task_id]
+    mainTaskBanner,
+    mainTaskTitle,
+    mainTaskSubtitle,
+    mainTaskDescription,
+    mainTaskStatus,
+    mainTaskPriority,
+    mainTaskStartDate,
+    mainTaskEndDate,
+    mainTask.main_task_id
   );
 
   if (!updateTask) {

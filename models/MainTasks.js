@@ -57,18 +57,16 @@ export class MainTasks {
   }
 
   static async updateMainTask(
-    main_task_banner,
-    main_task_title,
-    main_task_subtitle,
-    main_task_description,
-    main_task_priority,
-    main_task_status,
-    main_task_start_date,
-    main_task_end_date,
-    whereConditions,
-    whereValues
+    mainTaskBanner,
+    mainTaskTitle,
+    mainTaskSubtitle,
+    mainTaskDescription,
+    mainTaskStatus,
+    mainTaskPriority,
+    mainTaskStartDate,
+    mainTaskEndDate,
+    mainTaskId
   ) {
-    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `UPDATE main_tasks 
                   SET 
@@ -80,18 +78,18 @@ export class MainTasks {
                     main_task_status= ?,
                     main_task_start_date= ?,
                     main_task_end_date= ?
-                  WHERE ${mappedWhereConditions};`;
-      const whereValues = [
-        main_task_banner,
-        main_task_title,
-        main_task_subtitle,
-        main_task_description,
-        main_task_priority,
-        main_task_status,
-        main_task_start_date,
-        main_task_end_date,
+                  WHERE main_task_id = '${mainTaskId}';`;
+      const updateTaskValues = [
+        mainTaskBanner,
+        mainTaskTitle,
+        mainTaskSubtitle,
+        mainTaskDescription,
+        mainTaskStatus,
+        mainTaskPriority,
+        mainTaskStartDate,
+        mainTaskEndDate,
       ];
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.query(sql, updateTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- update main task ---");
