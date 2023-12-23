@@ -160,7 +160,7 @@ export const getAllMainTasks = async (req, res) => {
 export const deleteMainTask = async (req, res) => {
   const { main_task_uuid } = req.params;
 
-  const mainTask = await MainTasks.getMainTask(["main_task_uuid"][main_task_uuid]);
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [main_task_uuid]);
 
   if (!mainTask) {
     throw new NotFoundError("This task does not exist.");

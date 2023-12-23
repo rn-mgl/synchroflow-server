@@ -52,6 +52,7 @@ export class SubTaskCollaborators {
   static async getAllSubTaskCollaborators(subTaskID, mainTaskID) {
     try {
       const sql = `SELECT u.name, u.surname, u.user_uuid, u.image,
+                    stc.sub_task_collaborator_uuid,
                     CASE WHEN
                       stc.sub_task_collaborator_id IS NULL THEN 0 ELSE 1
                     END AS is_sub_task_collaborator
