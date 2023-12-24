@@ -35,15 +35,16 @@ export const createSubTask = async (req, res) => {
 };
 
 export const updateSubTask = async (req, res) => {
+  const { subTaskData } = req.body;
   const {
-    sub_task_title,
-    sub_task_subtitle,
-    sub_task_description,
-    sub_task_priority,
-    sub_task_status,
-    sub_task_start_date,
-    sub_task_end_date,
-  } = req.body;
+    subTaskTitle,
+    subTaskSubtitle,
+    subTaskDescription,
+    subTaskPriority,
+    subTaskStatus,
+    subTaskStartDate,
+    subTaskEndDate,
+  } = subTaskData;
   const { sub_task_uuid } = req.params;
 
   const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [sub_task_uuid]);
@@ -53,15 +54,14 @@ export const updateSubTask = async (req, res) => {
   }
 
   const updateSubTask = await SubTasks.updateSubTask(
-    sub_task_title,
-    sub_task_subtitle,
-    sub_task_description,
-    sub_task_priority,
-    sub_task_status,
-    sub_task_start_date,
-    sub_task_end_date,
-    ["sub_task_id"],
-    [subTask.sub_task_id]
+    subTaskTitle,
+    subTaskSubtitle,
+    subTaskDescription,
+    subTaskPriority,
+    subTaskStatus,
+    subTaskStartDate,
+    subTaskEndDate,
+    subTask.sub_task_id
   );
 
   if (!updateSubTask) {

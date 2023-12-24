@@ -65,10 +65,8 @@ export class SubTasks {
     sub_task_status,
     sub_task_start_date,
     sub_task_end_date,
-    whereConditions,
-    whereValues
+    subTaskID
   ) {
-    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `UPDATE sub_tasks 
                   SET 
@@ -79,8 +77,8 @@ export class SubTasks {
                     sub_task_status= ?,
                     sub_task_start_date= ?,
                     sub_task_end_date= ?
-                  WHERE ${mappedWhereConditions};`;
-      const whereValues = [
+                  WHERE sub_task_id = '${subTaskID}';`;
+      const updateSubTaskValues = [
         sub_task_title,
         sub_task_subtitle,
         sub_task_description,
@@ -88,9 +86,9 @@ export class SubTasks {
         sub_task_status,
         sub_task_start_date,
         sub_task_end_date,
-        whereValues,
       ];
-      const [data, _] = await conn.query(sql, whereValues);
+
+      const [data, _] = await conn.query(sql, updateSubTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- update sub task ---");
