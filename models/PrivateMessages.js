@@ -8,7 +8,8 @@ export class PrivateMessages {
     private_message_from,
     private_message_to,
     private_message,
-    private_message_file
+    private_message_file,
+    private_message_file_type
   ) {
     this.private_message_uuid = private_message_uuid;
     this.private_message_room_fk_id = private_message_room_fk_id;
@@ -16,6 +17,7 @@ export class PrivateMessages {
     this.private_message_to = private_message_to;
     this.private_message = private_message;
     this.private_message_file = private_message_file;
+    this.private_message_file_type = private_message_file_type;
   }
 
   async createPrivateMessage() {
@@ -27,8 +29,9 @@ export class PrivateMessages {
                         private_message_from,
                         private_message_to,
                         private_message,
-                        private_message_file
-                     ) VALUES (?, ?, ?, ?, ?, ?);`;
+                        private_message_file,
+                        private_message_file_type
+                     ) VALUES (?, ?, ?, ?, ?, ?, ?);`;
       const privateMessageValues = [
         this.private_message_uuid,
         this.private_message_room_fk_id,
@@ -36,6 +39,7 @@ export class PrivateMessages {
         this.private_message_to,
         this.private_message,
         this.private_message_file,
+        this.private_message_file_type,
       ];
       const [data, _] = await conn.query(sql, privateMessageValues);
       return data;

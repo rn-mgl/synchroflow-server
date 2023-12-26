@@ -6,7 +6,7 @@ import { PrivateMessageRooms } from "../models/PrivateMessageRooms.js";
 import { Users } from "../models/Users.js";
 
 export const createPrivateMessage = async (req, res) => {
-  const { messageRoom, messageToUUID, message, messageFile } = req.body;
+  const { messageRoom, messageToUUID, message, messageFile, messageFileType } = req.body;
   const { id } = req.user;
   const privateMessageUUID = uuidv4();
 
@@ -24,7 +24,8 @@ export const createPrivateMessage = async (req, res) => {
     id,
     messageTo.user_id,
     message,
-    messageFile
+    messageFile,
+    messageFileType
   );
 
   const newPrivateMessage = await privateMessage.createPrivateMessage();

@@ -8,6 +8,7 @@ export class GroupMessages {
     this.group_message_from = group_message_from;
     this.group_message = group_message;
     this.group_message_file = group_message_file;
+    this.group_message_file_type = group_message_file_type;
   }
 
   async createGroupMessage() {
@@ -18,14 +19,16 @@ export class GroupMessages {
                         group_message_uuid,
                         group_message_from,
                         group_message,
-                        group_message_file
-                     ) VALUES (?, ?, ?, ?)`;
+                        group_message_file,
+                        group_message_file_type
+                     ) VALUES (?, ?, ?, ?, ?)`;
       const groupMessageValues = [
         this.group_message_room_id,
         this.group_message_uuid,
         this.group_message_from,
         this.group_message,
         this.group_message_file,
+        this.group_message_file_type,
       ];
       const [data, _] = await conn.query(sql, groupMessageValues);
       return data;

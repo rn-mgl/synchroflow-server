@@ -4,12 +4,12 @@ import { StatusCodes } from "http-status-codes";
 import { GroupMessages } from "../models/GroupMessages.js";
 
 export const createGroupMessage = async (req, res) => {
-  const { roomId, message, messageFile } = req.body;
+  const { roomId, message, messageFile, messageFileType } = req.body;
   const { id } = req.user;
 
   const groupMessageUUID = uuidv4();
 
-  const groupMessage = new GroupMessages(roomId, groupMessageUUID, id, message, messageFile);
+  const groupMessage = new GroupMessages(roomId, groupMessageUUID, id, message, messageFile, messageFileType);
 
   const newGroupMessage = await groupMessage.createGroupMessage();
 
