@@ -35,9 +35,12 @@ export class Associates {
 
   static async getAllAssociates(userID) {
     try {
-      const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, u_of.email AS of_email, u_of.image AS of_image, u_of.status AS of_status, u_of.role AS of_role,
-                    u_is.user_uuid AS is_uuid, u_is.name AS is_name, u_is.surname AS is_surname, u_is.email AS is_email, u_is.image AS is_image, u_is.status AS is_status, u_is.role AS is_role,
-                    a.associate_uuid, a.associate_of, a.associate_is
+      const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, 
+                    u_of.email AS of_email, u_of.image AS of_image, u_of.status AS of_status, u_of.role AS of_role,
+                    u_is.user_uuid AS is_uuid, u_is.name AS is_name, u_is.surname AS is_surname, 
+                    u_is.email AS is_email, u_is.image AS is_image, u_is.status AS is_status, u_is.role AS is_role,
+                    a.associate_uuid, a.associate_of, a.associate_is,
+                    COUNT(mtc_is.collaborator_id) AS is_task_count, COUNT(mtc_is.collaborator_id) AS of_task_count
 
                     FROM associates AS a
 
@@ -46,6 +49,12 @@ export class Associates {
 
                     INNER JOIN users AS u_of 
                     ON a.associate_of = u_of.user_id
+
+                    LEFT JOIN main_task_collaborators AS mtc_is
+                    ON u_is.user_id = mtc_is.collaborator_id
+
+                    LEFT JOIN main_task_collaborators AS mtc_of
+                    ON u_of.user_id = mtc_of.collaborator_id
 
                     WHERE a.associate_is = '${userID}'
                     OR a.associate_of = '${userID}';`;
@@ -59,9 +68,12 @@ export class Associates {
 
   static async getAllRecentAssociates(userID) {
     try {
-      const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, u_of.email AS of_email, u_of.image AS of_image, u_of.status AS of_status, u_of.role AS of_role,
-                    u_is.user_uuid AS is_uuid, u_is.name AS is_name, u_is.surname AS is_surname, u_is.email AS is_email, u_is.image AS is_image, u_is.status AS is_status, u_is.role AS is_role,
-                    a.associate_uuid, a.associate_of, a.associate_is
+      const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, 
+                    u_of.email AS of_email, u_of.image AS of_image, u_of.status AS of_status, u_of.role AS of_role,
+                    u_is.user_uuid AS is_uuid, u_is.name AS is_name, u_is.surname AS is_surname, 
+                    u_is.email AS is_email, u_is.image AS is_image, u_is.status AS is_status, u_is.role AS is_role,
+                    a.associate_uuid, a.associate_of, a.associate_is,
+                    COUNT(mtc_is.collaborator_id) AS is_task_count, COUNT(mtc_is.collaborator_id) AS of_task_count
 
                     FROM associates AS a
 
@@ -70,6 +82,12 @@ export class Associates {
 
                     INNER JOIN users AS u_of 
                     ON a.associate_of = u_of.user_id
+
+                    LEFT JOIN main_task_collaborators AS mtc_is
+                    ON u_is.user_id = mtc_is.collaborator_id
+
+                    LEFT JOIN main_task_collaborators AS mtc_of
+                    ON u_of.user_id = mtc_of.collaborator_id
 
                     WHERE a.associate_is = '${userID}'
                     OR a.associate_of = '${userID}'
