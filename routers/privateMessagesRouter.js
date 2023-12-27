@@ -8,6 +8,6 @@ import {
 const router = Router();
 
 router.route("/").post(createPrivateMessage).get(getAllPrivateMessages);
-router.route("/:private_message_uuid").delete(deletePrivateMessage);
+router.route("/:message_uuid").delete(deletePrivateMessage);
 
 export default router;

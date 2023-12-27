@@ -18,20 +18,17 @@ export const createPrivateMessageRoom = async (req, res) => {
 };
 
 export const deletePrivateMessageRoom = async (req, res) => {
-  const { private_message_room } = req.params;
+  const { message_room } = req.params;
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMessages(
-    ["private_message_room"],
-    [private_message_room]
-  );
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMessages(["message_room"], [message_room]);
 
   if (!privateMessageRoom) {
     throw new NotFoundError("This room does not exist.");
   }
 
   const deleteRoom = await PrivateMessageRooms.deletePrivateMessageRoom(
-    ["private_message_room_id"],
-    [privateMessageRoom.private_message_room_id]
+    ["message_room_id"],
+    [privateMessageRoom.message_room_id]
   );
 
   if (!deleteRoom) {
@@ -54,12 +51,9 @@ export const getAllPrivateMessageRooms = async (req, res) => {
 };
 
 export const getPrivateMessageRoomMessages = async (req, res) => {
-  const { private_message_room } = req.params;
+  const { message_room } = req.params;
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMessages(
-    ["private_message_room"],
-    [private_message_room]
-  );
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMessages(["message_room"], [message_room]);
 
   if (!privateMessageRoom) {
     throw new NotFoundError("This room does not exist.");

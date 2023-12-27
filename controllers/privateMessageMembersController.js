@@ -20,11 +20,11 @@ export const createPrivateMessageMember = async (req, res) => {
 };
 
 export const deletePrivateMessageMember = async (req, res) => {
-  const { private_message_member_uuid } = req.params;
+  const { message_member_uuid } = req.params;
 
   const privateMessageMember = await PrivateMessageMembers.getPrivateMessageMember(
-    ["private_message_member_uuid"],
-    [private_message_member_uuid]
+    ["message_member_uuid"],
+    [message_member_uuid]
   );
 
   if (!privateMessageMember) {
@@ -32,8 +32,8 @@ export const deletePrivateMessageMember = async (req, res) => {
   }
 
   const deleteMember = await PrivateMessageMembers.deletePrivateMessageMember(
-    ["private_message_member_id"],
-    [privateMessageMember.private_message_member_id]
+    ["message_member_id"],
+    [privateMessageMember.message_member_id]
   );
 
   if (!deleteMember) {
@@ -47,7 +47,7 @@ export const getAllPrivateMessageMembers = async (req, res) => {
   const { privateMessageRoomId } = req.body;
 
   const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMessages(
-    ["private_message_room_id"],
+    ["message_room_id"],
     [privateMessageRoomId]
   );
 
@@ -56,7 +56,7 @@ export const getAllPrivateMessageMembers = async (req, res) => {
   }
 
   const allPrivateMessageMembers = await PrivateMessageMembers.getAllPrivateMessageMembers(
-    ["private_message_room_id"],
+    ["message_room_id"],
     [privateMessageRoomId]
   );
 
@@ -68,11 +68,11 @@ export const getAllPrivateMessageMembers = async (req, res) => {
 };
 
 export const getPrivateMessageMember = async (req, res) => {
-  const { private_message_member_uuid } = req.params;
+  const { message_member_uuid } = req.params;
 
   const privateMessageMember = await PrivateMessageMembers.getPrivateMessageMember(
-    ["private_message_member_uuid"],
-    [private_message_member_uuid]
+    ["message_member_uuid"],
+    [message_member_uuid]
   );
 
   if (!privateMessageMember) {

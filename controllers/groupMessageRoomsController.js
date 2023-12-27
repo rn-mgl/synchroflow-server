@@ -2,13 +2,16 @@ import { v4 as uuidv4 } from "uuid";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { GroupMessageRooms } from "../models/GroupMessageRooms.js";
+import { GroupMessageMembers } from "../models/GroupMessageMembers.js";
 
 export const createGroupMessageRoom = async (req, res) => {
-  const { groupMessageName } = req.body;
+  const { groupMessageData } = req.body;
+  const { groupMessageName, groupImage } = groupMessageData;
+  const { id } = req.user;
 
   const groupMessageUUID = uuidv4();
 
-  const groupMessageRoom = new GroupMessageRooms(groupMessageUUID, groupMessageName);
+  const groupMessageRoom = new GroupMessageRooms(groupMessageUUID, groupMessageName, groupImage);
 
   const newGroupMessageRoom = await groupMessageRoom.createGroupMessageRoom();
 
@@ -16,21 +19,31 @@ export const createGroupMessageRoom = async (req, res) => {
     throw new BadRequestError("Error in creating group message room. Try again later.");
   }
 
+  const groupMessageMemberUUID = uuidv4();
+
+  const newGroupMessageMember = new GroupMessageMembers(groupMessageMemberUUID, id, newGroupMessageRoom.insertId);
+
+  const createGroupMessageMember = await newGroupMessageMember.createGroupMessageMember();
+
+  if (!createGroupMessageMember) {
+    throw new BadRequestError("Error in adding you to the group. Try again later.");
+  }
+
   res.status(StatusCodes.OK).json(newGroupMessageRoom);
 };
 
 export const deleteGroupMessageRoom = async (req, res) => {
-  const { group_message_room } = req.params;
+  const { message_room } = req.params;
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["group_message_room"], [group_message_room]);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
 
   if (!groupMessageRoom) {
     throw new NotFoundError("The group message room does not exist.");
   }
 
   const deleteRoom = await GroupMessageRooms.deleteGroupMessageRoom(
-    ["group_message_room_id"],
-    [groupMessageRoom.group_message_room_id]
+    ["message_room_id"],
+    [groupMessageRoom.message_room_id]
   );
 
   if (!deleteRoom) {
@@ -41,10 +54,10 @@ export const deleteGroupMessageRoom = async (req, res) => {
 };
 
 export const updateGroupMessageRoomName = async (req, res) => {
-  const { group_message_room } = req.params;
+  const { message_room } = req.params;
   const { groupMessageRoomName } = req.body;
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["group_message_room"], [group_message_room]);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
 
   if (!groupMessageRoom) {
     throw new NotFoundError("The group message room does not exist.");
@@ -52,8 +65,8 @@ export const updateGroupMessageRoomName = async (req, res) => {
 
   const updateRoomName = await GroupMessageRooms.updateGroupMessageName(
     [groupMessageRoomName],
-    ["group_message_room_id"],
-    [groupMessageRoom.group_message_room_id]
+    ["message_room_id"],
+    [groupMessageRoom.message_room_id]
   );
 
   if (!updateRoomName) {
@@ -64,9 +77,9 @@ export const updateGroupMessageRoomName = async (req, res) => {
 };
 
 export const getGroupMessageRoom = async (req, res) => {
-  const { group_message_room } = req.params;
+  const { message_room } = req.params;
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["group_message_room"], [group_message_room]);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
 
   if (!groupMessageRoom) {
     throw new NotFoundError("The group message room does not exist.");
@@ -76,9 +89,9 @@ export const getGroupMessageRoom = async (req, res) => {
 };
 
 export const getAllGroupMessageRoom = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.user;
 
-  const allGroupMessageRoom = await GroupMessageRooms.getAllGroupMessageRooms(["member_id"], [id]);
+  const allGroupMessageRoom = await GroupMessageRooms.getAllGroupMessageRooms(id);
 
   if (!allGroupMessageRoom) {
     throw new NotFoundError("Error in getting all group message rooms.");

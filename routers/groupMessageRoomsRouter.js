@@ -11,7 +11,7 @@ const router = Router();
 
 router.route("/").post(createGroupMessageRoom).get(getAllGroupMessageRoom);
 router
-  .route("/:group_message_room")
+  .route("/:message_room")
   .delete(deleteGroupMessageRoom)
   .get(getGroupMessageRoom)
   .patch(updateGroupMessageRoomName);

@@ -2,44 +2,36 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class PrivateMessages {
-  constructor(
-    private_message_uuid,
-    private_message_room_fk_id,
-    private_message_from,
-    private_message_to,
-    private_message,
-    private_message_file,
-    private_message_file_type
-  ) {
-    this.private_message_uuid = private_message_uuid;
-    this.private_message_room_fk_id = private_message_room_fk_id;
-    this.private_message_from = private_message_from;
-    this.private_message_to = private_message_to;
-    this.private_message = private_message;
-    this.private_message_file = private_message_file;
-    this.private_message_file_type = private_message_file_type;
+  constructor(message_uuid, message_room_fk_id, message_from, message_to, message, message_file, message_file_type) {
+    this.message_uuid = message_uuid;
+    this.message_room_fk_id = message_room_fk_id;
+    this.message_from = message_from;
+    this.message_to = message_to;
+    this.message = message;
+    this.message_file = message_file;
+    this.message_file_type = message_file_type;
   }
 
   async createPrivateMessage() {
     try {
       const sql = `INSERT INTO private_messages
                      (
-                        private_message_uuid,
-                        private_message_room_fk_id,
-                        private_message_from,
-                        private_message_to,
-                        private_message,
-                        private_message_file,
-                        private_message_file_type
+                        message_uuid,
+                        message_room_fk_id,
+                        message_from,
+                        message_to,
+                        message,
+                        message_file,
+                        message_file_type
                      ) VALUES (?, ?, ?, ?, ?, ?, ?);`;
       const privateMessageValues = [
-        this.private_message_uuid,
-        this.private_message_room_fk_id,
-        this.private_message_from,
-        this.private_message_to,
-        this.private_message,
-        this.private_message_file,
-        this.private_message_file_type,
+        this.message_uuid,
+        this.message_room_fk_id,
+        this.message_from,
+        this.message_to,
+        this.message,
+        this.message_file,
+        this.message_file_type,
       ];
       const [data, _] = await conn.query(sql, privateMessageValues);
       return data;

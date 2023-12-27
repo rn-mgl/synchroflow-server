@@ -2,33 +2,33 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class GroupMessages {
-  constructor(group_message_room_id, group_message_uuid, group_message_from, group_message, group_message_file) {
-    this.group_message_room_id = group_message_room_id;
-    this.group_message_uuid = group_message_uuid;
-    this.group_message_from = group_message_from;
-    this.group_message = group_message;
-    this.group_message_file = group_message_file;
-    this.group_message_file_type = group_message_file_type;
+  constructor(message_room_id, message_uuid, message_from, message, message_file) {
+    this.message_room_id = message_room_id;
+    this.message_uuid = message_uuid;
+    this.message_from = message_from;
+    this.message = message;
+    this.message_file = message_file;
+    this.message_file_type = message_file_type;
   }
 
   async createGroupMessage() {
     try {
       const sql = `INSERT INTO group_messages
                      (
-                        group_message_room_id,
-                        group_message_uuid,
-                        group_message_from,
-                        group_message,
-                        group_message_file,
-                        group_message_file_type
+                        message_room_fk_id,
+                        message_uuid,
+                        message_from,
+                        message,
+                        message_file,
+                        message_file_type
                      ) VALUES (?, ?, ?, ?, ?)`;
       const groupMessageValues = [
-        this.group_message_room_id,
-        this.group_message_uuid,
-        this.group_message_from,
-        this.group_message,
-        this.group_message_file,
-        this.group_message_file_type,
+        this.message_room_id,
+        this.message_uuid,
+        this.message_from,
+        this.message,
+        this.message_file,
+        this.message_file_type,
       ];
       const [data, _] = await conn.query(sql, groupMessageValues);
       return data;
@@ -55,7 +55,7 @@ export class GroupMessages {
     try {
       const sql = `SELECT * FROM group_messages AS gm
                     INNER JOIN group_message_rooms AS gmr
-                    ON gm.group_message_room_id = gmr.group_message_room_id
+                    ON gm.message_room_id = gmr.message_room_id
                     WHERE ${whereConditions} = ?;`;
 
       const [data, _] = await conn.query(sql, whereValues);

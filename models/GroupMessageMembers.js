@@ -2,21 +2,21 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class GroupMessageMembers {
-  constructor(group_message_member_uuid, member_id, group_message_room_id) {
-    this.group_message_member_uuid = group_message_member_uuid;
+  constructor(message_member_uuid, member_id, message_room_id) {
+    this.message_member_uuid = message_member_uuid;
     this.member_id = member_id;
-    this.group_message_room_id = group_message_room_id;
+    this.message_room_id = message_room_id;
   }
 
   async createGroupMessageMember() {
     try {
       const sql = `INSERT INTO group_message_members
                     (
-                        group_message_member_uuid,
-                        member_id,
-                        group_message_room_id
+                        message_member_uuid,
+                        member_fk_id,
+                        message_room_fk_id
                     ) VALUES (?, ?, ?);`;
-      const groupMessageMemberValues = [this.group_message_member_uuid, this.member_id, this.group_message_room_id];
+      const groupMessageMemberValues = [this.message_member_uuid, this.member_id, this.message_room_id];
       const [data, _] = await conn.query(sql, groupMessageMemberValues);
       return data;
     } catch (error) {

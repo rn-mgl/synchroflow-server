@@ -21,15 +21,15 @@ export const createGroupMessage = async (req, res) => {
 };
 
 export const deleteGroupMessage = async (req, res) => {
-  const { group_message_uuid } = req.params;
+  const { message_uuid } = req.params;
 
-  const groupMessage = await GroupMessages.getGroupMessage(["group_message_uuid"], [group_message_uuid]);
+  const groupMessage = await GroupMessages.getGroupMessage(["message_uuid"], [message_uuid]);
 
   if (!groupMessage) {
     throw new NotFoundError("This message does not exist.");
   }
 
-  const deleteMessage = await GroupMessages.deleteGroupMessage(["group_message_id"], [groupMessage.group_message_id]);
+  const deleteMessage = await GroupMessages.deleteGroupMessage(["message_id"], [groupMessage.message_id]);
 
   if (!deleteMessage) {
     throw new BadRequestError("Error in deleting group message. Try again later.");
@@ -39,9 +39,9 @@ export const deleteGroupMessage = async (req, res) => {
 };
 
 export const getGroupMessage = async (req, res) => {
-  const { group_message_uuid } = req.params;
+  const { message_uuid } = req.params;
 
-  const groupMessage = await GroupMessages.getGroupMessage(["group_message_uuid"], [group_message_uuid]);
+  const groupMessage = await GroupMessages.getGroupMessage(["message_uuid"], [message_uuid]);
 
   if (!groupMessage) {
     throw new NotFoundError("This message does not exist.");
@@ -53,7 +53,7 @@ export const getGroupMessage = async (req, res) => {
 export const getAllGroupMessages = async (req, res) => {
   const { roomId } = req.query;
 
-  const allGroupMessages = await GroupMessages.getAllGroupMessages(["gm.group_message_room_id"], [roomId]);
+  const allGroupMessages = await GroupMessages.getAllGroupMessages(["gm.message_room_id"], [roomId]);
 
   if (!allGroupMessages) {
     throw new BadRequestError("Error in getting all group messages. Try again later.");

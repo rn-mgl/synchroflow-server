@@ -9,6 +9,6 @@ import {
 const router = Router();
 
 router.route("/").post(createGroupMessage).get(getAllGroupMessages);
-router.route("/:group_message_uuid").get(getGroupMessage).delete(deleteGroupMessage);
+router.route("/:message_uuid").get(getGroupMessage).delete(deleteGroupMessage);
 
 export default router;

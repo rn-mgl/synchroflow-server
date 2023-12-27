@@ -10,7 +10,7 @@ export const createPrivateMessage = async (req, res) => {
   const { id } = req.user;
   const privateMessageUUID = uuidv4();
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["private_message_room"], [messageRoom]);
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["message_room"], [messageRoom]);
 
   if (!privateMessageRoom) {
     throw new NotFoundError(`The room you are trying to access does not exist.`);
@@ -20,7 +20,7 @@ export const createPrivateMessage = async (req, res) => {
 
   const privateMessage = new PrivateMessages(
     privateMessageUUID,
-    privateMessageRoom.private_message_room_id,
+    privateMessageRoom.message_room_id,
     id,
     messageTo.user_id,
     message,
@@ -38,18 +38,15 @@ export const createPrivateMessage = async (req, res) => {
 };
 
 export const deletePrivateMessage = async (req, res) => {
-  const { private_message_uuid } = req.params;
+  const { message_uuid } = req.params;
 
-  const privateMessage = await PrivateMessages.getPrivateMessage(["private_message_uuid"], [private_message_uuid]);
+  const privateMessage = await PrivateMessages.getPrivateMessage(["message_uuid"], [message_uuid]);
 
   if (!privateMessage) {
     throw new NotFoundError("This private message does not exist.");
   }
 
-  const deleteMessage = await PrivateMessages.deletePrivateMessage(
-    ["private_message_id"],
-    [privateMessage.private_message_id]
-  );
+  const deleteMessage = await PrivateMessages.deletePrivateMessage(["message_id"], [privateMessage.message_id]);
 
   if (!deleteMessage) {
     throw new BadRequestError("Error in deleting private message. Try again later.");
@@ -61,7 +58,7 @@ export const deletePrivateMessage = async (req, res) => {
 export const getAllPrivateMessages = async (req, res) => {
   const { roomId } = req.body;
 
-  const privateMessages = await PrivateMessages.getAllPrivateMessages(["private_message_room_id"], [roomId]);
+  const privateMessages = await PrivateMessages.getAllPrivateMessages(["message_room_id"], [roomId]);
 
   if (!privateMessages) {
     throw new BadRequestError("Error in getting private messages. Try again later.");

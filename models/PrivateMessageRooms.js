@@ -2,17 +2,17 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class PrivateMessageRooms {
-  constructor(private_message_room) {
-    this.private_message_room = private_message_room;
+  constructor(message_room) {
+    this.message_room = message_room;
   }
 
   async createPrivateMessageRoom() {
     try {
       const sql = `INSERT INTO private_message_rooms
                     (
-                        private_message_room
+                        message_room
                     ) VALUES (?);`;
-      const privateMessageRoomValues = [this.private_message_room];
+      const privateMessageRoomValues = [this.message_room];
       const [data, _] = await conn.query(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
@@ -39,20 +39,20 @@ export class PrivateMessageRooms {
       const sql = `SELECT * FROM private_message_rooms AS pmr
 
                     INNER JOIN private_message_members AS pmm
-                    ON pmr.private_message_room_id = pmm.private_message_room_id
+                    ON pmr.message_room_id = pmm.message_room_fk_id
 
                     INNER JOIN users AS u
-                    ON pmm.member_id = u.user_id
+                    ON pmm.member_fk_id = u.user_id
 
                     LEFT JOIN private_messages AS pm
-                    ON pmr.private_message_room_id = pm.private_message_room_fk_id
+                    ON pmr.message_room_id = pm.message_room_fk_id
 
-                    WHERE member_id <> '${userId}'
+                    WHERE member_fk_id <> '${userId}'
 
-                    AND pm.private_message_id = (
-                      SELECT MAX(pm2.private_message_id) from private_messages AS pm2
-                      WHERE pm2.private_message_from = '${userId}'
-                      OR pm2.private_message_to = '${userId}'
+                    AND pm.message_id = (
+                      SELECT MAX(pm2.message_id) from private_messages AS pm2
+                      WHERE pm2.message_from = '${userId}'
+                      OR pm2.message_to = '${userId}'
                       );`;
 
       const [data, _] = await conn.execute(sql);
@@ -66,7 +66,7 @@ export class PrivateMessageRooms {
     try {
       const sql = `SELECT * FROM private_message_rooms AS pmr
                     INNER JOIN private_messages AS pm
-                    ON pmr.private_message_room_id = pm.private_message_room_fk_id
+                    ON pmr.message_room_id = pm.message_room_fk_id
                     WHERE ${whereConditions} = ?
                     ORDER BY pm.date_sent DESC;`;
 
