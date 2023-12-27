@@ -2,10 +2,11 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class GroupMessageRooms {
-  constructor(message_room, room_name, room_image) {
+  constructor(message_room, room_name, room_image, created_by) {
     this.message_room = message_room;
     this.room_name = room_name;
     this.room_image = room_image;
+    this.created_by = created_by;
   }
 
   async createGroupMessageRoom() {
@@ -14,10 +15,11 @@ export class GroupMessageRooms {
                     (
                         message_room, 
                         room_name,
-                        room_image
-                    ) VALUES (?, ?, ?)`;
+                        room_image,
+                        created_by
+                    ) VALUES (?, ?, ?, ?)`;
 
-      const groupMessageRoomValues = [this.message_room, this.room_name, this.room_image];
+      const groupMessageRoomValues = [this.message_room, this.room_name, this.room_image, this.created_by];
       const [data, _] = await conn.query(sql, groupMessageRoomValues);
       return data;
     } catch (error) {

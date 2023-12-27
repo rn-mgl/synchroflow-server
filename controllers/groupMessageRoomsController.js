@@ -11,7 +11,7 @@ export const createGroupMessageRoom = async (req, res) => {
 
   const groupMessageUUID = uuidv4();
 
-  const groupMessageRoom = new GroupMessageRooms(groupMessageUUID, groupMessageName, groupImage);
+  const groupMessageRoom = new GroupMessageRooms(groupMessageUUID, groupMessageName, groupImage, id);
 
   const newGroupMessageRoom = await groupMessageRoom.createGroupMessageRoom();
 
