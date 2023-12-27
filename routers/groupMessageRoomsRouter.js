@@ -3,7 +3,7 @@ import {
   createGroupMessageRoom,
   deleteGroupMessageRoom,
   getAllGroupMessageRoom,
-  getGroupMessageRoom,
+  getGroupMessageRoomMessages,
   updateGroupMessageRoomName,
 } from "../controllers/groupMessageRoomsController.js";
 
@@ -13,7 +13,7 @@ router.route("/").post(createGroupMessageRoom).get(getAllGroupMessageRoom);
 router
   .route("/:message_room")
   .delete(deleteGroupMessageRoom)
-  .get(getGroupMessageRoom)
+  .get(getGroupMessageRoomMessages)
   .patch(updateGroupMessageRoomName);
 
 export default router;

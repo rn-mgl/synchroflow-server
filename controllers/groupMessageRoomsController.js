@@ -99,3 +99,24 @@ export const getAllGroupMessageRoom = async (req, res) => {
 
   res.status(StatusCodes.OK).json(allGroupMessageRoom);
 };
+
+export const getGroupMessageRoomMessages = async (req, res) => {
+  const { message_room } = req.params;
+
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
+
+  if (!groupMessageRoom) {
+    throw new NotFoundError("This room does not exist.");
+  }
+
+  const groupMessageRoomMessages = await GroupMessageRooms.getGroupMessageRoomMessages(
+    ["message_room"],
+    [message_room]
+  );
+
+  if (!groupMessageRoomMessages) {
+    throw new NotFoundError("Error in getting messages.");
+  }
+
+  res.status(StatusCodes.OK).json(groupMessageRoomMessages);
+};

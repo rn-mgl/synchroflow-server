@@ -2,14 +2,28 @@ import { v4 as uuidv4 } from "uuid";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { GroupMessages } from "../models/GroupMessages.js";
+import { GroupMessageRooms } from "../models/GroupMessageRooms.js";
 
 export const createGroupMessage = async (req, res) => {
-  const { roomId, message, messageFile, messageFileType } = req.body;
+  const { messageRoom, message, messageFile, messageFileType } = req.body;
   const { id } = req.user;
 
   const groupMessageUUID = uuidv4();
 
-  const groupMessage = new GroupMessages(roomId, groupMessageUUID, id, message, messageFile, messageFileType);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
+
+  if (!groupMessageRoom) {
+    throw new NotFoundError(`This group does not exist.`);
+  }
+
+  const groupMessage = new GroupMessages(
+    groupMessageRoom.message_room_id,
+    groupMessageUUID,
+    id,
+    message,
+    messageFile,
+    messageFileType
+  );
 
   const newGroupMessage = await groupMessage.createGroupMessage();
 

@@ -2,7 +2,7 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class GroupMessages {
-  constructor(message_room_id, message_uuid, message_from, message, message_file) {
+  constructor(message_room_id, message_uuid, message_from, message, message_file, message_file_type) {
     this.message_room_id = message_room_id;
     this.message_uuid = message_uuid;
     this.message_from = message_from;
@@ -21,7 +21,7 @@ export class GroupMessages {
                         message,
                         message_file,
                         message_file_type
-                     ) VALUES (?, ?, ?, ?, ?)`;
+                     ) VALUES (?, ?, ?, ?, ?, ?)`;
       const groupMessageValues = [
         this.message_room_id,
         this.message_uuid,
