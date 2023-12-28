@@ -52,8 +52,9 @@ export const getAllPrivateMessageRooms = async (req, res) => {
 
 const getPrivateMessageRoomMainData = async (req, res) => {
   const { message_room } = req.params;
+  const { id } = req.user;
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["message_room"], [message_room]);
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoomMainData(id, message_room);
 
   if (!privateMessageRoom) {
     throw new NotFoundError("This room does not exist.");

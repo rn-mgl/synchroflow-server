@@ -76,13 +76,32 @@ export class PrivateMessageRooms {
       console.log(error + "--- get private message room ---");
     }
   }
-
   static async getPrivateMessageRoom(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM private_message_rooms
                     WHERE ${whereConditions} = ?;`;
 
       const [data, _] = await conn.query(sql, whereValues);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get private message room ---");
+    }
+  }
+
+  static async getPrivateMessageRoomMainData(userID, messageRoom) {
+    try {
+      const sql = `SELECT * FROM private_message_rooms AS pmr
+
+                  INNER JOIN private_message_members AS pmm
+                  ON pmr.message_room_id = pmm.message_room_fk_id
+
+                  INNER JOIN users AS u
+                  ON pmm.member_fk_id = u.user_id
+
+                  WHERE pmm.member_fk_id <> '${userID}'
+                  AND pmr.message_room = '${messageRoom}';`;
+
+      const [data, _] = await conn.execute(sql);
       return data[0];
     } catch (error) {
       console.log(error + "--- get private message room ---");
