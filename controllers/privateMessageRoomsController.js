@@ -50,7 +50,19 @@ export const getAllPrivateMessageRooms = async (req, res) => {
   res.status(StatusCodes.OK).json(privateMessageRooms);
 };
 
-export const getPrivateMessageRoomMessages = async (req, res) => {
+const getPrivateMessageRoomMainData = async (req, res) => {
+  const { message_room } = req.params;
+
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["message_room"], [message_room]);
+
+  if (!privateMessageRoom) {
+    throw new NotFoundError("This room does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(privateMessageRoom);
+};
+
+const getPrivateMessageRoomMessages = async (req, res) => {
   const { message_room } = req.params;
 
   const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["message_room"], [message_room]);
@@ -69,4 +81,18 @@ export const getPrivateMessageRoomMessages = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(privateMessageRoomMessages);
+};
+
+export const getPrivateMessageRoom = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "messages") {
+    await getPrivateMessageRoomMessages(req, res);
+    return;
+  }
+
+  if (type === "main") {
+    await getPrivateMessageRoomMainData(req, res);
+    return;
+  }
 };

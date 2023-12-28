@@ -55,7 +55,8 @@ export const deleteGroupMessageRoom = async (req, res) => {
 
 export const updateGroupMessageRoomName = async (req, res) => {
   const { message_room } = req.params;
-  const { groupMessageRoomName } = req.body;
+  const { groupMessageData } = req.body;
+  const { groupMessageName, groupImage } = groupMessageData;
 
   const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
 
@@ -64,9 +65,9 @@ export const updateGroupMessageRoomName = async (req, res) => {
   }
 
   const updateRoomName = await GroupMessageRooms.updateGroupMessageName(
-    [groupMessageRoomName],
-    ["message_room_id"],
-    [groupMessageRoom.message_room_id]
+    groupMessageName,
+    groupImage,
+    groupMessageRoom.message_room_id
   );
 
   if (!updateRoomName) {
@@ -74,18 +75,6 @@ export const updateGroupMessageRoomName = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(updateRoomName);
-};
-
-export const getGroupMessageRoom = async (req, res) => {
-  const { message_room } = req.params;
-
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
-
-  if (!groupMessageRoom) {
-    throw new NotFoundError("The group message room does not exist.");
-  }
-
-  res.status(StatusCodes.OK).json(groupMessageRoom);
 };
 
 export const getAllGroupMessageRoom = async (req, res) => {
@@ -100,7 +89,19 @@ export const getAllGroupMessageRoom = async (req, res) => {
   res.status(StatusCodes.OK).json(allGroupMessageRoom);
 };
 
-export const getGroupMessageRoomMessages = async (req, res) => {
+const getGroupMessageRoomMainData = async (req, res) => {
+  const { message_room } = req.params;
+
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
+
+  if (!groupMessageRoom) {
+    throw new NotFoundError("The group message room does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(groupMessageRoom);
+};
+
+const getGroupMessageRoomMessages = async (req, res) => {
   const { message_room } = req.params;
 
   const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
@@ -119,4 +120,18 @@ export const getGroupMessageRoomMessages = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(groupMessageRoomMessages);
+};
+
+export const getGroupMessageRoom = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "messages") {
+    await getGroupMessageRoomMessages(req, res);
+    return;
+  }
+
+  if (type === "main") {
+    await getGroupMessageRoomMainData(req, res);
+    return;
+  }
 };

@@ -40,15 +40,20 @@ export class GroupMessageRooms {
     }
   }
 
-  static async updateGroupMessageName(group_room_name, whereConditions, whereValues) {
+  static async updateGroupMessageName(roomName, roomImage, roomID) {
     try {
-      const sql = `UPDATE group_message_rooms SET group_room_name = ?
-                    WHERE ${whereConditions} = ?;`;
+      const sql = `UPDATE group_message_rooms 
+                    SET 
+                      room_name = ?, 
+                      room_image = ?
+                    WHERE message_room_id = '${roomID}';`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const groupMessageUpdateValues = [roomName, roomImage];
+
+      const [data, _] = await conn.query(sql, groupMessageUpdateValues);
       return data;
     } catch (error) {
-      console.log(error + "--- delete group message room ---");
+      console.log(error + "--- update group message room ---");
     }
   }
 
