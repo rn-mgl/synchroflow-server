@@ -57,6 +57,22 @@ export class GroupMessageRooms {
     }
   }
 
+  static async updateGroupMessageCreator(roomID, creatorID) {
+    try {
+      const sql = `UPDATE group_message_rooms 
+                    SET 
+                      created_by = ?
+                    WHERE message_room_id = '${roomID}';`;
+
+      const groupMessageUpdateValues = [creatorID];
+
+      const [data, _] = await conn.query(sql, groupMessageUpdateValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- update group message room ---");
+    }
+  }
+
   static async getAllGroupMessageRooms(memberID) {
     try {
       const sql = `SELECT * FROM group_message_rooms AS gmr

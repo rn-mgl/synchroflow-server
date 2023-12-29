@@ -3,6 +3,7 @@ import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { GroupMessageRooms } from "../models/GroupMessageRooms.js";
 import { GroupMessageMembers } from "../models/GroupMessageMembers.js";
+import { Users } from "../models/Users.js";
 
 export const createGroupMessageRoom = async (req, res) => {
   const { groupMessageData } = req.body;
@@ -53,7 +54,7 @@ export const deleteGroupMessageRoom = async (req, res) => {
   res.status(StatusCodes.OK).json(deleteRoom);
 };
 
-export const updateGroupMessageRoomName = async (req, res) => {
+const updateGroupMessageRoomName = async (req, res) => {
   const { message_room } = req.params;
   const { groupMessageData } = req.body;
   const { groupMessageName, groupImage } = groupMessageData;
@@ -75,6 +76,48 @@ export const updateGroupMessageRoomName = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(updateRoomName);
+};
+
+const updateGroupMessageOwner = async (req, res) => {
+  const { message_room } = req.params;
+  const { ownerUUID } = req.body;
+
+  const owner = await Users.getUser(["user_uuid"], [ownerUUID]);
+
+  if (!owner) {
+    throw new NotFoundError("This user does not exist.");
+  }
+
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [message_room]);
+
+  if (!groupMessageRoom) {
+    throw new NotFoundError("The group message room does not exist.");
+  }
+
+  const updateGroupMessage = await GroupMessageRooms.updateGroupMessageCreator(
+    groupMessageRoom.message_room_id,
+    owner.user_id
+  );
+
+  if (!updateGroupMessage) {
+    throw new BadRequestError("Error in updating group owner. Try again later.");
+  }
+
+  res.status(StatusCodes.OK).json(updateGroupMessage);
+};
+
+export const updateGroupMessage = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "name") {
+    await updateGroupMessageRoomName(req, res);
+    return;
+  }
+
+  if (type === "owner") {
+    await updateGroupMessageOwner(req, res);
+    return;
+  }
 };
 
 export const getAllGroupMessageRoom = async (req, res) => {
