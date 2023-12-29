@@ -3,12 +3,29 @@ import { GroupMessageMembers } from "../models/GroupMessageMembers.js";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { GroupMessageRooms } from "../models/GroupMessageRooms.js";
+import { Users } from "../models/Users.js";
 
 export const createGroupMessageMember = async (req, res) => {
-  const { memberId, roomId } = req.body;
+  const { memberUUID, groupRoomUUID } = req.body;
   const groupMessageMemberUUID = uuidv4();
 
-  const groupMessageMember = new GroupMessageMembers(groupMessageMemberUUID, memberId, roomId);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [groupRoomUUID]);
+
+  if (!groupMessageRoom) {
+    throw new NotFoundError(`This room does not exist.`);
+  }
+
+  const member = await Users.getUser(["user_uuid"], [memberUUID]);
+
+  if (!member) {
+    throw new NotFoundError(`This user does not exist.`);
+  }
+
+  const groupMessageMember = new GroupMessageMembers(
+    groupMessageMemberUUID,
+    member.user_id,
+    groupMessageRoom.message_room_id
+  );
 
   const newGroupMessageMember = await groupMessageMember.createGroupMessageMember();
 
@@ -43,7 +60,7 @@ export const deleteGroupMessageMember = async (req, res) => {
   res.status(StatusCodes.OK).json(deleteMember);
 };
 
-export const getAllGroupMessageMembers = async (req, res) => {
+const getGroupMessageMembers = async (req, res) => {
   const { messageRoom } = req.query;
 
   const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
@@ -62,6 +79,42 @@ export const getAllGroupMessageMembers = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(allGroupMessageMembers);
+};
+
+const getPossibleGroupMessageMembers = async (req, res) => {
+  const { messageRoom } = req.query;
+  const { id } = req.user;
+
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
+
+  if (!groupMessageRoom) {
+    throw new NotFoundError("This group message room does not exist.");
+  }
+
+  const allGroupMessageMembers = await GroupMessageMembers.getPossibleGroupMembers(
+    groupMessageRoom.message_room_id,
+    id
+  );
+
+  if (!allGroupMessageMembers) {
+    throw new BadRequestError("Error in getting all members in the group message.");
+  }
+
+  res.status(StatusCodes.OK).json(allGroupMessageMembers);
+};
+
+export const getAllGroupMessageMembers = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "all members") {
+    await getGroupMessageMembers(req, res);
+    return;
+  }
+
+  if (type === "possible members") {
+    await getPossibleGroupMessageMembers(req, res);
+    return;
+  }
 };
 
 export const getGroupMessageMember = async (req, res) => {

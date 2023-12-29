@@ -55,6 +55,29 @@ export class GroupMessageMembers {
     }
   }
 
+  static async getPossibleGroupMembers(messageRoomID, userID) {
+    try {
+      const sql = `SELECT * FROM associates AS a
+
+                    INNER JOIN users AS u
+                    ON a.associate_of = u.user_id
+                    OR a.associate_is = u.user_id
+                    
+                    WHERE u.user_id NOT IN (
+                      SELECT gmm.member_fk_id FROM group_message_members AS gmm
+                      INNER JOIN group_message_rooms AS gmr
+                      ON gmm.message_room_fk_id = gmr.message_room_id
+                      WHERE gmr.message_room_id = '${messageRoomID}' 
+                    ) 
+                    AND u.user_id <> '${userID}';`;
+
+      const [data, _] = await conn.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get possible group message members ---");
+    }
+  }
+
   static async getGroupMessageMember(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
