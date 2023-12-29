@@ -44,9 +44,9 @@ export const deleteGroupMessageMember = async (req, res) => {
 };
 
 export const getAllGroupMessageMembers = async (req, res) => {
-  const { groupMessageRoomId } = req.body;
+  const { messageRoom } = req.query;
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room_id"], [groupMessageRoomId]);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
 
   if (!groupMessageRoom) {
     throw new NotFoundError("This group message room does not exist.");
@@ -54,7 +54,7 @@ export const getAllGroupMessageMembers = async (req, res) => {
 
   const allGroupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
     ["message_room_id"],
-    [groupMessageRoomId]
+    [groupMessageRoom.message_room_id]
   );
 
   if (!allGroupMessageMembers) {

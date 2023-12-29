@@ -39,9 +39,14 @@ export class GroupMessageMembers {
   }
 
   static async getAllGroupMessageMembers(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
-      const sql = `SELECT * FROM group_message_members
-                    WHERE ${whereConditions} = ?;`;
+      const sql = `SELECT * FROM group_message_members AS gmm
+                    INNER JOIN users AS u
+                    ON gmm.member_fk_id = u.user_id
+                    INNER JOIN group_message_rooms AS gmr
+                    ON gmm.message_room_fk_id = gmr.message_room_id
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
       return data;
@@ -51,9 +56,10 @@ export class GroupMessageMembers {
   }
 
   static async getGroupMessageMember(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `SELECT * FROM group_message_members
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
       return data[0];
