@@ -6,25 +6,8 @@ import { Users } from "../models/Users.js";
 import { PrivateMessageRooms } from "../models/PrivateMessageRooms.js";
 import { PrivateMessageMembers } from "../models/PrivateMessageMembers.js";
 
-export const createAssociate = async (req, res) => {
-  const { userUUID } = req.body;
+const createMessageRoom = async (req, res, user) => {
   const { id } = req.user;
-
-  const user = await Users.getUser(["user_uuid"], [userUUID]);
-
-  if (!user) {
-    throw new NotFoundError("The user your are trying to associate with does not exist.");
-  }
-
-  const associateUUID = uuidv4();
-
-  const associate = new Associates(associateUUID, id, user.user_id);
-  const newAssociate = await associate.createAssociate();
-
-  if (!newAssociate) {
-    throw new BadRequestError("Error in establishing associate connection. Try again later.");
-  }
-
   const privateMessageRoomUUID = uuidv4();
   const myPrivateMessageMemberUUID = uuidv4();
   const associatePrivateMessageMemberUUID = uuidv4();
@@ -58,6 +41,32 @@ export const createAssociate = async (req, res) => {
 
   if (!newAssociatePrivateMessageMember) {
     throw new BadRequestError("Error in entering private room for messages. Try again later.");
+  }
+};
+
+export const createAssociate = async (req, res) => {
+  const { userUUID } = req.body;
+  const { id } = req.user;
+
+  const user = await Users.getUser(["user_uuid"], [userUUID]);
+
+  if (!user) {
+    throw new NotFoundError("The user your are trying to associate with does not exist.");
+  }
+
+  const associateUUID = uuidv4();
+
+  const associate = new Associates(associateUUID, id, user.user_id);
+  const newAssociate = await associate.createAssociate();
+
+  if (!newAssociate) {
+    throw new BadRequestError("Error in establishing associate connection. Try again later.");
+  }
+
+  const memberCount = await PrivateMessageRooms.getPrivateMessageRoomExistingMembers(id, user.user_id);
+
+  if (memberCount.total_members !== 2) {
+    await createMessageRoom(req, res, user);
   }
 
   res.status(StatusCodes.OK).json(newAssociate);

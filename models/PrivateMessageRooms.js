@@ -44,18 +44,17 @@ export class PrivateMessageRooms {
                     INNER JOIN users AS u
                     ON pmm.member_fk_id = u.user_id
 
-                    LEFT JOIN private_messages AS pm
-                    ON pmr.message_room_id = pm.message_room_fk_id
+                    WHERE pmr.message_room_id IN (
+                      SELECT pmm2.message_room_fk_id 
+                      FROM private_message_members AS pmm2
+                      WHERE pmm2.message_room_fk_id = pmr.message_room_id
+                      AND pmm2.member_fk_id = '${userId}'
+                    )
 
-                    WHERE member_fk_id <> '${userId}'
-
-                    AND pm.message_id = (
-                      SELECT MAX(pm2.message_id) from private_messages AS pm2
-                      WHERE pm2.message_from = '${userId}'
-                      OR pm2.message_to = '${userId}'
-                      );`;
+                    AND pmm.member_fk_id <> '${userId}';`;
 
       const [data, _] = await conn.execute(sql);
+
       return data;
     } catch (error) {
       console.log(error + "--- get all private message room ---");
@@ -65,8 +64,10 @@ export class PrivateMessageRooms {
   static async getPrivateMessageRoomMessages(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM private_message_rooms AS pmr
+
                     INNER JOIN private_messages AS pm
                     ON pmr.message_room_id = pm.message_room_fk_id
+
                     WHERE ${whereConditions} = ?
                     ORDER BY pm.date_sent DESC;`;
 
@@ -76,6 +77,7 @@ export class PrivateMessageRooms {
       console.log(error + "--- get private message room ---");
     }
   }
+
   static async getPrivateMessageRoom(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM private_message_rooms
@@ -85,6 +87,27 @@ export class PrivateMessageRooms {
       return data[0];
     } catch (error) {
       console.log(error + "--- get private message room ---");
+    }
+  }
+
+  static async getPrivateMessageRoomExistingMembers(userID, associateID) {
+    try {
+      const sql = `SELECT pmr.message_room_id,
+                   COUNT(pmm.member_fk_id) AS total_members
+                   FROM private_message_rooms AS pmr
+
+                   INNER JOIN private_message_members AS pmm
+                   ON pmr.message_room_id = pmm.message_room_fk_id
+                   
+                   WHERE pmm.member_fk_id IN ('${userID}', '${associateID}')
+                   GROUP BY pmr.message_room_id
+                   HAVING total_members = 2;`;
+
+      const [data, _] = await conn.execute(sql);
+
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get private message room existing members ---");
     }
   }
 

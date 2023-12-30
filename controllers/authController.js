@@ -6,6 +6,7 @@ import { BadRequestError, NotFoundError, UnauthorizedError } from "../errors/ind
 import jwt from "jsonwebtoken";
 import { sendVerificationMail } from "./mailController.js";
 import { createEmailToken } from "../utils/tokenUtils.js";
+import { UserSettings } from "../models/UserSettings.js";
 
 export const registerUser = async (req, res) => {
   const { registerCredentials } = req.body;
@@ -21,6 +22,16 @@ export const registerUser = async (req, res) => {
 
   if (!newUser) {
     throw new BadRequestError("Error in creating your account. Try again later.");
+  }
+
+  const userSettingsUUID = uuidv4();
+
+  const userSettings = new UserSettings(userSettingsUUID, newUser.insertId);
+
+  const createUserSettings = await userSettings.createUserSettings();
+
+  if (!createUserSettings) {
+    throw new BadRequestError("Error in initializing your settings. Try again later.");
   }
 
   const token = createEmailToken(newUser.insertId, userUUID, `${name} ${surname}`, email);
@@ -74,7 +85,7 @@ export const verifyUser = async (req, res) => {
     throw new NotFoundError(`This account does not exist.`);
   }
 
-  const verifyUser = await Users.updateUserVerification(["user_id"], [user.user_id]);
+  const verifyUser = await Users.updateUserVerification(user.user_id);
 
   if (!verifyUser) {
     throw new BadRequestError(`Error in verifying the account. Try again later.`);

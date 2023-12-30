@@ -38,6 +38,7 @@ import subTaskCollaboratorsRouter from "./routers/subTaskCollaboratorsRouter.js"
 import subTasksRouter from "./routers/subTasksRouter.js";
 
 import usersRouter from "./routers/usersRouter.js";
+import userSettingsRouter from "./routers/userSettingsRouter.js";
 
 //drivers //////////////////////////////////////////////////////////////////////////////
 const app = express();
@@ -80,6 +81,7 @@ app.use("/group_message_rooms", authMiddleware, groupMessageRoomsRouter);
 app.use("/group_messages", authMiddleware, groupMessagesRouter);
 
 app.use("/users", authMiddleware, usersRouter);
+app.use("/user_settings", authMiddleware, userSettingsRouter);
 
 // web sockets //////////////////////////////////////////////////////////////////////////////
 io.on("connection", (socket) => {

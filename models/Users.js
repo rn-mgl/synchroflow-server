@@ -17,7 +17,7 @@ export class Users {
     try {
       const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image, status, role) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
-      const whereValues = [
+      const userValues = [
         this.user_uuid,
         this.name,
         this.surname,
@@ -27,7 +27,7 @@ export class Users {
         this.status,
         this.role,
       ];
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {
       console.log(error + "--- create user ---");
@@ -62,6 +62,12 @@ export class Users {
                     AND u.user_id NOT IN (
                       SELECT associate_is FROM associates
                       WHERE associate_of = '${userId}'
+                      OR associate_is = '${userId}'
+                    )
+                    AND u.user_id NOT IN (
+                      SELECT associate_of FROM associates
+                      WHERE associate_of = '${userId}'
+                      OR associate_is = '${userId}'
                     );`;
       const [data, _] = await conn.execute(sql);
       return data;
@@ -94,17 +100,17 @@ export class Users {
     }
   }
 
-  static async updateUserVerification(whereConditions, whereValues) {
-    const mappedWhereConditions = mapWhereConditions(whereConditions);
-
+  static async updateUserVerification(userID) {
     try {
       const sql = `UPDATE users SET is_verified = ?
-                    WHERE ${mappedWhereConditions}`;
+                    WHERE user_id = '${userID}'`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const updateUserValues = [1];
+
+      const [data, _] = await conn.query(sql, updateUserValues);
       return data;
     } catch (error) {
-      console.log(error + "--- update user identifier ---");
+      console.log(error + "--- update user verification ---");
     }
   }
 }
