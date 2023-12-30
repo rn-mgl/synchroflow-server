@@ -55,7 +55,7 @@ export const deletePrivateMessage = async (req, res) => {
   res.status(StatusCodes.OK).json(deleteMessage);
 };
 
-export const getAllPrivateMessages = async (req, res) => {
+const getPrivateMessages = async (req, res) => {
   const { roomId } = req.body;
 
   const privateMessages = await PrivateMessages.getAllPrivateMessages(["message_room_id"], [roomId]);
@@ -64,4 +64,36 @@ export const getAllPrivateMessages = async (req, res) => {
     throw new BadRequestError("Error in getting private messages. Try again later.");
   }
   res.status(StatusCodes.OK).json(privateMessages);
+};
+
+const getLatestPrivateMessages = async (req, res) => {
+  const { messageRoom } = req.query;
+
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["message_room"], [messageRoom]);
+
+  if (!privateMessageRoom) {
+    throw new NotFoundError("This private message room does not exist.");
+  }
+
+  const latestPrivateMessage = await PrivateMessages.getLatestPrivateMessage(privateMessageRoom.message_room_id);
+
+  if (!latestPrivateMessage) {
+    throw new NotFoundError("This private message does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json * latestPrivateMessage;
+};
+
+export const getAllPrivateMessages = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "all") {
+    await getPrivateMessages(req, res);
+    return;
+  }
+
+  if (type === "latest") {
+    await getLatestPrivateMessages(req, res);
+    return;
+  }
 };

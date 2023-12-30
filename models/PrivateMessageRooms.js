@@ -79,9 +79,10 @@ export class PrivateMessageRooms {
   }
 
   static async getPrivateMessageRoom(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `SELECT * FROM private_message_rooms
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
       return data[0];
@@ -93,15 +94,13 @@ export class PrivateMessageRooms {
   static async getPrivateMessageRoomExistingMembers(userID, associateID) {
     try {
       const sql = `SELECT pmr.message_room_id,
-                   COUNT(pmm.member_fk_id) AS total_members
+                   COALESCE(COUNT(pmm.member_fk_id), 0) AS total_members
                    FROM private_message_rooms AS pmr
 
                    INNER JOIN private_message_members AS pmm
                    ON pmr.message_room_id = pmm.message_room_fk_id
                    
-                   WHERE pmm.member_fk_id IN ('${userID}', '${associateID}')
-                   GROUP BY pmr.message_room_id
-                   HAVING total_members = 2;`;
+                   WHERE pmm.member_fk_id IN ('${userID}', '${associateID}');`;
 
       const [data, _] = await conn.execute(sql);
 

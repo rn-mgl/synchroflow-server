@@ -65,6 +65,26 @@ export class PrivateMessages {
     }
   }
 
+  static async getLatestPrivateMessage(messageRoomID) {
+    try {
+      const sql = `SELECT * FROM private_messages AS pm
+
+                    INNER JOIN private_message_rooms AS pmr
+                    ON pmr.message_room_id = pm.message_room_fk_id
+
+                    WHERE message_room_fk_id = '${messageRoomID}'
+                    AND pm.message_id = (
+                      SELECT MAX(pm2.message_id) FROM private_messages AS pm2
+                      WHERE pm2.message_room_fk_id = '${messageRoomID}'
+                    );`;
+
+      const [data, _] = await conn.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get latest private message ---");
+    }
+  }
+
   static async getPrivateMessage(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM private_messages
