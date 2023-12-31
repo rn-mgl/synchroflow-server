@@ -106,6 +106,8 @@ export class PrivateMessageRooms {
 
       const [data, _] = await conn.execute(sql);
 
+      console.log(data);
+
       return data[0];
     } catch (error) {
       console.log(error + "--- get private message room existing members ---");
