@@ -20,7 +20,7 @@ export const createPrivateMessage = async (req, res) => {
 
   const privateMessage = new PrivateMessages(
     privateMessageUUID,
-    privateMessageRoom.message_room_id,
+    privateMessageRoom[0]?.message_room_id,
     id,
     messageTo.user_id,
     message,
@@ -75,13 +75,13 @@ const getLatestPrivateMessages = async (req, res) => {
     throw new NotFoundError("This private message room does not exist.");
   }
 
-  const latestPrivateMessage = await PrivateMessages.getLatestPrivateMessage(privateMessageRoom.message_room_id);
+  const latestPrivateMessage = await PrivateMessages.getLatestPrivateMessage(privateMessageRoom[0]?.message_room_id);
 
   if (!latestPrivateMessage) {
-    throw new NotFoundError("This private message does not exist.");
+    throw new BadRequestError("Error in getting the latest message.");
   }
 
-  res.status(StatusCodes.OK).json * latestPrivateMessage;
+  res.status(StatusCodes.OK).json(latestPrivateMessage[0]);
 };
 
 export const getAllPrivateMessages = async (req, res) => {

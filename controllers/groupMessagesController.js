@@ -17,7 +17,7 @@ export const createGroupMessage = async (req, res) => {
   }
 
   const groupMessage = new GroupMessages(
-    groupMessageRoom.message_room_id,
+    groupMessageRoom[0]?.message_room_id,
     groupMessageUUID,
     id,
     message,
@@ -64,14 +64,45 @@ export const getGroupMessage = async (req, res) => {
   res.status(StatusCodes.OK).json(groupMessage);
 };
 
-export const getAllGroupMessages = async (req, res) => {
-  const { roomId } = req.query;
+const getGroupMessages = async (req, res) => {
+  const { messageRoom } = req.query;
 
-  const allGroupMessages = await GroupMessages.getAllGroupMessages(["gm.message_room_id"], [roomId]);
+  const groupMessages = await GroupMessages.getAllGroupMessages(["message_room"], [messageRoom]);
 
-  if (!allGroupMessages) {
-    throw new BadRequestError("Error in getting all group messages. Try again later.");
+  if (!groupMessages) {
+    throw new BadRequestError("Error in getting Group messages. Try again later.");
+  }
+  res.status(StatusCodes.OK).json(groupMessages);
+};
+
+const getLatestGroupMessages = async (req, res) => {
+  const { messageRoom } = req.query;
+
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
+
+  if (!groupMessageRoom) {
+    throw new NotFoundError("This group message room does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(allGroupMessages);
+  const latestGroupMessage = await GroupMessages.getLatestGroupMessage(groupMessageRoom[0]?.message_room_id);
+
+  if (!latestGroupMessage) {
+    throw new BadRequestError("Error in getting the latest message.");
+  }
+
+  res.status(StatusCodes.OK).json(latestGroupMessage[0]);
+};
+
+export const getAllGroupMessages = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "all") {
+    await getGroupMessages(req, res);
+    return;
+  }
+
+  if (type === "latest") {
+    await getLatestGroupMessages(req, res);
+    return;
+  }
 };

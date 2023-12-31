@@ -65,6 +65,27 @@ export class GroupMessages {
     }
   }
 
+  static async getLatestGroupMessage(messageRoomID) {
+    try {
+      const sql = `SELECT * FROM group_messages AS gm
+
+                    INNER JOIN group_message_rooms AS gmr
+                    ON gmr.message_room_id = gm.message_room_fk_id
+
+                    WHERE message_room_fk_id = '${messageRoomID}'
+                    AND gm.message_id = (
+                      SELECT MAX(gm2.message_id) FROM group_messages AS gm2
+                      WHERE gm2.message_room_fk_id = '${messageRoomID}'
+                    );`;
+
+      const [data, _] = await conn.execute(sql);
+
+      return data;
+    } catch (error) {
+      console.log(error + "--- get latest group message ---");
+    }
+  }
+
   static async getGroupMessage(whereConditions, whereValues) {
     try {
       const sql = `SELECT * FROM group_messages

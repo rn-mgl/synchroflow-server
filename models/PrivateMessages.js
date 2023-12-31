@@ -79,7 +79,8 @@ export class PrivateMessages {
                     );`;
 
       const [data, _] = await conn.execute(sql);
-      return data[0];
+
+      return data;
     } catch (error) {
       console.log(error + "--- get latest private message ---");
     }
