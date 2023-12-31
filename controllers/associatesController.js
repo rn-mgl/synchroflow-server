@@ -65,7 +65,7 @@ export const createAssociate = async (req, res) => {
 
   const memberCount = await PrivateMessageRooms.getPrivateMessageRoomExistingMembers(id, user.user_id);
 
-  if (memberCount.total_members !== 2) {
+  if (!memberCount || memberCount.total_members !== 2) {
     await createMessageRoom(req, res, user);
   }
 

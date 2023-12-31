@@ -100,7 +100,9 @@ export class PrivateMessageRooms {
                    INNER JOIN private_message_members AS pmm
                    ON pmr.message_room_id = pmm.message_room_fk_id
                    
-                   WHERE pmm.member_fk_id IN ('${userID}', '${associateID}');`;
+                   WHERE pmm.member_fk_id IN ('${userID}', '${associateID}')
+                   GROUP BY message_room_id
+                   HAVING total_members = 2;`;
 
       const [data, _] = await conn.execute(sql);
 
