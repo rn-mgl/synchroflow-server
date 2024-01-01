@@ -3,6 +3,6 @@ import { getUserSettings, updateUserSettings } from "../controllers/userSettings
 
 const router = Router();
 
-router.get("/:user_settings_uuid").get(getUserSettings).patch(updateUserSettings);
+router.route("/").get(getUserSettings).patch(updateUserSettings);
 
 export default router;

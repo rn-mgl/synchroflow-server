@@ -53,7 +53,9 @@ export class UserSettings {
   static async getUserSettings(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
-      const sql = `SELECT * FROM user_settings
+      const sql = `SELECT * FROM user_settings AS us
+                  INNER JOIN users AS u
+                  ON us.user_fk_id = u.user_id
                   WHERE ${mappedWhereConditions};`;
       const [data, _] = await conn.execute(sql, whereValues);
       return data;

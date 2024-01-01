@@ -3,23 +3,23 @@ import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { UserSettings } from "../models/UserSettings.js";
 
 export const updateUserSettings = async (req, res) => {
-  const { user_settings_uuid } = req.params;
-  const { userSettingsData } = req.body;
-  const { notificationSound, messageNotification, taskUpdate, taskDeadline, associateInvite } = userSettingsData;
+  const { id } = req.user;
+  const { userSettings } = req.body;
+  const { notification_sound, message_notification, task_update, task_deadline, associate_invite } = userSettings;
 
-  const userSettings = await UserSettings.getUserSettings(["user_settings_uuid"], [user_settings_uuid]);
+  const userSetting = await UserSettings.getUserSettings(["user_id"], [id]);
 
   if (!userSettings) {
     throw new NotFoundError(`This user setting does not exist.`);
   }
 
   const updateUserSetting = await UserSettings.updateUserSettings(
-    userSettings[0]?.user_settings_id,
-    notificationSound,
-    messageNotification,
-    taskUpdate,
-    taskDeadline,
-    associateInvite
+    userSetting[0]?.user_settings_id,
+    notification_sound,
+    message_notification,
+    task_update,
+    task_deadline,
+    associate_invite
   );
 
   if (!updateUserSetting) {
@@ -30,9 +30,9 @@ export const updateUserSettings = async (req, res) => {
 };
 
 export const getUserSettings = async (req, res) => {
-  const { user_settings_uuid } = req.params;
+  const { id } = req.user;
 
-  const userSettings = await UserSettings.getUserSettings(["user_settings_uuid"], [user_settings_uuid]);
+  const userSettings = await UserSettings.getUserSettings(["user_id"], [id]);
 
   if (!userSettings) {
     throw new NotFoundError(`This user setting does not exist.`);
