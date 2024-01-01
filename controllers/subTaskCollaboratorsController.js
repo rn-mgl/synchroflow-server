@@ -22,7 +22,11 @@ export const createSubTaskCollaborator = async (req, res) => {
     throw new NotFoundError("The user you are assigning does not exist.");
   }
 
-  const subTaskCollaborator = new SubTaskCollaborators(subTaskCollaboratorUUID, subTask.sub_task_id, user.user_id);
+  const subTaskCollaborator = new SubTaskCollaborators(
+    subTaskCollaboratorUUID,
+    subTask[0]?.sub_task_id,
+    user[0]?.user_id
+  );
 
   const newSubTaskCollaborator = await subTaskCollaborator.createSubTaskCollaborator();
 
@@ -47,7 +51,7 @@ export const deleteSubTaskCollaborator = async (req, res) => {
 
   const deleteCollaborator = await SubTaskCollaborators.deleteSubTaskCollaborator(
     ["sub_task_collaborator_id"],
-    [subTaskCollaborator.sub_task_collaborator_id]
+    [subTaskCollaborator[0]?.sub_task_collaborator_id]
   );
 
   res.status(StatusCodes.OK).json(deleteCollaborator);
@@ -69,8 +73,8 @@ export const getAllSubTaskCollaborators = async (req, res) => {
   }
 
   const allSubTaskCollaborator = await SubTaskCollaborators.getAllSubTaskCollaborators(
-    subTask.sub_task_id,
-    mainTask.main_task_id
+    subTask[0]?.sub_task_id,
+    mainTask[0]?.main_task_id
   );
 
   if (!allSubTaskCollaborator) {
@@ -92,5 +96,5 @@ export const getSubTaskCollaborator = async (req, res) => {
     throw new NotFoundError("The task collaborator does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(subTaskCollaborator);
+  res.status(StatusCodes.OK).json(subTaskCollaborator[0]);
 };

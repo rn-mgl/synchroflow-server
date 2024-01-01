@@ -33,7 +33,7 @@ export const deletePrivateMessageMember = async (req, res) => {
 
   const deleteMember = await PrivateMessageMembers.deletePrivateMessageMember(
     ["message_member_id"],
-    [privateMessageMember.message_member_id]
+    [privateMessageMember[0]?.message_member_id]
   );
 
   if (!deleteMember) {
@@ -79,5 +79,5 @@ export const getPrivateMessageMember = async (req, res) => {
     throw new NotFoundError("This private message member does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(privateMessageMember);
+  res.status(StatusCodes.OK).json(privateMessageMember[0]);
 };

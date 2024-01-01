@@ -1,6 +1,5 @@
 import { StatusCodes } from "http-status-codes";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
-import { Users } from "../models/Users.js";
 import { UserSettings } from "../models/UserSettings.js";
 
 export const updateUserSettings = async (req, res) => {
@@ -15,7 +14,7 @@ export const updateUserSettings = async (req, res) => {
   }
 
   const updateUserSetting = await UserSettings.updateUserSettings(
-    userSettings.user_settings_id,
+    userSettings[0]?.user_settings_id,
     notificationSound,
     messageNotification,
     taskUpdate,
@@ -39,5 +38,5 @@ export const getUserSettings = async (req, res) => {
     throw new NotFoundError(`This user setting does not exist.`);
   }
 
-  res.status(StatusCodes.OK).json(userSettings);
+  res.status(StatusCodes.OK).json(userSettings[0]);
 };

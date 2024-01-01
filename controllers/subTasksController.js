@@ -16,7 +16,7 @@ export const createSubTask = async (req, res) => {
   const subTask = new SubTasks(
     subTaskUUID,
     id,
-    mainTask.main_task_id,
+    mainTask[0]?.main_task_id,
     subTaskTitle,
     subTaskSubtitle,
     subTaskDescription,
@@ -61,7 +61,7 @@ export const updateSubTask = async (req, res) => {
     subTaskStatus,
     subTaskStartDate,
     subTaskEndDate,
-    subTask.sub_task_id
+    subTask[0]?.sub_task_id
   );
 
   if (!updateSubTask) {
@@ -79,7 +79,7 @@ export const getSubTask = async (req, res) => {
   if (!subTask) {
     throw new NotFoundError("This sub task does not exist.");
   }
-  res.status(StatusCodes.OK).json(subTask);
+  res.status(StatusCodes.OK).json(subTask[0]);
 };
 
 const getAllMySubTasks = async (req, res) => {
@@ -116,7 +116,7 @@ const getAllMainTaskSubTasks = async (req, res) => {
     throw new NotFoundError(`The main task you are trying to access does not exist.`);
   }
 
-  const subTask = await SubTasks.getAllSubTasks(["mt.main_task_id"], [mainTask.main_task_id]);
+  const subTask = await SubTasks.getAllSubTasks(["mt.main_task_id"], [mainTask[0]?.main_task_id]);
 
   if (!subTask) {
     throw new NotFoundError("This task does not exist.");
@@ -155,7 +155,7 @@ export const deleteSubTask = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  const deleteTask = await SubTasks.deleteSubTask(["sub_task_id"], [subTask.sub_task_id]);
+  const deleteTask = await SubTasks.deleteSubTask(["sub_task_id"], [subTask[0]?.sub_task_id]);
 
   if (!deleteTask) {
     throw new BadRequestError("Error in deleting task. Try again later.");

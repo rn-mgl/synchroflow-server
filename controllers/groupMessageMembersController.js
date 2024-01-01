@@ -23,8 +23,8 @@ export const createGroupMessageMember = async (req, res) => {
 
   const groupMessageMember = new GroupMessageMembers(
     groupMessageMemberUUID,
-    member.user_id,
-    groupMessageRoom.message_room_id
+    member[0]?.user_id,
+    groupMessageRoom[0]?.message_room_id
   );
 
   const newGroupMessageMember = await groupMessageMember.createGroupMessageMember();
@@ -50,7 +50,7 @@ export const deleteGroupMessageMember = async (req, res) => {
 
   const deleteMember = await GroupMessageMembers.deleteGroupMessageMember(
     ["message_member_id"],
-    [groupMessageMember.message_member_id]
+    [groupMessageMember[0]?.message_member_id]
   );
 
   if (!deleteMember) {
@@ -71,7 +71,7 @@ const getGroupMessageMembers = async (req, res) => {
 
   const allGroupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
     ["message_room_id"],
-    [groupMessageRoom.message_room_id]
+    [groupMessageRoom[0]?.message_room_id]
   );
 
   if (!allGroupMessageMembers) {
@@ -92,7 +92,7 @@ const getPossibleGroupMessageMembers = async (req, res) => {
   }
 
   const allGroupMessageMembers = await GroupMessageMembers.getPossibleGroupMembers(
-    groupMessageRoom.message_room_id,
+    groupMessageRoom[0]?.message_room_id,
     id
   );
 
@@ -129,5 +129,5 @@ export const getGroupMessageMember = async (req, res) => {
     throw new NotFoundError("This group message member does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(groupMessageMember);
+  res.status(StatusCodes.OK).json(groupMessageMember[0]);
 };

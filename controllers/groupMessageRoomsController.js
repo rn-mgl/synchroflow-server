@@ -44,7 +44,7 @@ export const deleteGroupMessageRoom = async (req, res) => {
 
   const deleteRoom = await GroupMessageRooms.deleteGroupMessageRoom(
     ["message_room_id"],
-    [groupMessageRoom.message_room_id]
+    [groupMessageRoom[0]?.message_room_id]
   );
 
   if (!deleteRoom) {
@@ -68,7 +68,7 @@ const updateGroupMessageRoomName = async (req, res) => {
   const updateRoomName = await GroupMessageRooms.updateGroupMessageName(
     groupMessageName,
     groupImage,
-    groupMessageRoom.message_room_id
+    groupMessageRoom[0]?.message_room_id
   );
 
   if (!updateRoomName) {
@@ -95,8 +95,8 @@ const updateGroupMessageOwner = async (req, res) => {
   }
 
   const updateGroupMessage = await GroupMessageRooms.updateGroupMessageCreator(
-    groupMessageRoom.message_room_id,
-    owner.user_id
+    groupMessageRoom[0]?.message_room_id,
+    owner[0]?.user_id
   );
 
   if (!updateGroupMessage) {
@@ -141,7 +141,7 @@ const getGroupMessageRoomMainData = async (req, res) => {
     throw new NotFoundError("The group message room does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(groupMessageRoom);
+  res.status(StatusCodes.OK).json(groupMessageRoom[0]);
 };
 
 const getGroupMessageRoomMessages = async (req, res) => {

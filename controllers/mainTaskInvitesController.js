@@ -25,9 +25,9 @@ export const createMainTaskInvite = async (req, res) => {
 
     const mainTaskInvite = new MainTaskInvites(
       mainTaskInviteUUID,
-      mainTask.main_task_id,
+      mainTask[0]?.main_task_id,
       id,
-      invitedUser.user_id,
+      invitedUser[0]?.user_id,
       inviteMessage
     );
 
@@ -52,7 +52,7 @@ export const deleteMainTaskInvite = async (req, res) => {
 
   const deleteInvite = await MainTaskInvites.deleteMainTaskInvite(
     ["main_task_invite_id"],
-    [mainTaskInvite.main_task_invite_id]
+    [mainTaskInvite[0]?.main_task_invite_id]
   );
 
   if (!deleteInvite) {
@@ -75,7 +75,7 @@ export const updateMainTaskInviteStatus = async (req, res) => {
   const updateInvite = await MainTaskInvites.updateMainTaskInviteStatus(
     [inviteStatus],
     ["main_task_invite_id"],
-    [mainTaskInvite.main_task_invite_id]
+    [mainTaskInvite[0]?.main_task_invite_id]
   );
 
   if (!updateInvite) {
@@ -94,7 +94,7 @@ export const getMainTaskInvite = async (req, res) => {
     throw new NotFoundError("The invite does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(mainTaskInvite);
+  res.status(StatusCodes.OK).json(mainTaskInvite[0]);
 };
 
 const getAllSentMainTaskInvites = async (req, res) => {
@@ -131,7 +131,7 @@ const getAllAssociatesToInvite = async (req, res) => {
     throw new NotFoundError(`The main task you are inviting someone to does not exist.`);
   }
 
-  const allMainTaskInvites = await MainTaskInvites.getAllAssociatesToInvite(id, mainTask.main_task_id);
+  const allMainTaskInvites = await MainTaskInvites.getAllAssociatesToInvite(id, mainTask[0]?.main_task_id);
 
   if (!allMainTaskInvites) {
     throw new BadRequestError("Error in getting all your received main task invites.");

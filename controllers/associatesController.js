@@ -56,7 +56,7 @@ export const createAssociate = async (req, res) => {
 
   const associateUUID = uuidv4();
 
-  const associate = new Associates(associateUUID, id, user.user_id);
+  const associate = new Associates(associateUUID, id, user[0]?.user_id);
   const newAssociate = await associate.createAssociate();
 
   if (!newAssociate) {
@@ -65,7 +65,7 @@ export const createAssociate = async (req, res) => {
 
   const memberCount = await PrivateMessageRooms.getPrivateMessageRoomExistingMembers(id, user.user_id);
 
-  if (!memberCount || memberCount.total_members !== 2) {
+  if (!memberCount[0] || memberCount[0]?.total_members !== 2) {
     await createMessageRoom(req, res, user);
   }
 
@@ -81,7 +81,7 @@ export const deleteAssociate = async (req, res) => {
     throw new NotFoundError("This associate connection no longer exist.");
   }
 
-  const deleteConnection = await Associates.deleteAssociate(["associate_id"], [associate.associate_id]);
+  const deleteConnection = await Associates.deleteAssociate(["associate_id"], [associate[0]?.associate_id]);
 
   if (!deleteConnection) {
     throw new NotFoundError("Error in deleting associate connection. Try again later.");
@@ -99,7 +99,7 @@ export const getAssociate = async (req, res) => {
     throw new NotFoundError("This associate connection no longer exist.");
   }
 
-  res.status(StatusCodes.OK).json(associate);
+  res.status(StatusCodes.OK).json(associate[0]);
 };
 
 const getAllRecentAssociates = async (req, res) => {

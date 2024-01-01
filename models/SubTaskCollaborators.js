@@ -38,12 +38,13 @@ export class SubTaskCollaborators {
   }
 
   static async getSubTaskCollaborator(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `SELECT * FROM sub_task_collaborators
-                WHERE ${whereConditions} = ?;`;
+                WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
-      return data[0];
+      return data;
     } catch (error) {
       console.log(error + "--- get sub task collaborator ---");
     }

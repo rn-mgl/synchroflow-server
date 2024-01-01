@@ -67,7 +67,7 @@ export const updateMainTask = async (req, res) => {
     mainTaskPriority,
     mainTaskStartDate,
     mainTaskEndDate,
-    mainTask.main_task_id
+    mainTask[0]?.main_task_id
   );
 
   if (!updateTask) {
@@ -86,7 +86,7 @@ export const getMainTask = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(mainTask);
+  res.status(StatusCodes.OK).json(mainTask[0]);
 };
 
 const getAllMyMainTasks = async (req, res) => {
@@ -170,7 +170,7 @@ export const deleteMainTask = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  const deleteTask = await MainTasks.deleteMainTask(["main_task_id"], [mainTask.main_task_id]);
+  const deleteTask = await MainTasks.deleteMainTask(["main_task_id"], [mainTask[0]?.main_task_id]);
 
   if (!deleteTask) {
     throw new BadRequestError("Error in deleting task. Try again later.");

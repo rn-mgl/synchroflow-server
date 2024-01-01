@@ -89,7 +89,7 @@ export class AssociateInvites {
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
-      return data[0];
+      return data;
     } catch (error) {
       console.log(error + "--- get associate invites ---");
     }

@@ -23,8 +23,8 @@ export const createMainTaskCollaborator = async (req, res) => {
 
   const mainTaskCollaborator = new MainTaskCollaborators(
     mainTaskCollaboratorUUID,
-    mainTask.main_task_id,
-    collaborator.user_id
+    mainTask[0]?.main_task_id,
+    collaborator[0]?.user_id
   );
 
   const newMainTaskCollaborator = await mainTaskCollaborator.createMainTaskCollaborator();
@@ -50,7 +50,7 @@ export const deleteMainTaskCollaborator = async (req, res) => {
 
   const deleteCollaborator = await MainTaskCollaborators.deleteMainTaskCollaborator(
     ["main_task_collaborator_id"],
-    [mainTaskCollaborator.main_task_collaborator_id]
+    [mainTaskCollaborator[0]?.main_task_collaborator_id]
   );
 
   res.status(StatusCodes.OK).json(deleteCollaborator);
@@ -67,7 +67,7 @@ export const getAllMainTaskCollaborator = async (req, res) => {
 
   const allMainTaskCollaborator = await MainTaskCollaborators.getAllMainTaskCollaborators(
     ["mtc.main_task_fk_id"],
-    [mainTask.main_task_id]
+    [mainTask[0]?.main_task_id]
   );
 
   if (!allMainTaskCollaborator) {
@@ -89,5 +89,5 @@ export const getMainTaskCollaborator = async (req, res) => {
     throw new NotFoundError("The task collaborator does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(mainTaskCollaborator);
+  res.status(StatusCodes.OK).json(mainTaskCollaborator[0]);
 };

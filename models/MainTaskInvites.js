@@ -64,12 +64,14 @@ export class MainTaskInvites {
   }
 
   static async getMainTaskInvite(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
+
     try {
       const sql = `SELECT * FROM main_task_invites
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
-      return data[0];
+      return data;
     } catch (error) {
       console.log(error + "--- get main task invite ---");
     }

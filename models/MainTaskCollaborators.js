@@ -43,10 +43,10 @@ export class MainTaskCollaborators {
 
     try {
       const sql = `SELECT * FROM main_task_collaborators
-                WHERE ${whereConditions};`;
+                WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
-      return data[0];
+      const [data, _] = await conn.query(sql, whereValues);
+      return data;
     } catch (error) {
       console.log(error + "--- get main task collaborator ---");
     }

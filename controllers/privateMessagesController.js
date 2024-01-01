@@ -22,7 +22,7 @@ export const createPrivateMessage = async (req, res) => {
     privateMessageUUID,
     privateMessageRoom[0]?.message_room_id,
     id,
-    messageTo.user_id,
+    messageTo[0]?.user_id,
     message,
     messageFile,
     messageFileType
@@ -46,7 +46,7 @@ export const deletePrivateMessage = async (req, res) => {
     throw new NotFoundError("This private message does not exist.");
   }
 
-  const deleteMessage = await PrivateMessages.deletePrivateMessage(["message_id"], [privateMessage.message_id]);
+  const deleteMessage = await PrivateMessages.deletePrivateMessage(["message_id"], [privateMessage[0]?.message_id]);
 
   if (!deleteMessage) {
     throw new BadRequestError("Error in deleting private message. Try again later.");

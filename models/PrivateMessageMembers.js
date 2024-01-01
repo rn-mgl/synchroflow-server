@@ -51,12 +51,13 @@ export class PrivateMessageMembers {
   }
 
   static async getPrivateMessageMember(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `SELECT * FROM private_message_members
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
-      return data[0];
+      return data;
     } catch (error) {
       console.log(error + "--- get private message  member ---");
     }

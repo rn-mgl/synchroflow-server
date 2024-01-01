@@ -16,7 +16,7 @@ export const createAssociateInvite = async (req, res) => {
 
   const associateInviteUUID = uuidv4();
 
-  const associateInvites = new AssociateInvites(associateInviteUUID, id, invitedUser.user_id);
+  const associateInvites = new AssociateInvites(associateInviteUUID, id, invitedUser[0]?.user_id);
 
   const newAssociateInvite = await associateInvites.createAssociateInvite();
 
@@ -40,7 +40,7 @@ export const updateAssociateInviteStatus = async (req, res) => {
   const updateInviteStatus = await AssociateInvites.updateAssociateInviteStatus(
     inviteStatus,
     "associate_invite_id",
-    associateInvite.associate_invite_id
+    associateInvite[0]?.associate_invite_id
   );
 
   if (!updateInviteStatus) {
@@ -59,7 +59,7 @@ export const getAssociateInvite = async (req, res) => {
     throw new BadRequestError("Error in getting associate invite.");
   }
 
-  res.status(StatusCodes.OK).json(associateInvite);
+  res.status(StatusCodes.OK).json(associateInvite[0]);
 };
 
 const getAllSentAssociateInvite = async (req, res) => {
@@ -114,7 +114,7 @@ export const deleteAssociateInvite = async (req, res) => {
 
   const deleteInvite = await AssociateInvites.deleteAssociateInvite(
     ["associate_invite_id"],
-    [associateInvite.associate_invite_id]
+    [associateInvite[0]?.associate_invite_id]
   );
 
   if (!deleteAssociateInvite) {

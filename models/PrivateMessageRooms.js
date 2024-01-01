@@ -106,7 +106,7 @@ export class PrivateMessageRooms {
 
       const [data, _] = await conn.execute(sql);
 
-      return data[0];
+      return data;
     } catch (error) {
       console.log(error + "--- get private message room existing members ---");
     }
@@ -126,7 +126,7 @@ export class PrivateMessageRooms {
                   AND pmr.message_room = '${messageRoom}';`;
 
       const [data, _] = await conn.execute(sql);
-      return data[0];
+      return data;
     } catch (error) {
       console.log(error + "--- get private message room ---");
     }

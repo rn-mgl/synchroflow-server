@@ -60,7 +60,7 @@ const getPrivateMessageRoomMainData = async (req, res) => {
     throw new NotFoundError("This room does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(privateMessageRoom);
+  res.status(StatusCodes.OK).json(privateMessageRoom[0]);
 };
 
 const getPrivateMessageRoomMessages = async (req, res) => {

@@ -87,12 +87,13 @@ export class PrivateMessages {
   }
 
   static async getPrivateMessage(whereConditions, whereValues) {
+    const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
       const sql = `SELECT * FROM private_messages
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
-      return data[0];
+      return data;
     } catch (error) {
       console.log(error + "--- get private message ---");
     }

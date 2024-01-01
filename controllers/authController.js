@@ -51,7 +51,7 @@ export const loginUser = async (req, res) => {
     throw new BadRequestError("There is no account found with the given email.");
   }
 
-  const { user_id, user_uuid, name, surname, email, password } = userEmail;
+  const { user_id, user_uuid, name, surname, email, password } = userEmail[0];
 
   const isCorrectPassword = await comparePassword(candidatePassword, password);
 
@@ -85,7 +85,7 @@ export const verifyUser = async (req, res) => {
     throw new NotFoundError(`This account does not exist.`);
   }
 
-  const verifyUser = await Users.updateUserVerification(user.user_id);
+  const verifyUser = await Users.updateUserVerification(user[0]?.user_id);
 
   if (!verifyUser) {
     throw new BadRequestError(`Error in verifying the account. Try again later.`);

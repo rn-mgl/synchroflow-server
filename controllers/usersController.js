@@ -17,7 +17,7 @@ export const getUser = async (req, res) => {
     throw new BadRequestError(`Error in getting your data. Try again later.`);
   }
 
-  res.status(StatusCodes.OK).json(user);
+  res.status(StatusCodes.OK).json(user[0]);
 };
 
 export const getUsers = async (req, res) => {
@@ -40,11 +40,11 @@ const updateUserIdentifier = async (req, res) => {
 
   const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
-  if (user.user_id !== id) {
+  if (user[0]?.user_id !== id) {
     throw new UnauthorizedError("You are not allowed to access other account.");
   }
 
-  const updateUser = await Users.updateUserIdentifier(name, surname, email, "user_id", user.user_id);
+  const updateUser = await Users.updateUserIdentifier(name, surname, email, "user_id", user[0]?.user_id);
 
   if (!updateUser) {
     throw new BadRequestError("Error in updating your identifiers.");
@@ -61,13 +61,13 @@ const updateUserPassword = async (req, res) => {
 
   const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
-  if (user.user_id !== id) {
+  if (user[0]?.user_id !== id) {
     throw new UnauthorizedError("You are not allowed to access other account.");
   }
 
   const hashedPassword = await hashPassword(password);
 
-  const updateUser = await Users.updateUserPassword(hashedPassword, "user_id", user.user_id);
+  const updateUser = await Users.updateUserPassword(hashedPassword, "user_id", user[0]?.user_id);
 
   if (!updateUser) {
     throw new BadRequestError("Error in updating your password.");
@@ -82,7 +82,7 @@ export const updateUser = async (req, res) => {
 
   const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
-  if (user.user_id !== id) {
+  if (user[0]?.user_id !== id) {
     throw new UnauthorizedError("You are not allowed to access other account.");
   }
 
