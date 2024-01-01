@@ -98,15 +98,10 @@ export class MainTaskInvites {
       const sql = `SELECT * FROM associates AS a
 
                   INNER JOIN users AS u
-                  ON u.user_id <> '${userId}'
+                  ON (u.user_id = a.associate_of AND a.associate_of <> '${userId}')
+                  OR (u.user_id = a.associate_is AND a.associate_is <> '${userId}')
 
-                  WHERE (
-                          (a.associate_of <> '${userId}' 
-                          AND a.associate_is = '${userId}') 
-                          OR 
-                          (a.associate_is <> '${userId}' 
-                          AND a.associate_of = '${userId}')
-                        )
+                  WHERE (a.associate_is = '${userId}' OR a.associate_of = '${userId}')
                   AND a.associate_is NOT IN (
                     SELECT invited_associate FROM main_task_invites
                     WHERE main_task_fk_id = '${mainTaskId}'

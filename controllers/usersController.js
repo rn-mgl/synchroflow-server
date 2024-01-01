@@ -9,7 +9,7 @@ export const getUser = async (req, res) => {
 
   const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
-  if (user.user_id !== id) {
+  if (user[0]?.user_id !== id) {
     throw new UnauthorizedError("You are not allowed to access other account.");
   }
 
