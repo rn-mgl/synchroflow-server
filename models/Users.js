@@ -2,31 +2,20 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class Users {
-  constructor(user_uuid, name, surname, email, password, image, status, role) {
+  constructor(user_uuid, name, surname, email, password, image) {
     this.user_uuid = user_uuid;
     this.name = name;
     this.surname = surname;
     this.email = email;
     this.password = password;
     this.image = image;
-    this.status = status;
-    this.role = role;
   }
 
   async createUser() {
     try {
-      const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image, status, role) 
+      const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
-      const userValues = [
-        this.user_uuid,
-        this.name,
-        this.surname,
-        this.email,
-        this.password,
-        this.image,
-        this.status,
-        this.role,
-      ];
+      const userValues = [this.user_uuid, this.name, this.surname, this.email, this.password, this.image];
       const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {

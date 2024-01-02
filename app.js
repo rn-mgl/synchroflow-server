@@ -22,6 +22,8 @@ import fileRouter from "./routers/fileRouter.js";
 import associateInvitesRouter from "./routers/associateInvitesRouter.js";
 import associatesRouter from "./routers/associatesRouter.js";
 
+import dashboardRouter from "./routers/dashboardRouter.js";
+
 import groupMessageMembersRouter from "./routers/groupMessageMembersRouter.js";
 import groupMessageRoomsRouter from "./routers/groupMessageRoomsRouter.js";
 import groupMessagesRouter from "./routers/groupMessagesRouter.js";
@@ -64,6 +66,8 @@ app.use("/files", authMiddleware, fileRouter);
 
 app.use("/associates", authMiddleware, associatesRouter);
 app.use("/associate_invites", authMiddleware, associateInvitesRouter);
+
+app.use("/dashboard", authMiddleware, dashboardRouter);
 
 app.use("/main_task_collaborators", authMiddleware, mainTaskCollaboratorsRouter);
 app.use("/main_task_invites", authMiddleware, mainTaskInvitesRouter);
