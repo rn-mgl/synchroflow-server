@@ -125,6 +125,18 @@ const getAllMyMainTasksToday = async (req, res) => {
   res.status(StatusCodes.OK).json(mainTask);
 };
 
+const getAllMyUpcomingMainTasks = async (req, res) => {
+  const { id } = req.user;
+
+  const mainTask = await MainTasks.getAllMyUpcomingMainTasks(["mt.main_task_by"], [id]);
+
+  if (!mainTask) {
+    throw new NotFoundError("This task does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(mainTask);
+};
+
 const getAllCollaboratedMainTasksToday = async (req, res) => {
   const { id } = req.user;
 
@@ -157,6 +169,11 @@ export const getAllMainTasks = async (req, res) => {
 
   if (type === "collaborated" && which === "all") {
     await getAllCollaboratedMainTasks(req, res);
+    return;
+  }
+
+  if (type === "upcoming" && which === "all") {
+    await getAllMyUpcomingMainTasks(req, res);
     return;
   }
 };
