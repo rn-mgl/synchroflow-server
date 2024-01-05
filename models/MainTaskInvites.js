@@ -93,7 +93,7 @@ export class MainTaskInvites {
     }
   }
 
-  static async getAllAssociatesToInvite(userId, mainTaskId) {
+  static async getAllAssociatesToInvite(userId, mainTaskId, searchFilter) {
     try {
       const sql = `SELECT * FROM associates AS a
 
@@ -117,7 +117,8 @@ export class MainTaskInvites {
                   AND a.associate_of NOT IN (
                     SELECT collaborator_id FROM main_task_collaborators
                     WHERE main_task_fk_id = '${mainTaskId}'
-                  ) ;`;
+                  )
+                  AND (name LIKE '%${searchFilter}%' OR surname LIKE '%${searchFilter}%') ;`;
 
       const [data, _] = await conn.execute(sql);
       return data;

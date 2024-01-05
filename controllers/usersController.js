@@ -22,8 +22,9 @@ export const getUser = async (req, res) => {
 
 export const getUsers = async (req, res) => {
   const { id } = req.user;
+  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const users = await Users.getUsers(id);
+  const users = await Users.getUsers(id, sortFilter, searchFilter, searchCategory);
 
   if (!users) {
     throw new BadRequestError(`Error in getting users. Try again later.`);

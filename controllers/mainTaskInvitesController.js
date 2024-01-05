@@ -123,7 +123,7 @@ const getAllReceivedMainTaskInvites = async (req, res) => {
 
 const getAllAssociatesToInvite = async (req, res) => {
   const { id } = req.user;
-  const { mainTaskUUID } = req.query;
+  const { mainTaskUUID, searchFilter } = req.query;
 
   const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
 
@@ -131,7 +131,11 @@ const getAllAssociatesToInvite = async (req, res) => {
     throw new NotFoundError(`The main task you are inviting someone to does not exist.`);
   }
 
-  const allMainTaskInvites = await MainTaskInvites.getAllAssociatesToInvite(id, mainTask[0]?.main_task_id);
+  const allMainTaskInvites = await MainTaskInvites.getAllAssociatesToInvite(
+    id,
+    mainTask[0]?.main_task_id,
+    searchFilter
+  );
 
   if (!allMainTaskInvites) {
     throw new BadRequestError("Error in getting all your received main task invites.");

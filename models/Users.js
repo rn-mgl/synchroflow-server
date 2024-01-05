@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { associatesFilterKey } from "../utils/filterUtils.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class Users {
@@ -37,7 +38,9 @@ export class Users {
     }
   }
 
-  static async getUsers(userId) {
+  static async getUsers(userId, sortFilter, searchFilter, searchCategory) {
+    const sortValue = associatesFilterKey[sortFilter];
+    const searchCategoryValue = associatesFilterKey[searchCategory];
     try {
       const sql = `SELECT u.user_uuid, u.name, u.surname, u.email, u.image, u.role, u.status,
                     ai.associate_invite_uuid
@@ -57,7 +60,10 @@ export class Users {
                       SELECT associate_of FROM associates
                       WHERE associate_of = '${userId}'
                       OR associate_is = '${userId}'
-                    );`;
+                    )
+                    AND ${searchCategoryValue} LIKE '%${searchFilter}%'
+                    ORDER BY ${sortValue};`;
+
       const [data, _] = await conn.execute(sql);
       return data;
     } catch (error) {
