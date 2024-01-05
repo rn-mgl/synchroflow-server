@@ -89,42 +89,6 @@ export const getMainTask = async (req, res) => {
   res.status(StatusCodes.OK).json(mainTask[0]);
 };
 
-const getAllMyMainTasks = async (req, res) => {
-  const { id } = req.user;
-
-  const mainTask = await MainTasks.getAllMainTasks(["mt.main_task_by"], [id]);
-
-  if (!mainTask) {
-    throw new NotFoundError("This task does not exist.");
-  }
-
-  res.status(StatusCodes.OK).json(mainTask);
-};
-
-const getAllCollaboratedMainTasks = async (req, res) => {
-  const { id } = req.user;
-
-  const mainTask = await MainTasks.getAllMainTasks(["mtc.collaborator_id"], [id]);
-
-  if (!mainTask) {
-    throw new NotFoundError("This task does not exist.");
-  }
-
-  res.status(StatusCodes.OK).json(mainTask);
-};
-
-const getAllMyMainTasksToday = async (req, res) => {
-  const { id } = req.user;
-
-  const mainTask = await MainTasks.getAllMainTasksToday(["mt.main_task_by"], [id]);
-
-  if (!mainTask) {
-    throw new NotFoundError("This task does not exist.");
-  }
-
-  res.status(StatusCodes.OK).json(mainTask);
-};
-
 const getAllMyUpcomingMainTasks = async (req, res) => {
   const { id } = req.user;
 
@@ -137,10 +101,68 @@ const getAllMyUpcomingMainTasks = async (req, res) => {
   res.status(StatusCodes.OK).json(mainTask);
 };
 
+const getAllMyMainTasks = async (req, res) => {
+  const { id } = req.user;
+  const { sortFilter, searchFilter, searchCategory } = req.query;
+
+  const mainTask = await MainTasks.getAllMainTasks(["mt.main_task_by"], [id], sortFilter, searchFilter, searchCategory);
+
+  if (!mainTask) {
+    throw new NotFoundError("This task does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(mainTask);
+};
+
+const getAllCollaboratedMainTasks = async (req, res) => {
+  const { id } = req.user;
+  const { sortFilter, searchFilter, searchCategory } = req.query;
+
+  const mainTask = await MainTasks.getAllMainTasks(
+    ["mtc.collaborator_id"],
+    [id],
+    sortFilter,
+    searchFilter,
+    searchCategory
+  );
+
+  if (!mainTask) {
+    throw new NotFoundError("This task does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(mainTask);
+};
+
+const getAllMyMainTasksToday = async (req, res) => {
+  const { id } = req.user;
+  const { sortFilter, searchFilter, searchCategory } = req.query;
+
+  const mainTask = await MainTasks.getAllMainTasksToday(
+    ["mt.main_task_by"],
+    [id],
+    sortFilter,
+    searchFilter,
+    searchCategory
+  );
+
+  if (!mainTask) {
+    throw new NotFoundError("This task does not exist.");
+  }
+
+  res.status(StatusCodes.OK).json(mainTask);
+};
+
 const getAllCollaboratedMainTasksToday = async (req, res) => {
   const { id } = req.user;
+  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const mainTask = await MainTasks.getAllMainTasksToday(["mtc.collaborator_id"], [id]);
+  const mainTask = await MainTasks.getAllMainTasksToday(
+    ["mtc.collaborator_id"],
+    [id],
+    sortFilter,
+    searchFilter,
+    searchCategory
+  );
 
   if (!mainTask) {
     throw new NotFoundError("This task does not exist.");

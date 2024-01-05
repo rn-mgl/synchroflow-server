@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { mainTasksFilterKey } from "../utils/filterUtils.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class MainTasks {
@@ -110,15 +111,18 @@ export class MainTasks {
     }
   }
 
-  static async getAllMainTasks(whereConditions, whereValues) {
+  static async getAllMainTasks(whereConditions, whereValues, sortFilter, searchFilter, searchCategory) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
+    const sortValue = mainTasksFilterKey[sortFilter];
+    const searchCategoryValue = mainTasksFilterKey[searchCategory];
 
     try {
       const sql = `SELECT * FROM main_tasks AS mt
                   LEFT JOIN main_task_collaborators AS mtc
                   ON mt.main_task_id = mtc.main_task_fk_id
                   WHERE ${mappedWhereConditions}
-                  ORDER BY mt.main_task_end_date;`;
+                  AND ${searchCategoryValue} LIKE '%${searchFilter}%'
+                  ORDER BY mt.${sortValue};`;
 
       const [data, _] = await conn.query(sql, whereValues);
 
@@ -128,16 +132,19 @@ export class MainTasks {
     }
   }
 
-  static async getAllMainTasksToday(whereConditions, whereValues) {
+  static async getAllMainTasksToday(whereConditions, whereValues, sortFilter, searchFilter, searchCategory) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
+    const sortValue = mainTasksFilterKey[sortFilter];
+    const searchCategoryValue = mainTasksFilterKey[searchCategory];
 
     try {
       const sql = `SELECT * FROM main_tasks AS mt
                   LEFT JOIN main_task_collaborators AS mtc
                   ON mt.main_task_id = mtc.main_task_fk_id
                   WHERE ${mappedWhereConditions}
+                  AND ${searchCategoryValue} LIKE '%${searchFilter}%'
                   AND CAST(mt.main_task_end_date AS DATE) = CURDATE()
-                  ORDER BY mt.main_task_end_date;`;
+                  ORDER BY mt.${sortValue};`;
 
       const [data, _] = await conn.query(sql, whereValues);
 
