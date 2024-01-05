@@ -122,8 +122,9 @@ export const updateGroupMessage = async (req, res) => {
 
 export const getAllGroupMessageRoom = async (req, res) => {
   const { id } = req.user;
+  const { searchFilter } = req.query;
 
-  const allGroupMessageRoom = await GroupMessageRooms.getAllGroupMessageRooms(id);
+  const allGroupMessageRoom = await GroupMessageRooms.getAllGroupMessageRooms(id, searchFilter);
 
   if (!allGroupMessageRoom) {
     throw new NotFoundError("Error in getting all group message rooms.");

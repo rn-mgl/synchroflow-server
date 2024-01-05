@@ -34,7 +34,7 @@ export class PrivateMessageRooms {
     }
   }
 
-  static async getAllPrivateMessageRooms(userId) {
+  static async getAllPrivateMessageRooms(userId, searchFilter) {
     try {
       const sql = `SELECT * FROM private_message_rooms AS pmr
 
@@ -51,7 +51,9 @@ export class PrivateMessageRooms {
                       AND pmm2.member_fk_id = '${userId}'
                     )
 
-                    AND pmm.member_fk_id <> '${userId}';`;
+                    AND pmm.member_fk_id <> '${userId}'
+                    AND (u.name LIKE '%${searchFilter}%' 
+                    OR u.surname LIKE '%${searchFilter}%');`;
 
       const [data, _] = await conn.execute(sql);
 

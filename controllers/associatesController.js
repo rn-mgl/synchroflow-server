@@ -104,8 +104,9 @@ export const getAssociate = async (req, res) => {
 
 const getAllRecentAssociates = async (req, res) => {
   const { id } = req.user;
+  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const associates = await Associates.getAllRecentAssociates(id);
+  const associates = await Associates.getAllRecentAssociates(id, sortFilter, searchFilter, searchCategory);
 
   if (!associates) {
     throw new BadRequestError("Error in getting your associates. Try again later.");
@@ -116,8 +117,9 @@ const getAllRecentAssociates = async (req, res) => {
 
 const getAllMyAssociates = async (req, res) => {
   const { id } = req.user;
+  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const associates = await Associates.getAllAssociates(id);
+  const associates = await Associates.getAllAssociates(id, sortFilter, searchFilter, searchCategory);
 
   if (!associates) {
     throw new BadRequestError("Error in getting your associates. Try again later.");

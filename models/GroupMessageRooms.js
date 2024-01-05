@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { messagesFilterKey } from "../utils/filterUtils.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class GroupMessageRooms {
@@ -73,7 +74,7 @@ export class GroupMessageRooms {
     }
   }
 
-  static async getAllGroupMessageRooms(memberID) {
+  static async getAllGroupMessageRooms(memberID, searchFilter) {
     try {
       const sql = `SELECT * FROM group_message_rooms AS gmr
 
@@ -90,7 +91,8 @@ export class GroupMessageRooms {
                       WHERE gmr.message_room_id = gm2.message_room_fk_id 
                     )
 
-                    WHERE member_fk_id = '${memberID}';`;
+                    WHERE member_fk_id = '${memberID}'
+                    AND room_name LIKE '%${searchFilter}%';`;
 
       const [data, _] = await conn.execute(sql);
 

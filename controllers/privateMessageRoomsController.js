@@ -40,8 +40,9 @@ export const deletePrivateMessageRoom = async (req, res) => {
 
 export const getAllPrivateMessageRooms = async (req, res) => {
   const { id } = req.user;
+  const { searchFilter } = req.query;
 
-  const privateMessageRooms = await PrivateMessageRooms.getAllPrivateMessageRooms(id);
+  const privateMessageRooms = await PrivateMessageRooms.getAllPrivateMessageRooms(id, searchFilter);
 
   if (!privateMessageRooms) {
     throw new NotFoundError("This room does not exist.");

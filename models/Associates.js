@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { associatesFilterKey } from "../utils/filterUtils.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class Associates {
@@ -33,7 +34,12 @@ export class Associates {
     }
   }
 
-  static async getAllAssociates(userID) {
+  static async getAllAssociates(userID, sortFilter, searchFilter, searchCategory) {
+    const searchCategoryValue = associatesFilterKey[searchCategory];
+    const sortValue = associatesFilterKey[sortFilter];
+    const checkedSortValue =
+      sortValue === "date_associated" ? "a.date_associated" : `u_of.${sortValue}, u_is.${sortValue}`;
+
     try {
       const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, 
                     u_of.email AS of_email, u_of.image AS of_image, u_of.status AS of_status, u_of.role AS of_role,
@@ -49,8 +55,11 @@ export class Associates {
                     INNER JOIN users AS u_of 
                     ON a.associate_of = u_of.user_id
 
-                    WHERE a.associate_is = '${userID}'
-                    OR a.associate_of = '${userID}';`;
+                    WHERE (a.associate_is = '${userID}'
+                    OR a.associate_of = '${userID}')
+                    AND (u_of.${searchCategoryValue} LIKE '%${searchFilter}%'
+                    OR u_is.${searchCategoryValue} LIKE '%${searchFilter}%')
+                    ORDER BY ${checkedSortValue};`;
 
       const [data, _] = await conn.execute(sql);
       return data;
@@ -59,7 +68,12 @@ export class Associates {
     }
   }
 
-  static async getAllRecentAssociates(userID) {
+  static async getAllRecentAssociates(userID, sortFilter, searchFilter, searchCategory) {
+    const searchCategoryValue = associatesFilterKey[searchCategory];
+    const sortValue = associatesFilterKey[sortFilter];
+    const checkedSortValue =
+      sortValue === "date_associated" ? "a.date_associated" : `u_of.${sortValue}, u_is.${sortValue}`;
+
     try {
       const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, 
                     u_of.email AS of_email, u_of.image AS of_image, u_of.status AS of_status, u_of.role AS of_role,
@@ -75,9 +89,12 @@ export class Associates {
                     INNER JOIN users AS u_of 
                     ON a.associate_of = u_of.user_id
 
-                    WHERE a.associate_is = '${userID}'
-                    OR a.associate_of = '${userID}'
-                    AND CAST(a.date_associated AS DATE) > CAST(DATE_SUB(NOW(), INTERVAL 5 DAY) AS DATE);`;
+                    WHERE (a.associate_is = '${userID}'
+                    OR a.associate_of = '${userID}')
+                    AND (u_of.${searchCategoryValue} LIKE '%${searchFilter}%'
+                    OR u_is.${searchCategoryValue} LIKE '%${searchFilter}%')
+                    AND CAST(a.date_associated AS DATE) > CAST(DATE_SUB(NOW(), INTERVAL 5 DAY) AS DATE)
+                    ORDER BY ${checkedSortValue};`;
 
       const [data, _] = await conn.execute(sql);
       return data;
