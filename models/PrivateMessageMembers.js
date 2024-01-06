@@ -17,6 +17,8 @@ export class PrivateMessageMembers {
                         message_room_fk_id
                     ) VALUES (?, ?, ?);`;
       const privateMessageMemberValues = [this.message_member_uuid, this.member_id, this.message_room_id];
+
+      console.log(privateMessageMemberValues);
       const [data, _] = await conn.query(sql, privateMessageMemberValues);
       return data;
     } catch (error) {

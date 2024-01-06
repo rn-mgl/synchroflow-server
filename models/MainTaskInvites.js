@@ -79,14 +79,25 @@ export class MainTaskInvites {
 
   static async getAllMainTaskInvites(whereConditions, whereValues) {
     try {
-      const sql = `SELECT * FROM main_task_invites AS mti
-                    INNER JOIN users AS u
-                    ON mti.invited_associate = u.user_id
+      const sql = `SELECT u_invited.user_uuid AS invited_user_uuid, u_invited.user_id AS invited_user, u_invited.name AS invited_name, u_invited.surname AS invited_surname, u_invited.email AS invited_email,
+                    u_from.user_uuid AS from_user_uuid, u_from.user_id AS from_user, u_from.name AS from_name, u_from.surname AS from_surname, u_from.email AS from_email,
+                    mti.main_task_invite_uuid, mt.main_task_title, mt.main_task_banner, mt.main_task_priority, mt.main_task_uuid
+      
+                    FROM main_task_invites AS mti
+
+                    INNER JOIN users AS u_invited
+                    ON mti.invited_associate = u_invited.user_id
+
+                    INNER JOIN users AS u_from
+                    ON mti.invited_by = u_from.user_id
+
                     INNER JOIN main_tasks AS mt
                     ON mti.main_task_fk_id = mt.main_task_id
+
                     WHERE ${whereConditions} = ?;`;
 
       const [data, _] = await conn.query(sql, whereValues);
+
       return data;
     } catch (error) {
       console.log(error + "--- get all main task invites ---");

@@ -59,20 +59,18 @@ export class SubTaskCollaborators {
                     END AS is_sub_task_collaborator
                     FROM main_task_collaborators AS mtc
 
+                    INNER JOIN main_tasks AS mt
+                    ON mt.main_task_id = '${mainTaskID}'
+                    
+                    INNER JOIN sub_tasks AS st
+                    ON st.sub_task_id = '${subTaskID}'
+                    
                     INNER JOIN users AS u
                     ON mtc.collaborator_id = u.user_id
                     
-                    INNER JOIN main_tasks AS mt
-                    ON mt.main_task_id = mtc.main_task_fk_id
-                    
-                    LEFT JOIN sub_tasks AS st
-                    ON mt.main_task_id = st.main_task_fk_id
-                    
                     LEFT JOIN sub_task_collaborators AS stc
                     ON st.sub_task_id = stc.sub_task_fk_id
-                    
-                    WHERE mt.main_task_id = '${mainTaskID}'
-                    AND st.sub_task_id = '${subTaskID}';`;
+                    AND stc.collaborator_id = u.user_id;`;
 
       const [data, _] = await conn.execute(sql);
       return data;

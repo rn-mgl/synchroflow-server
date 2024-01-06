@@ -122,6 +122,7 @@ export class MainTasks {
                   ON mt.main_task_id = mtc.main_task_fk_id
                   WHERE ${mappedWhereConditions}
                   AND ${searchCategoryValue} LIKE '%${searchFilter}%'
+                  GROUP BY mt.main_task_id
                   ORDER BY mt.${sortValue};`;
 
       const [data, _] = await conn.query(sql, whereValues);
@@ -144,6 +145,7 @@ export class MainTasks {
                   WHERE ${mappedWhereConditions}
                   AND ${searchCategoryValue} LIKE '%${searchFilter}%'
                   AND CAST(mt.main_task_end_date AS DATE) = CURDATE()
+                  GROUP BY mt.main_task_id
                   ORDER BY mt.${sortValue};`;
 
       const [data, _] = await conn.query(sql, whereValues);
@@ -163,6 +165,7 @@ export class MainTasks {
                   ON mt.main_task_id = mtc.main_task_fk_id
                   WHERE ${mappedWhereConditions}
                   AND CAST(mt.main_task_end_date AS DATE) > CURDATE()
+                  GROUP BY mt.main_task_id
                   ORDER BY mt.main_task_end_date;`;
 
       const [data, _] = await conn.query(sql, whereValues);

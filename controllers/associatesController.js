@@ -27,7 +27,7 @@ const createMessageRoom = async (req, res, user) => {
   );
   const associatePrivateMessageMember = new PrivateMessageMembers(
     associatePrivateMessageMemberUUID,
-    user.user_id,
+    user[0]?.user_id,
     newPrivateMessageRoom.insertId
   );
 
@@ -63,7 +63,7 @@ export const createAssociate = async (req, res) => {
     throw new BadRequestError("Error in establishing associate connection. Try again later.");
   }
 
-  const memberCount = await PrivateMessageRooms.getPrivateMessageRoomExistingMembers(id, user.user_id);
+  const memberCount = await PrivateMessageRooms.getPrivateMessageRoomExistingMembers(id, user[0]?.user_id);
 
   if (!memberCount[0] || memberCount[0]?.total_members !== 2) {
     await createMessageRoom(req, res, user);
