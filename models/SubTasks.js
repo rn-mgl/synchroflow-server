@@ -121,7 +121,7 @@ export class SubTasks {
                   LEFT JOIN sub_task_collaborators AS stc
                   ON stc.sub_task_fk_id = st.sub_task_id
                   
-                  WHERE ${mappedWhereConditions};;`;
+                  WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
       return data;

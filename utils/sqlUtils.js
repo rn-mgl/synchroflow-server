@@ -1,4 +1,9 @@
-export const mapWhereConditions = (conditions) =>
+export const mapWhereConditions = (conditions) => {
+  let mappedWhereConditions = "";
+
   conditions.map((condition, index) => {
-    return `${condition} = ? ${index !== conditions.length - 1 ? "AND" : ""}`;
+    mappedWhereConditions += `${condition} = ? ${index !== conditions.length - 1 ? `AND ` : ``}`;
   });
+
+  return mappedWhereConditions;
+};
