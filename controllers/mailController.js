@@ -1,7 +1,10 @@
 import sgMail from "@sendgrid/mail";
 import { BadRequestError } from "../errors/index.js";
 
-const url = "http://192.168.1.121:3000";
+const local = "http://192.168.1.121:9000";
+const prod = "https://synchroflow-server.onrender.com";
+
+const url = prod;
 
 export const sendVerificationMail = async (name, email, token) => {
   const message = {
