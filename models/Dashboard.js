@@ -6,25 +6,47 @@ export class Dashboard {
 
   static async getDashboardData(userID) {
     try {
-      const tasks = `SELECT COUNT(CASE WHEN mt.main_task_status = 'ongoing' THEN 1 ELSE NULL END) AS ongoingTasksCount, 
-                    COUNT(CASE WHEN mt.main_task_status = 'done' THEN 1 ELSE NULL END) AS doneTasksCount,
-                    COUNT(CASE WHEN mt.main_task_status = 'late' THEN 1 ELSE NULL END) AS lateTasksCount
+      const tasks = `SELECT 
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
+                          AND mt.main_task_status = 'ongoing' 
+                          THEN mt.main_task_id END) AS ongoingMainTasksCount,
 
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
+                          AND mt.main_task_status = 'done' 
+                          THEN mt.main_task_id END) AS doneMainTasksCount,
+
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
+                          AND mt.main_task_status = 'late' 
+                          THEN mt.main_task_id END) AS lateMainTasksCount,
+
+                    COUNT(DISTINCT CASE WHEN (mt.main_task_by != '${userID}' 
+                          AND stc.collaborator_id = '${userID}' 
+                          AND st.sub_task_status = 'ongoing') 
+                          THEN st.sub_task_id END) AS ongoingSubTasksCount,
+
+                    COUNT(DISTINCT CASE WHEN (mt.main_task_by != '${userID}' 
+                          AND stc.collaborator_id = '${userID}' 
+                          AND st.sub_task_status = 'done') 
+                          THEN st.sub_task_id END) AS doneSubTasksCount,
+
+                    COUNT(DISTINCT CASE WHEN (mt.main_task_by != '${userID}' 
+                          AND stc.collaborator_id = '${userID}' 
+                          AND st.sub_task_status = 'late') 
+                          THEN st.sub_task_id END) AS lateSubTasksCount
+                    
                     FROM users AS u
 
-                    LEFT JOIN main_tasks AS mt
+                    LEFT JOIN main_tasks AS mt 
                     ON u.user_id = mt.main_task_by
 
-                    LEFT JOIN main_task_collaborators AS mtc
-                    ON u.user_id = mtc.collaborator_id
+                    LEFT JOIN main_task_collaborators AS mtc 
+                    ON mt.main_task_id = mtc.main_task_fk_id
 
-                    LEFT JOIN sub_tasks AS st
-                    ON u.user_id = st.sub_task_by
+                    LEFT JOIN sub_tasks AS st 
+                    ON mt.main_task_id = st.main_task_fk_id
 
-                    LEFT JOIN sub_task_collaborators AS stc
-                    ON u.user_id = stc.collaborator_id
-      
-                    WHERE u.user_id = '${userID}';`;
+                    LEFT JOIN sub_task_collaborators AS stc 
+                    ON st.sub_task_id = stc.sub_task_fk_id`;
 
       const weeklyTasks = `SELECT DAYOFWEEK(mt.main_task_end_date) AS day, COUNT(mt.main_task_id) AS taskCount
  
