@@ -8,7 +8,6 @@ import { Users } from "../models/Users.js";
 export const createMainTaskInvite = async (req, res) => {
   const { taskUUID, associatesToInvite, inviteMessage } = req.body;
   const { id } = req.user;
-  const mainTaskInviteUUID = uuidv4();
 
   const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [taskUUID]);
 
@@ -22,6 +21,8 @@ export const createMainTaskInvite = async (req, res) => {
     if (!invitedUser) {
       throw new NotFoundError(`A user does not exist in Synchroflow.`);
     }
+
+    const mainTaskInviteUUID = uuidv4();
 
     const mainTaskInvite = new MainTaskInvites(
       mainTaskInviteUUID,
