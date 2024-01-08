@@ -90,15 +90,17 @@ export class Users {
     }
   }
 
-  static async updateUserPassword(whereConditions, whereValues) {
+  static async updateUserPassword(password, userID) {
     try {
       const sql = `UPDATE users SET password = ?
-                    WHERE ${whereConditions} = ?`;
+                    WHERE user_id = '${userID}'`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const updateUserValues = [password];
+
+      const [data, _] = await conn.query(sql, updateUserValues);
       return data;
     } catch (error) {
-      console.log(error + "--- update user identifier ---");
+      console.log(error + "--- update user password ---");
     }
   }
 

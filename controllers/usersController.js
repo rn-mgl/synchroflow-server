@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { hashPassword, randomAvatar } from "../utils/index.js";
+import { comparePassword, hashPassword, randomAvatar } from "../utils/index.js";
 import { Users } from "../models/Users.js";
 import { BadRequestError, UnauthorizedError } from "../errors/index.js";
 
@@ -59,10 +59,9 @@ const updateUserIdentifier = async (req, res) => {
 };
 
 const updateUserPassword = async (req, res) => {
-  const { userData } = req.body;
+  const { password } = req.body;
   const { user_uuid } = req.params;
   const { id } = req.user;
-  const { password } = userData;
 
   const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
@@ -70,9 +69,15 @@ const updateUserPassword = async (req, res) => {
     throw new UnauthorizedError("You are not allowed to access other account.");
   }
 
-  const hashedPassword = await hashPassword(password);
+  const isCorrect = await comparePassword(password.currentPassword.text, user[0]?.password);
 
-  const updateUser = await Users.updateUserPassword(hashedPassword, "user_id", user[0]?.user_id);
+  if (!isCorrect) {
+    throw new BadRequestError("The current password you entered does not match your recorded password.");
+  }
+
+  const hashedPassword = await hashPassword(password.newPassword.text);
+
+  const updateUser = await Users.updateUserPassword(hashedPassword, user[0]?.user_id);
 
   if (!updateUser) {
     throw new BadRequestError("Error in updating your password.");
