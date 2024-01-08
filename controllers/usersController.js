@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { hashPassword } from "../utils/index.js";
+import { hashPassword, randomAvatar } from "../utils/index.js";
 import { Users } from "../models/Users.js";
 import { BadRequestError, UnauthorizedError } from "../errors/index.js";
 
@@ -37,7 +37,7 @@ const updateUserIdentifier = async (req, res) => {
   const { userData } = req.body;
   const { user_uuid } = req.params;
   const { id } = req.user;
-  const { name, surname, email } = userData;
+  const { name, surname, role, status } = userData;
 
   const user = await Users.getUser(["user_uuid"], [user_uuid]);
 
@@ -45,7 +45,11 @@ const updateUserIdentifier = async (req, res) => {
     throw new UnauthorizedError("You are not allowed to access other account.");
   }
 
-  const updateUser = await Users.updateUserIdentifier(name, surname, email, "user_id", user[0]?.user_id);
+  if (!userData.image) {
+    userData.image = randomAvatar();
+  }
+
+  const updateUser = await Users.updateUserIdentifier(name, surname, role, status, userData.image, user[0]?.user_id);
 
   if (!updateUser) {
     throw new BadRequestError("Error in updating your identifiers.");
@@ -79,6 +83,7 @@ const updateUserPassword = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   const { user_uuid } = req.params;
+  const { id } = req.user;
   const { type } = req.query;
 
   const user = await Users.getUser(["user_uuid"], [user_uuid]);

@@ -71,12 +71,19 @@ export class Users {
     }
   }
 
-  static async updateUserIdentifier(name, surname, email, whereConditions, whereValues) {
+  static async updateUserIdentifier(name, surname, role, status, image, userID) {
     try {
-      const sql = `UPDATE users SET name = ?, surname = ?, email = ?
-                    WHERE ${whereConditions} = ?`;
+      const sql = `UPDATE users SET 
+                      name = ?, 
+                      surname = ?, 
+                      role = ?,
+                      status = ?, 
+                      image = ?
+                    WHERE user_id = '${userID}'`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const updateUserValues = [name, surname, role, status, image];
+
+      const [data, _] = await conn.query(sql, updateUserValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");
