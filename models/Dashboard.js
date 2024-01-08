@@ -8,28 +8,46 @@ export class Dashboard {
     try {
       const tasks = `SELECT 
                     COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
-                          AND mt.main_task_status = 'ongoing' 
-                          THEN mt.main_task_id END) AS ongoingMainTasksCount,
+                          AND mt.main_task_status = 'ongoing'
+                          THEN mt.main_task_id END) 
+                          +
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
+                          AND mtc.collaborator_id = '${userID}'
+                          AND mt.main_task_status = 'ongoing'
+                          THEN mt.main_task_id END)
+                          AS ongoingMainTasksCount,
 
                     COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
                           AND mt.main_task_status = 'done' 
-                          THEN mt.main_task_id END) AS doneMainTasksCount,
+                          THEN mt.main_task_id END)
+                          +
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
+                          AND mtc.collaborator_id = '${userID}'
+                          AND mt.main_task_status = 'done'
+                          THEN mt.main_task_id END) 
+                          AS doneMainTasksCount,
 
                     COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
                           AND mt.main_task_status = 'late' 
-                          THEN mt.main_task_id END) AS lateMainTasksCount,
+                          THEN mt.main_task_id END)
+                          +
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
+                          AND mtc.collaborator_id = '${userID}'
+                          AND mt.main_task_status = 'late'
+                          THEN mt.main_task_id END) 
+                          AS lateMainTasksCount,
 
-                    COUNT(DISTINCT CASE WHEN (mt.main_task_by != '${userID}' 
+                    COUNT(DISTINCT CASE WHEN (mt.main_task_by <> '${userID}' 
                           AND stc.collaborator_id = '${userID}' 
                           AND st.sub_task_status = 'ongoing') 
                           THEN st.sub_task_id END) AS ongoingSubTasksCount,
 
-                    COUNT(DISTINCT CASE WHEN (mt.main_task_by != '${userID}' 
+                    COUNT(DISTINCT CASE WHEN (mt.main_task_by <> '${userID}' 
                           AND stc.collaborator_id = '${userID}' 
                           AND st.sub_task_status = 'done') 
                           THEN st.sub_task_id END) AS doneSubTasksCount,
 
-                    COUNT(DISTINCT CASE WHEN (mt.main_task_by != '${userID}' 
+                    COUNT(DISTINCT CASE WHEN (mt.main_task_by <> '${userID}' 
                           AND stc.collaborator_id = '${userID}' 
                           AND st.sub_task_status = 'late') 
                           THEN st.sub_task_id END) AS lateSubTasksCount

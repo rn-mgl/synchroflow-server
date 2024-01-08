@@ -69,7 +69,8 @@ export class GroupMessageMembers {
                       ON gmm.message_room_fk_id = gmr.message_room_id
                       WHERE gmr.message_room_id = '${messageRoomID}' 
                     ) 
-                    AND u.user_id <> '${userID}';`;
+                    AND u.user_id <> '${userID}'
+                    GROUP BY u.user_id;`;
 
       const [data, _] = await conn.execute(sql);
       return data;

@@ -6,7 +6,7 @@ export class Notifications {
   static async getNotifications(userID) {
     try {
       const sql = `SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
-                    "main task invite" AS purpose, mt.main_task_title AS title
+                    "main task invite" AS purpose, mt.main_task_title AS title, mti.date_invited AS notif_date
                     FROM main_task_invites AS mti
 
                     INNER JOIN main_tasks AS mt
@@ -20,7 +20,7 @@ export class Notifications {
                     UNION
                     
                     SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
-                    "sub task invite" AS purpose, st.sub_task_title AS title
+                    "sub task invite" AS purpose, st.sub_task_title AS title, stc.date_joined AS notif_date
                     FROM sub_task_collaborators AS stc
 
                     INNER JOIN sub_tasks AS st
@@ -34,7 +34,7 @@ export class Notifications {
                     UNION 
                     
                     SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
-                    "associate invite" AS purpose, "associate request" AS title
+                    "associate invite" AS purpose, "associate request" AS title, ai.date_invited AS notif_date
                     FROM associate_invites AS ai
 
                     INNER JOIN users AS u_from
@@ -45,7 +45,7 @@ export class Notifications {
                     UNION 
                     
                     SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
-                    "group member" AS purpose, gmr.room_name AS title
+                    "group member" AS purpose, gmr.room_name AS title, gmm.date_added AS notif_date
                     FROM group_message_rooms AS gmr
 
                     INNER JOIN group_message_members AS gmm
@@ -63,13 +63,15 @@ export class Notifications {
                     "private message" AS purpose,
                     CASE
                         WHEN pm.message IS NULL THEN pm.message_file ELSE pm.message
-                    END AS title
+                    END AS title, pm.date_sent AS notif_date
                     FROM private_messages AS pm
                     
                     INNER JOIN users AS u_from
                     ON u_from.user_id = pm.message_from
 
-                    WHERE pm.message_to = '${userID}';`;
+                    WHERE pm.message_to = '${userID}'
+                    
+                    ORDER BY notif_date DESC;`;
 
       const [data, _] = await conn.execute(sql);
       return data;
