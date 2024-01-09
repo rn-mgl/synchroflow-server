@@ -1,12 +1,12 @@
 import { StatusCodes } from "http-status-codes";
-import { v4 as uuidv4 } from "uuid";
-import { hashPassword, comparePassword, createLoginToken, randomAvatar } from "../utils/index.js";
-import { Users } from "../models/Users.js";
-import { BadRequestError, NotFoundError, UnauthorizedError } from "../errors/index.js";
 import jwt from "jsonwebtoken";
-import { sendVerificationMail } from "./mailController.js";
-import { createEmailToken } from "../utils/tokenUtils.js";
+import { v4 as uuidv4 } from "uuid";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "../errors/index.js";
 import { UserSettings } from "../models/UserSettings.js";
+import { Users } from "../models/Users.js";
+import { comparePassword, createLoginToken, hashPassword, randomAvatar } from "../utils/index.js";
+import { createEmailToken } from "../utils/tokenUtils.js";
+import { sendPasswordResetMail, sendVerificationMail } from "./mailController.js";
 
 export const registerUser = async (req, res) => {
   const { registerCredentials } = req.body;
@@ -92,4 +92,47 @@ export const verifyUser = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json(verify);
+};
+
+export const forgotPassword = async (req, res) => {
+  const { candidateName, candidateSurname, candidateEmail } = req.body;
+
+  const user = await Users.getUser(["name", "surname", "email"], [candidateName, candidateSurname, candidateEmail]);
+
+  if (!user[0]) {
+    throw new NotFoundError(`There is no user with the given identifiers.`);
+  }
+
+  const { user_id, user_uuid, name, surname, email } = user[0];
+
+  const token = createEmailToken(user_id, user_uuid, `${name} ${surname}`, email);
+
+  const passwordResetMail = await sendPasswordResetMail(`${name} ${surname}`, email, token);
+
+  res.status(StatusCodes.OK).json({ token, passwordResetMail });
+};
+
+export const newPassword = async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  const verifiedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+  const { id } = verifiedToken;
+
+  const user = await Users.getUser(["user_id"], [id]);
+
+  if (!user[0]) {
+    throw new NotFoundError(`There is no user with the given identifiers.`);
+  }
+
+  const hashedPassword = await hashPassword(newPassword.text);
+
+  const newUserPassword = await Users.updateUserPassword(hashedPassword, id);
+
+  if (!newUserPassword) {
+    throw new BadRequestError(`Error in changing your password. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(newUserPassword);
 };

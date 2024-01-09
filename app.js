@@ -37,6 +37,7 @@ import notificationsRouter from "./routers/notificationsRouter.js";
 import privateMessageMembersRouter from "./routers/privateMessageMembersRouter.js";
 import privateMessageRoomsRouter from "./routers/privateMessageRoomsRouter.js";
 import privateMessagesRouter from "./routers/privateMessagesRouter.js";
+import passwordRouter from "./routers/passwordRouter.js";
 
 import subTaskCollaboratorsRouter from "./routers/subTaskCollaboratorsRouter.js";
 import subTasksRouter from "./routers/subTasksRouter.js";
@@ -64,6 +65,7 @@ sendgrid.setApiKey(process.env.SENDGRID_SECRET);
 
 // api routes //////////////////////////////////////////////////////////////////////////////
 app.use("/auth", authRouter);
+app.use("/password", passwordRouter);
 app.use("/files", authMiddleware, fileRouter);
 
 app.use("/associates", authMiddleware, associatesRouter);
