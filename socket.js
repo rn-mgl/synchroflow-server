@@ -5,8 +5,6 @@ const socketEmits = (socket) => {
 const socketOns = (socket) => {
   socket.on("connect to uuid", (args) => {
     socket.join(args?.uuid);
-
-    console.log(socket);
   });
 };
 

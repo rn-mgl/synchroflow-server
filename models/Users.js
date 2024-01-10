@@ -49,6 +49,7 @@ export class Users {
 
                     LEFT JOIN associate_invites AS ai
                     ON ai.associate_invite_to = u.user_id
+                    OR ai.associate_invite_from = u.user_id
                     
                     WHERE u.user_id <> '${userId}'
                     AND u.user_id NOT IN (
