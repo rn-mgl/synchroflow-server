@@ -34,16 +34,17 @@ import mainTasksRouter from "./routers/mainTasksRouter.js";
 
 import notificationsRouter from "./routers/notificationsRouter.js";
 
+import passwordRouter from "./routers/passwordRouter.js";
 import privateMessageMembersRouter from "./routers/privateMessageMembersRouter.js";
 import privateMessageRoomsRouter from "./routers/privateMessageRoomsRouter.js";
 import privateMessagesRouter from "./routers/privateMessagesRouter.js";
-import passwordRouter from "./routers/passwordRouter.js";
 
 import subTaskCollaboratorsRouter from "./routers/subTaskCollaboratorsRouter.js";
 import subTasksRouter from "./routers/subTasksRouter.js";
 
-import usersRouter from "./routers/usersRouter.js";
 import userSettingsRouter from "./routers/userSettingsRouter.js";
+import usersRouter from "./routers/usersRouter.js";
+import { sockets } from "./socket.js";
 
 //drivers //////////////////////////////////////////////////////////////////////////////
 const app = express();
@@ -95,7 +96,7 @@ app.use("/user_settings", authMiddleware, userSettingsRouter);
 
 // web sockets //////////////////////////////////////////////////////////////////////////////
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  sockets(socket);
 });
 
 app.use(errorMiddleware);
