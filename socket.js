@@ -27,4 +27,8 @@ export const sockets = (socket) => {
   socket.on("accept_associate_invite", (args) => {
     socket.to(args.room).emit("update_associates");
   });
+
+  socket.on("send_message", (args) => {
+    socket.to(args.room).emit("get_messages");
+  });
 };
