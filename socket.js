@@ -29,6 +29,8 @@ export const sockets = (socket) => {
   });
 
   socket.on("send_message", (args) => {
-    socket.to(args.room).emit("get_messages");
+    args.rooms.map((room) => {
+      socket.to(room).emit("get_messages");
+    });
   });
 };
