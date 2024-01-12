@@ -30,7 +30,7 @@ export const sockets = (socket) => {
 
   socket.on("send_message", (args) => {
     args.rooms.map((room) => {
-      socket.to(room).emit("get_messages");
+      socket.to(room).emit("get_messages", { room });
     });
   });
 };
