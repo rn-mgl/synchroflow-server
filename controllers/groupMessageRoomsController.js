@@ -42,6 +42,17 @@ export const deleteGroupMessageRoom = async (req, res) => {
     throw new NotFoundError("The group message room does not exist.");
   }
 
+  const groupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
+    ["message_room_fk_id"],
+    [groupMessageRoom[0]?.message_room_id]
+  );
+
+  if (!groupMessageMembers) {
+    throw new BadRequestError("Error in getting group message room members.");
+  }
+
+  const groupMessageMembersUUID = groupMessageMembers.map((groupMessageMember) => groupMessageMember.user_uuid);
+
   const deleteRoom = await GroupMessageRooms.deleteGroupMessageRoom(
     ["message_room_id"],
     [groupMessageRoom[0]?.message_room_id]
@@ -51,7 +62,7 @@ export const deleteGroupMessageRoom = async (req, res) => {
     throw new BadRequestError("Error in deleting group message room. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(deleteRoom);
+  res.status(StatusCodes.OK).json({ deletedRoom: deleteRoom, rooms: groupMessageMembersUUID });
 };
 
 const updateGroupMessageRoomName = async (req, res) => {
