@@ -1,7 +1,6 @@
 export const sockets = (socket) => {
-  socket.emit("room_rejoin", (args) => {
-    console.log(args.room);
-  });
+  // initializer
+  socket.emit("room_rejoin");
 
   socket.on("connect_to_uuid", (args) => {
     socket.join(args?.uuid);
@@ -9,10 +8,12 @@ export const sockets = (socket) => {
 
   socket.on("rejoin_user_uuid", (args) => {
     if (args.room) {
-      socket.join(args.room);
+      socket.join(args?.room);
       console.log(socket.rooms);
     }
   });
+
+  // associates
 
   socket.on("associate_invite", (args) => {
     socket.to(args.room).emit("update_associate_invite");
@@ -22,6 +23,8 @@ export const sockets = (socket) => {
     socket.to(args.room).emit("update_associates");
   });
 
+  // invites
+
   socket.on("remove_associate_invite", (args) => {
     socket.to(args.room).emit("remove_associate_invite", { args });
   });
@@ -30,10 +33,21 @@ export const sockets = (socket) => {
     socket.to(args.room).emit("update_associates");
   });
 
+  // messages
+
   socket.on("send_message", (args) => {
     args.rooms.map((room) => {
-      console.log(room);
       socket.to(room).emit("get_messages", { room });
     });
+  });
+
+  // group members
+  socket.on("add_group_member", (args) => {
+    socket.to(args.room).emit("get_group_rooms");
+  });
+
+  socket.on("remove_group_member", (args) => {
+    console.log(args);
+    socket.to(args.room).emit("get_group_members", { room: args.room });
   });
 };
