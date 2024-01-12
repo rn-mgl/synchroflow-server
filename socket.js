@@ -48,6 +48,6 @@ export const sockets = (socket) => {
 
   socket.on("remove_group_member", (args) => {
     console.log(args);
-    socket.to(args.room).emit("get_group_members", { room: args.room });
+    socket.to(args.room).emit("reflect_remove_group_member", { room: args.room });
   });
 };
