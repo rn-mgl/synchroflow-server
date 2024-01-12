@@ -41,9 +41,17 @@ export const sockets = (socket) => {
     });
   });
 
+  //group
+
+  socket.on("remove_group_member", (args) => {
+    socket.to(args.room).emit("reflect_remove_group_member", { room: args.room });
+  });
+
   // group members
-  socket.on("add_group_member", (args) => {
-    socket.to(args.room).emit("get_group_rooms");
+  socket.on("update_group_room", (args) => {
+    args.rooms.map((room) => {
+      socket.to(room).emit("reflect_update_group_room");
+    });
   });
 
   socket.on("remove_group_member", (args) => {

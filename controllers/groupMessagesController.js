@@ -33,9 +33,13 @@ export const createGroupMessage = async (req, res) => {
   }
 
   const groupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
-    ["message_room_id"],
+    ["message_room_fk_id"],
     [groupMessageRoom[0]?.message_room_id]
   );
+
+  if (!groupMessageMembers) {
+    throw new BadRequestError("Error in getting group message members.");
+  }
 
   const groupMessageMembersUUID = groupMessageMembers.map((groupMessageMember) => groupMessageMember.user_uuid);
 

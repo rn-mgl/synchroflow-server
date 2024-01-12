@@ -75,7 +75,18 @@ const updateGroupMessageRoomName = async (req, res) => {
     throw new BadRequestError("Error in updating group message room name. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(updateRoomName);
+  const groupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
+    ["message_room_fk_id"],
+    [groupMessageRoom[0]?.message_room_id]
+  );
+
+  if (!groupMessageMembers) {
+    throw new BadRequestError("Error in getting group message room members.");
+  }
+
+  const groupMessageMembersUUID = groupMessageMembers.map((groupMessageMember) => groupMessageMember.user_uuid);
+
+  res.status(StatusCodes.OK).json({ updatedRoom: updateRoomName, rooms: groupMessageMembersUUID });
 };
 
 const updateGroupMessageOwner = async (req, res) => {
