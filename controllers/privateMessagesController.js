@@ -7,7 +7,7 @@ import { Users } from "../models/Users.js";
 
 export const createPrivateMessage = async (req, res) => {
   const { messageRoom, messageToUUID, message, messageFile, messageFileType } = req.body;
-  const { id } = req.user;
+  const { id, uuid } = req.user;
   const privateMessageUUID = uuidv4();
 
   const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["message_room"], [messageRoom]);
@@ -34,7 +34,7 @@ export const createPrivateMessage = async (req, res) => {
     throw new BadRequestError("Error in sending message. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(newPrivateMessage);
+  res.status(StatusCodes.OK).json({ message: newPrivateMessage, rooms: [uuid, messageToUUID] });
 };
 
 export const deletePrivateMessage = async (req, res) => {

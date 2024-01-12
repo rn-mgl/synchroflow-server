@@ -1,5 +1,7 @@
 export const sockets = (socket) => {
-  socket.emit("room_rejoin");
+  socket.emit("room_rejoin", (args) => {
+    console.log(args.room);
+  });
 
   socket.on("connect_to_uuid", (args) => {
     socket.join(args?.uuid);
@@ -30,6 +32,7 @@ export const sockets = (socket) => {
 
   socket.on("send_message", (args) => {
     args.rooms.map((room) => {
+      console.log(room);
       socket.to(room).emit("get_messages", { room });
     });
   });

@@ -3,10 +3,11 @@ import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { GroupMessages } from "../models/GroupMessages.js";
 import { GroupMessageRooms } from "../models/GroupMessageRooms.js";
+import { GroupMessageMembers } from "../models/GroupMessageMembers.js";
 
 export const createGroupMessage = async (req, res) => {
   const { messageRoom, message, messageFile, messageFileType } = req.body;
-  const { id } = req.user;
+  const { id, uuid } = req.user;
 
   const groupMessageUUID = uuidv4();
 
@@ -31,7 +32,14 @@ export const createGroupMessage = async (req, res) => {
     throw new BadRequestError("Error in sending group message. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(newGroupMessage);
+  const groupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
+    ["message_room_id"],
+    [groupMessageRoom[0]?.message_room_id]
+  );
+
+  const groupMessageMembersUUID = groupMessageMembers.map((groupMessageMember) => groupMessageMember.user_uuid);
+
+  res.status(StatusCodes.OK).json({ message: newGroupMessage, rooms: groupMessageMembersUUID });
 };
 
 export const deleteGroupMessage = async (req, res) => {
