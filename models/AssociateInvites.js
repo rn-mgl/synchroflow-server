@@ -53,9 +53,18 @@ export class AssociateInvites {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
-      const sql = `SELECT * FROM associate_invites AS ai
-                    INNER JOIN users AS u
-                    ON ai.associate_invite_to = u.user_id
+      const sql = `SELECT u_to.user_uuid as invited_user_uuid, u_to.image AS invited_image, u_to.name AS invited_name, u_to.surname AS invited_surname, u_to.email AS invited_email,
+                    u_from.user_uuid as from_user_uuid, u_from.image AS from_image, u_from.name AS from_name, u_from.surname AS from_name, u_from.email AS from_email,
+                    associate_invite_uuid
+
+                    FROM associate_invites AS ai
+
+                    INNER JOIN users AS u_to
+                    ON ai.associate_invite_to = u_to.user_id
+
+                    INNER JOIN users AS u_from
+                    ON ai.associate_invite_from = u_from.user_id
+
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);
@@ -69,9 +78,18 @@ export class AssociateInvites {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
-      const sql = `SELECT * FROM associate_invites AS ai
-                    INNER JOIN users AS u
-                    ON ai.associate_invite_from = u.user_id
+      const sql = `SELECT u_to.user_uuid as invited_user_uuid, u_to.image AS invited_image, u_to.name AS invited_name, u_to.surname AS invited_surname, u_to.email AS invited_email,
+                    u_from.user_uuid as from_user_uuid, u_from.image AS from_image, u_from.name AS from_name, u_from.surname AS from_name, u_from.email AS from_email,
+                    associate_invite_uuid
+
+                    FROM associate_invites AS ai
+
+                    INNER JOIN users AS u_to
+                    ON ai.associate_invite_to = u_to.user_id
+
+                    INNER JOIN users AS u_from
+                    ON ai.associate_invite_from = u_from.user_id
+
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);

@@ -14,31 +14,30 @@ export const sockets = (socket) => {
   });
 
   // associates
-  socket.on("associate_invite", (args) => {
-    socket.to(args.room).emit("update_associate_invite");
-  });
-
   socket.on("disconnect_associate", (args) => {
-    socket.to(args.room).emit("update_associates");
+    socket.to(args.room).emit("refetch_associates");
   });
 
   // invites
+  socket.on("send_associate_invite", (args) => {
+    socket.to(args.room).emit("reflect_send_associate_invite");
+  });
+
   socket.on("accept_associate_invite", (args) => {
-    socket.to(args.room).emit("update_associates");
+    socket.to(args.invitedRoom).to(args.fromRoom).emit("refetch_associates");
   });
 
   socket.on("remove_associate_invite", (args) => {
-    socket.to(args.room).emit("reflect_remove_associate_invite", { args });
+    socket.to(args.invitedRoom).to(args.fromRoom).emit("reflect_remove_associate_invite", { args });
+    socket.to(args.fromRoom).emit("reflect_send_associate_invite");
   });
 
   socket.on("accept_task_invite", (args) => {
-    socket.to(args.invitedRoom).to(args.fromRoom).emit("reflect_remove_task_invite", { args });
-    socket.to(args.invitedRoom).to(args.fromRoom).emit("update_tasks", { args });
+    socket.to(args.invitedRoom).to(args.fromRoom).emit("refetch_tasks");
   });
 
   socket.on("remove_task_invite", (args) => {
     socket.to(args.invitedRoom).to(args.fromRoom).emit("reflect_remove_task_invite", { args });
-    socket.to(args.invitedRoom).to(args.fromRoom).emit("update_tasks", { args });
   });
 
   socket.on("send_main_task_invite", (args) => {
