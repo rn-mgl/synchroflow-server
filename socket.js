@@ -23,12 +23,28 @@ export const sockets = (socket) => {
   });
 
   // invites
-  socket.on("remove_associate_invite", (args) => {
-    socket.to(args.room).emit("remove_associate_invite", { args });
-  });
-
   socket.on("accept_associate_invite", (args) => {
     socket.to(args.room).emit("update_associates");
+  });
+
+  socket.on("remove_associate_invite", (args) => {
+    socket.to(args.room).emit("reflect_remove_associate_invite", { args });
+  });
+
+  socket.on("accept_task_invite", (args) => {
+    socket.to(args.invitedRoom).to(args.fromRoom).emit("reflect_remove_task_invite", { args });
+    socket.to(args.invitedRoom).to(args.fromRoom).emit("update_tasks", { args });
+  });
+
+  socket.on("remove_task_invite", (args) => {
+    socket.to(args.invitedRoom).to(args.fromRoom).emit("reflect_remove_task_invite", { args });
+    socket.to(args.invitedRoom).to(args.fromRoom).emit("update_tasks", { args });
+  });
+
+  socket.on("send_main_task_invite", (args) => {
+    args.rooms.map((room) => {
+      socket.to(room).emit("reflect_send_main_task_invite");
+    });
   });
 
   // messages
