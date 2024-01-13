@@ -70,7 +70,9 @@ export class SubTaskCollaborators {
                     
                     LEFT JOIN sub_task_collaborators AS stc
                     ON st.sub_task_id = stc.sub_task_fk_id
-                    AND stc.collaborator_id = u.user_id;`;
+                    AND stc.collaborator_id = u.user_id
+                    
+                    WHERE mtc.main_task_fk_id = '${mainTaskID}';`;
 
       const [data, _] = await conn.execute(sql);
       return data;
