@@ -3,6 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import { SubTasks } from "../models/SubTasks.js";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { MainTasks } from "../models/MainTasks.js";
+import { MainTaskCollaborators } from "../models/MainTaskCollaborators.js";
+import { SubTaskCollaborators } from "../models/SubTaskCollaborators.js";
 
 export const createSubTask = async (req, res) => {
   const { subTaskData, mainTaskUUID } = req.body;
@@ -46,6 +48,13 @@ export const updateSubTask = async (req, res) => {
     subTaskEndDate,
   } = subTaskData;
   const { sub_task_uuid } = req.params;
+  const { mainTaskUUID } = req.query;
+
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
+
+  if (!mainTask) {
+    throw new NotFoundError("This main task parent does not exist.");
+  }
 
   const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [sub_task_uuid]);
 
@@ -68,7 +77,18 @@ export const updateSubTask = async (req, res) => {
     throw new BadRequestError("Error in updating sub task. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(updateSubTask);
+  const subTaskCollaborators = await SubTaskCollaborators.getAllSubTaskCollaborators(
+    subTask[0]?.sub_task_id,
+    mainTask[0].main_task_id
+  );
+
+  if (!subTaskCollaborators) {
+    throw new BadRequestError("Error in disseminating to collaborators.");
+  }
+
+  const subTaskCollaboratorsUUID = subTaskCollaborators.map((collaborator) => collaborator.user_uuid);
+
+  res.status(StatusCodes.OK).json({ updateSubTask, rooms: subTaskCollaboratorsUUID });
 };
 
 export const getSubTask = async (req, res) => {
@@ -148,6 +168,13 @@ export const getAllSubTasks = async (req, res) => {
 
 export const deleteSubTask = async (req, res) => {
   const { sub_task_uuid } = req.params;
+  const { mainTaskUUID } = req.query;
+
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
+
+  if (!mainTask) {
+    throw new NotFoundError("This main task parent does not exist.");
+  }
 
   const subTask = await SubTasks.getSubTask(["sub_task_uuid"], [sub_task_uuid]);
 
@@ -155,11 +182,22 @@ export const deleteSubTask = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  const deleteTask = await SubTasks.deleteSubTask(["sub_task_id"], [subTask[0]?.sub_task_id]);
+  const subTaskCollaborators = await SubTaskCollaborators.getAllSubTaskCollaborators(
+    subTask[0]?.sub_task_id,
+    mainTask[0]?.main_task_id
+  );
 
-  if (!deleteTask) {
+  if (!subTaskCollaborators) {
+    throw new BadRequestError("Error in disseminating to collaborators.");
+  }
+
+  const subTaskCollaboratorsUUID = subTaskCollaborators.map((collaborator) => collaborator.user_uuid);
+
+  const deleteSubTask = await SubTasks.deleteSubTask(["sub_task_id"], [subTask[0]?.sub_task_id]);
+
+  if (!deleteSubTask) {
     throw new BadRequestError("Error in deleting task. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(deleteTask);
+  res.status(StatusCodes.OK).json({ deleteSubTask, rooms: subTaskCollaboratorsUUID });
 };

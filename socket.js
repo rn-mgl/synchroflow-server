@@ -33,7 +33,8 @@ export const sockets = (socket) => {
   });
 
   socket.on("accept_task_invite", (args) => {
-    socket.to(args.invitedRoom).to(args.fromRoom).emit("refetch_tasks");
+    socket.to(args.fromRoom).emit("refetch_tasks_collaborators", args);
+    socket.to(args.fromRoom).emit("refetch_task", args);
   });
 
   socket.on("remove_task_invite", (args) => {
@@ -76,4 +77,29 @@ export const sockets = (socket) => {
   });
 
   // tasks
+  socket.on("update_task", (args) => {
+    args.rooms.map((room) => {
+      socket.to(room).emit("reflect_update_task");
+    });
+  });
+
+  socket.on("update_subtask", (args) => {
+    args.rooms.map((room) => {
+      socket.to(room).emit("reflect_update_subtask");
+    });
+  });
+
+  socket.on("delete_subtask", (args) => {
+    args.rooms.map((room) => {
+      socket.to(room).emit("reflect_delete_subtask");
+    });
+  });
+
+  socket.on("assign_sub_task", (args) => {
+    socket.to(args.room).emit("refetch_assigned_subtask");
+  });
+
+  socket.on("revoke_sub_task", (args) => {
+    socket.to(args.room).emit("refetch_assigned_subtask");
+  });
 };

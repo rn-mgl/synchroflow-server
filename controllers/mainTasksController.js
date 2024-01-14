@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { MainTasks } from "../models/MainTasks.js";
+import { MainTaskCollaborators } from "../models/MainTaskCollaborators.js";
 
 export const createMainTask = async (req, res) => {
   const { mainTaskData } = req.body;
@@ -74,7 +75,18 @@ export const updateMainTask = async (req, res) => {
     throw new BadRequestError("Error in updating task. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(updateTask);
+  const mainTaskCollaborators = await MainTaskCollaborators.getAllMainTaskCollaborators(
+    ["main_task_fk_id"],
+    [mainTask[0]?.main_task_id]
+  );
+
+  if (!mainTaskCollaborators) {
+    throw new BadRequestError("Error in disseminating to members.");
+  }
+
+  const mainTaskCollaboratorsUUID = mainTaskCollaborators.map((collaborator) => collaborator.user_uuid);
+
+  res.status(StatusCodes.OK).json({ updateTask, rooms: mainTaskCollaboratorsUUID });
 };
 
 export const getMainTask = async (req, res) => {
