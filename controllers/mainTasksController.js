@@ -221,11 +221,22 @@ export const deleteMainTask = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
+  const mainTaskCollaborators = await MainTaskCollaborators.getAllMainTaskCollaborators(
+    ["main_task_fk_id"],
+    [mainTask[0]?.main_task_id]
+  );
+
+  if (!mainTaskCollaborators) {
+    throw new BadRequestError("Error in disseminating to the collaborators.");
+  }
+
+  const mainTaskCollaboratorsUUID = mainTaskCollaborators.map((collaborator) => collaborator.user_uuid);
+
   const deleteTask = await MainTasks.deleteMainTask(["main_task_id"], [mainTask[0]?.main_task_id]);
 
   if (!deleteTask) {
     throw new BadRequestError("Error in deleting task. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(deleteTask);
+  res.status(StatusCodes.OK).json({ deleteTask, rooms: mainTaskCollaboratorsUUID });
 };

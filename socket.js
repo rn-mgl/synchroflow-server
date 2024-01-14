@@ -102,4 +102,10 @@ export const sockets = (socket) => {
   socket.on("revoke_sub_task", (args) => {
     socket.to(args.room).emit("refetch_assigned_subtask");
   });
+
+  socket.on("delete_task", (args) => {
+    args.rooms.map((room) => {
+      socket.to(room).emit("reflect_delete_task", args);
+    });
+  });
 };
