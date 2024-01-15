@@ -3,7 +3,7 @@ import conn from "../db/connection.js";
 export class Notifications {
   constructor() {}
 
-  static async getNotifications(userID) {
+  static async getNotifications(userID, associateInvite, messageNotification, taskDeadline, taskUpdate) {
     try {
       const sql = `SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
                     "main task invite" AS purpose, mt.main_task_title AS title, mti.date_invited AS notif_date
@@ -15,7 +15,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = mti.invited_by
 
-                    WHERE invited_associate = '${userID}'
+                    WHERE '${taskUpdate}' = '1' AND 
+                    invited_associate = '${userID}'
                     
                     UNION
                     
@@ -29,7 +30,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = st.sub_task_by 
 
-                    WHERE stc.collaborator_id = '${userID}'
+                    WHERE '${taskUpdate}' = '1' AND 
+                    stc.collaborator_id = '${userID}'
                     
                     UNION 
                     
@@ -40,7 +42,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = ai.associate_invite_from 
 
-                    WHERE ai.associate_invite_to = '${userID}'
+                    WHERE '${associateInvite}' = '1' AND 
+                    ai.associate_invite_to = '${userID}'
                     
                     UNION 
                     
@@ -54,7 +57,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = gmr.created_by
 
-                    WHERE gmm.member_fk_id = '${userID}'
+                    WHERE '${associateInvite}' = '1' AND 
+                    gmm.member_fk_id = '${userID}'
                     AND gmr.created_by <> '${userID}'
                     
                     UNION 
@@ -69,7 +73,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = pm.message_from
 
-                    WHERE pm.message_to = '${userID}'
+                    WHERE '${messageNotification}' = '1' AND 
+                    pm.message_to = '${userID}'
                     
                     ORDER BY notif_date DESC;`;
 
