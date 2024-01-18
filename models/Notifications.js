@@ -75,6 +75,103 @@ export class Notifications {
 
                     WHERE '${messageNotification}' = '1' AND 
                     pm.message_to = '${userID}'
+
+                    UNION 
+                    
+                    SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
+                    "group message" AS purpose,
+                    CASE
+                        WHEN gm.message IS NULL THEN gm.message_file ELSE gm.message
+                    END AS title, gm.date_sent AS notif_date
+                    FROM group_messages AS gm
+                    
+                    INNER JOIN users AS u_from
+                    ON u_from.user_id = gm.message_from
+
+                    INNER JOIN group_message_rooms AS gmr
+                    ON gm.message_room_fk_id = gmr.message_room_id
+
+                    WHERE '${messageNotification}' = '1' AND 
+                    '${userID}' IN (
+                      SELECT gmm.member_fk_id FROM group_message_members AS gmm
+                      WHERE gmm.message_room_fk_id = gmr.message_room_id
+                    ) AND 
+                    gm.message_from <> '${userID}'
+
+                    GROUP BY gm.message_from
+
+                    UNION 
+                    
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "created main task deadline" AS purpose, mt.main_task_title AS title, mt.main_task_end_date AS notif_date
+                    FROM main_tasks AS mt
+                    
+                    INNER JOIN users AS u
+                    ON u.user_id = mt.main_task_by
+
+                    WHERE '${taskDeadline}' = '1' AND 
+                    mt.main_task_by = '${userID}' AND
+                    CAST(mt.main_task_end_date AS DATE) = CURDATE()
+
+                    UNION 
+                    
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "collaborated main task deadline" AS purpose, mt.main_task_title AS title, mt.main_task_end_date AS notif_date
+                    FROM main_task_collaborators AS mtc
+
+                    INNER JOIN main_tasks AS mt
+                    ON mt.main_task_id = mtc.main_task_fk_id
+                    
+                    INNER JOIN users AS u
+                    ON u.user_id = mtc.collaborator_id	
+
+                    WHERE '${taskDeadline}' = '1' AND 
+                    mtc.collaborator_id = '${userID}' AND
+                    CAST(mt.main_task_end_date AS DATE) = CURDATE()
+
+                    UNION 
+                    
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "created sub task deadline" AS purpose, st.sub_task_title AS title, st.sub_task_end_date AS notif_date
+                    FROM sub_tasks AS st
+                    
+                    INNER JOIN users AS u
+                    ON u.user_id = st.sub_task_by
+
+                    WHERE '${taskDeadline}' = '1' AND 
+                    st.sub_task_by = '${userID}' AND
+                    CAST(st.sub_task_end_date AS DATE) = CURDATE()
+
+                    UNION 
+                    
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "collaborated sub task deadline" AS purpose, st.sub_task_title AS title, st.sub_task_end_date AS notif_date
+                    FROM sub_task_collaborators AS stc
+
+                    INNER JOIN sub_tasks AS st
+                    ON st.sub_task_id = stc.sub_task_fk_id
+                    
+                    INNER JOIN users AS u
+                    ON u.user_id = stc.collaborator_id	
+
+                    WHERE '${taskDeadline}' = '1' AND 
+                    stc.collaborator_id = '${userID}' AND
+                    CAST(st.sub_task_end_date AS DATE) = CURDATE()
+
+                    UNION 
+                    
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "assigned sub task" AS purpose, st.sub_task_title AS title, stc.date_joined AS notif_date
+                    FROM sub_task_collaborators AS stc
+
+                    INNER JOIN sub_tasks AS st
+                    ON st.sub_task_id = stc.sub_task_fk_id
+                    
+                    INNER JOIN users AS u
+                    ON u.user_id = stc.collaborator_id	
+
+                    WHERE '${taskUpdate}' = '1' AND 
+                    stc.collaborator_id = '${userID}'
                     
                     ORDER BY notif_date DESC;`;
 

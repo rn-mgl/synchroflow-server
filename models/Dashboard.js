@@ -37,17 +37,20 @@ export class Dashboard {
                           THEN mt.main_task_id END) 
                           AS lateMainTasksCount,
 
-                    COUNT(DISTINCT CASE WHEN (mt.main_task_by <> '${userID}' 
+                    COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
+                          AND st.sub_task_by <> '${userID}' 
                           AND stc.collaborator_id = '${userID}' 
                           AND st.sub_task_status = 'ongoing') 
                           THEN st.sub_task_id END) AS ongoingSubTasksCount,
 
-                    COUNT(DISTINCT CASE WHEN (mt.main_task_by <> '${userID}' 
+                    COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
+                          AND st.sub_task_by <> '${userID}' 
                           AND stc.collaborator_id = '${userID}' 
                           AND st.sub_task_status = 'done') 
                           THEN st.sub_task_id END) AS doneSubTasksCount,
 
-                    COUNT(DISTINCT CASE WHEN (mt.main_task_by <> '${userID}' 
+                    COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
+                          AND st.sub_task_by <> '${userID}' 
                           AND stc.collaborator_id = '${userID}' 
                           AND st.sub_task_status = 'late') 
                           THEN st.sub_task_id END) AS lateSubTasksCount
