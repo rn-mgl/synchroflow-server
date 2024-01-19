@@ -85,8 +85,8 @@ export class MainTasks {
         mainTaskTitle,
         mainTaskSubtitle,
         mainTaskDescription,
-        mainTaskStatus,
         mainTaskPriority,
+        mainTaskStatus,
         mainTaskStartDate,
         mainTaskEndDate,
       ];
