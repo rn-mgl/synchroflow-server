@@ -122,11 +122,11 @@ export class MainTaskInvites {
                     WHERE main_task_fk_id = '${mainTaskId}'
                   )
                   AND a.associate_is NOT IN (
-                    SELECT collaborator_id FROM main_task_collaborators
+                    SELECT collaborator_fk_id FROM main_task_collaborators
                     WHERE main_task_fk_id = '${mainTaskId}'
                   )
                   AND a.associate_of NOT IN (
-                    SELECT collaborator_id FROM main_task_collaborators
+                    SELECT collaborator_fk_id FROM main_task_collaborators
                     WHERE main_task_fk_id = '${mainTaskId}'
                   )
                   AND (name LIKE '%${searchFilter}%' OR surname LIKE '%${searchFilter}%') ;`;

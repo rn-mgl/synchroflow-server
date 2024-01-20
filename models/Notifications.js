@@ -31,7 +31,7 @@ export class Notifications {
                     ON u_from.user_id = st.sub_task_by 
 
                     WHERE '${taskUpdate}' = '1' AND 
-                    stc.collaborator_id = '${userID}'
+                    stc.collaborator_fk_id = '${userID}'
                     
                     UNION 
                     
@@ -123,10 +123,10 @@ export class Notifications {
                     ON mt.main_task_id = mtc.main_task_fk_id
                     
                     INNER JOIN users AS u
-                    ON u.user_id = mtc.collaborator_id	
+                    ON u.user_id = mtc.collaborator_fk_id	
 
                     WHERE '${taskDeadline}' = '1' AND 
-                    mtc.collaborator_id = '${userID}' AND
+                    mtc.collaborator_fk_id = '${userID}' AND
                     CAST(mt.main_task_end_date AS DATE) = CURDATE()
 
                     UNION 
@@ -152,10 +152,10 @@ export class Notifications {
                     ON st.sub_task_id = stc.sub_task_fk_id
                     
                     INNER JOIN users AS u
-                    ON u.user_id = stc.collaborator_id	
+                    ON u.user_id = stc.collaborator_fk_id	
 
                     WHERE '${taskDeadline}' = '1' AND 
-                    stc.collaborator_id = '${userID}' AND
+                    stc.collaborator_fk_id = '${userID}' AND
                     CAST(st.sub_task_end_date AS DATE) = CURDATE()
 
                     UNION 
@@ -168,10 +168,10 @@ export class Notifications {
                     ON st.sub_task_id = stc.sub_task_fk_id
                     
                     INNER JOIN users AS u
-                    ON u.user_id = stc.collaborator_id	
+                    ON u.user_id = stc.collaborator_fk_id	
 
                     WHERE '${taskUpdate}' = '1' AND 
-                    stc.collaborator_id = '${userID}'
+                    stc.collaborator_fk_id = '${userID}'
                     
                     ORDER BY notif_date DESC;`;
 

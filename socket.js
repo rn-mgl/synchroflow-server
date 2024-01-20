@@ -108,4 +108,10 @@ export const sockets = (socket) => {
       socket.to(room).emit("reflect_delete_task", args);
     });
   });
+
+  socket.on("leave_task", (args) => {
+    args.rooms.map((room) => {
+      socket.to(room).emit("refetch_tasks_collaborators", args);
+    });
+  });
 };

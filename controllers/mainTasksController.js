@@ -131,7 +131,7 @@ const getAllCollaboratedMainTasks = async (req, res) => {
   const { sortFilter, searchFilter, searchCategory } = req.query;
 
   const mainTask = await MainTasks.getAllMainTasks(
-    ["mtc.collaborator_id"],
+    ["mtc.collaborator_fk_id"],
     [id],
     sortFilter,
     searchFilter,
@@ -169,7 +169,7 @@ const getAllCollaboratedMainTasksToday = async (req, res) => {
   const { sortFilter, searchFilter, searchCategory } = req.query;
 
   const mainTask = await MainTasks.getAllMainTasksToday(
-    ["mtc.collaborator_id"],
+    ["mtc.collaborator_fk_id"],
     [id],
     sortFilter,
     searchFilter,

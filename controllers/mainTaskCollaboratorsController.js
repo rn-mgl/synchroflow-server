@@ -36,7 +36,50 @@ export const createMainTaskCollaborator = async (req, res) => {
   res.status(StatusCodes.OK).json(newMainTaskCollaborator);
 };
 
-export const deleteMainTaskCollaborator = async (req, res) => {
+const leaveMainTask = async (req, res) => {
+  const { id } = req.user;
+  const { mainTaskUUID } = req.query;
+
+  const mainTask = await MainTasks.getMainTask(["main_task_uuid"], [mainTaskUUID]);
+
+  if (!mainTask) {
+    throw new NotFoundError("The task does not exist.");
+  }
+
+  const mainTaskCollaborator = await MainTaskCollaborators.getMainTaskCollaborator(
+    ["collaborator_fk_id", "main_task_fk_id"],
+    [id, mainTask[0]?.main_task_id]
+  );
+
+  if (!mainTaskCollaborator) {
+    throw new NotFoundError("The task collaborator does not exist.");
+  }
+
+  const deleteCollaborator = await MainTaskCollaborators.deleteMainTaskCollaborator(
+    ["main_task_collaborator_id"],
+    [mainTaskCollaborator[0]?.main_task_collaborator_id]
+  );
+
+  if (!deleteCollaborator) {
+    throw new BadRequestError(`Error in leaving the task. Try again later.`);
+  }
+
+  const mainTaskCollaborators = await MainTaskCollaborators.getAllMainTaskCollaborators(
+    ["main_task_fk_id"],
+    [mainTask[0]?.main_task_id]
+  );
+
+  if (!mainTaskCollaborators) {
+    throw new BadRequestError(`Error in disseminating to other members. Try again later.`);
+  }
+
+  let mainTaskCollaboratorsUUID = mainTaskCollaborators.map((collaborator) => collaborator.user_uuid);
+  mainTaskCollaboratorsUUID.push(mainTask[0].user_uuid);
+
+  res.status(StatusCodes.OK).json({ deleteCollaborator, rooms: mainTaskCollaboratorsUUID });
+};
+
+const deleteCollaborator = async (req, res) => {
   const { main_task_collaborator_uuid } = req.params;
 
   const mainTaskCollaborator = await MainTaskCollaborators.getMainTaskCollaborator(
@@ -54,6 +97,20 @@ export const deleteMainTaskCollaborator = async (req, res) => {
   );
 
   res.status(StatusCodes.OK).json(deleteCollaborator);
+};
+
+export const deleteMainTaskCollaborator = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "leave") {
+    await leaveMainTask(req, res);
+    return;
+  }
+
+  if (type === "delete") {
+    await deleteCollaborator(req, res);
+    return;
+  }
 };
 
 export const getAllMainTaskCollaborator = async (req, res) => {

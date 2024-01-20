@@ -2,10 +2,10 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class SubTaskCollaborators {
-  constructor(sub_task_collaborator_uuid, sub_task_fk_id, collaborator_id) {
+  constructor(sub_task_collaborator_uuid, sub_task_fk_id, collaborator_fk_id) {
     this.sub_task_collaborator_uuid = sub_task_collaborator_uuid;
     this.sub_task_fk_id = sub_task_fk_id;
-    this.collaborator_id = collaborator_id;
+    this.collaborator_fk_id = collaborator_fk_id;
   }
 
   async createSubTaskCollaborator() {
@@ -14,9 +14,9 @@ export class SubTaskCollaborators {
                      (
                         sub_task_collaborator_uuid, 
                         sub_task_fk_id, 
-                        collaborator_id
+                        collaborator_fk_id
                      ) VALUES (?, ?, ?);`;
-      const subTaskCollaboratorValues = [this.sub_task_collaborator_uuid, this.sub_task_fk_id, this.collaborator_id];
+      const subTaskCollaboratorValues = [this.sub_task_collaborator_uuid, this.sub_task_fk_id, this.collaborator_fk_id];
       const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
@@ -66,11 +66,11 @@ export class SubTaskCollaborators {
                     ON st.sub_task_id = '${subTaskID}'
                     
                     INNER JOIN users AS u
-                    ON mtc.collaborator_id = u.user_id
+                    ON mtc.collaborator_fk_id = u.user_id
                     
                     LEFT JOIN sub_task_collaborators AS stc
                     ON st.sub_task_id = stc.sub_task_fk_id
-                    AND stc.collaborator_id = u.user_id
+                    AND stc.collaborator_fk_id = u.user_id
                     
                     WHERE mtc.main_task_fk_id = '${mainTaskID}';`;
 

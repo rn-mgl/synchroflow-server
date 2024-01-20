@@ -102,6 +102,8 @@ export class MainTasks {
 
     try {
       const sql = `SELECT * FROM main_tasks AS mt
+                  INNER JOIN users AS u ON
+                  mt.main_task_by = u.user_id
                   WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.query(sql, whereValues);

@@ -12,7 +12,7 @@ export class Dashboard {
                           THEN mt.main_task_id END) 
                           +
                     COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
-                          AND mtc.collaborator_id = '${userID}'
+                          AND mtc.collaborator_fk_id = '${userID}'
                           AND mt.main_task_status = 'ongoing'
                           THEN mt.main_task_id END)
                           AS ongoingMainTasksCount,
@@ -22,7 +22,7 @@ export class Dashboard {
                           THEN mt.main_task_id END)
                           +
                     COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
-                          AND mtc.collaborator_id = '${userID}'
+                          AND mtc.collaborator_fk_id = '${userID}'
                           AND mt.main_task_status = 'done'
                           THEN mt.main_task_id END) 
                           AS doneMainTasksCount,
@@ -32,26 +32,26 @@ export class Dashboard {
                           THEN mt.main_task_id END)
                           +
                     COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
-                          AND mtc.collaborator_id = '${userID}'
+                          AND mtc.collaborator_fk_id = '${userID}'
                           AND mt.main_task_status = 'late'
                           THEN mt.main_task_id END) 
                           AS lateMainTasksCount,
 
                     COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
                           AND st.sub_task_by <> '${userID}' 
-                          AND stc.collaborator_id = '${userID}' 
+                          AND stc.collaborator_fk_id = '${userID}' 
                           AND st.sub_task_status = 'ongoing') 
                           THEN st.sub_task_id END) AS ongoingSubTasksCount,
 
                     COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
                           AND st.sub_task_by <> '${userID}' 
-                          AND stc.collaborator_id = '${userID}' 
+                          AND stc.collaborator_fk_id = '${userID}' 
                           AND st.sub_task_status = 'done') 
                           THEN st.sub_task_id END) AS doneSubTasksCount,
 
                     COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
                           AND st.sub_task_by <> '${userID}' 
-                          AND stc.collaborator_id = '${userID}' 
+                          AND stc.collaborator_fk_id = '${userID}' 
                           AND st.sub_task_status = 'late') 
                           THEN st.sub_task_id END) AS lateSubTasksCount
                     
@@ -102,7 +102,7 @@ export class Dashboard {
                     FROM users AS u
 
                     LEFT JOIN main_task_collaborators AS mtc
-                    ON u.user_id = mtc.collaborator_id
+                    ON u.user_id = mtc.collaborator_fk_id
 
                     LEFT JOIN main_tasks AS mt
                     ON mtc.main_task_fk_id = mt.main_task_id
@@ -119,7 +119,7 @@ export class Dashboard {
                     FROM users AS u
 
                     LEFT JOIN sub_task_collaborators AS stc
-                    ON u.user_id = stc.collaborator_id
+                    ON u.user_id = stc.collaborator_fk_id
 
                     LEFT JOIN sub_tasks AS st
                     ON stc.sub_task_fk_id = st.sub_task_id
