@@ -114,4 +114,11 @@ export const sockets = (socket) => {
       socket.to(room).emit("refetch_tasks_collaborators", args);
     });
   });
+
+  socket.on("remove_collaborator", (args) => {
+    console.log(args);
+    args.rooms.map((room) => {
+      socket.to(room).emit("reflect_remove_collaborator", args);
+    });
+  });
 };

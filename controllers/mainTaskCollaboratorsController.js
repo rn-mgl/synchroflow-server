@@ -91,12 +91,33 @@ const deleteCollaborator = async (req, res) => {
     throw new NotFoundError("The task collaborator does not exist.");
   }
 
+  const mainTask = await MainTasks.getMainTask(["main_task_id"], [mainTaskCollaborator[0]?.main_task_fk_id]);
+
+  if (!mainTask) {
+    throw new NotFoundError(`This task does not exist.`);
+  }
+
+  const mainTaskCollaborators = await MainTaskCollaborators.getAllMainTaskCollaborators(
+    ["main_task_fk_id"],
+    [mainTask[0].main_task_id]
+  );
+
+  if (!mainTaskCollaborators) {
+    throw new BadRequestError(`Error in disseminating to other members. Try again later.`);
+  }
+
+  let mainTaskCollaboratorsUUID = mainTaskCollaborators.map((collaborator) => collaborator.user_uuid);
+
   const deleteCollaborator = await MainTaskCollaborators.deleteMainTaskCollaborator(
     ["main_task_collaborator_id"],
     [mainTaskCollaborator[0]?.main_task_collaborator_id]
   );
 
-  res.status(StatusCodes.OK).json(deleteCollaborator);
+  if (!deleteCollaborator) {
+    throw new BadRequestError(`Error in leaving the task. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json({ deleteCollaborator, rooms: mainTaskCollaboratorsUUID });
 };
 
 export const deleteMainTaskCollaborator = async (req, res) => {
