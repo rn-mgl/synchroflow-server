@@ -74,7 +74,8 @@ export const loginUser = async (req, res) => {
     );
   }
 
-  const { user_id, user_uuid, name, surname, email, password } = userEmail[0];
+  const { user_id, user_uuid, name, surname, email, password, is_verified } =
+    userEmail[0];
 
   const isCorrectPassword = await comparePassword(candidatePassword, password);
 
@@ -95,9 +96,25 @@ export const loginUser = async (req, res) => {
     name: `${name} ${surname}`,
     email,
     token: `Bearer ${token}`,
+    verified: is_verified,
   };
 
   res.status(StatusCodes.OK).json(primary);
+
+  const emailToken = createEmailToken(
+    user_id,
+    user_uuid,
+    `${name} ${surname}`,
+    email
+  );
+
+  if (!is_verified) {
+    const data = await sendVerificationMail(
+      `${name} ${surname}`,
+      email,
+      emailToken
+    );
+  }
 };
 
 export const verifyUser = async (req, res) => {
