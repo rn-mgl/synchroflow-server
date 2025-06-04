@@ -101,14 +101,14 @@ export const loginUser = async (req, res) => {
 
   res.status(StatusCodes.OK).json(primary);
 
-  const emailToken = createEmailToken(
-    user_id,
-    user_uuid,
-    `${name} ${surname}`,
-    email
-  );
-
   if (!is_verified) {
+    const emailToken = createEmailToken(
+      user_id,
+      user_uuid,
+      `${name} ${surname}`,
+      email
+    );
+
     const data = await sendVerificationMail(
       `${name} ${surname}`,
       email,
