@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.1",
     "mysql2": "^3.6.1",
     "nodemon": "^3.0.1",
+    "server": "file:",
     "socket.io": "^4.7.2",
     "uuid": "^9.0.1",
     "validator": "^13.11.0"
