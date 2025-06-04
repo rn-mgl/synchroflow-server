@@ -15,8 +15,15 @@ export class Users {
   async createUser() {
     try {
       const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
-      const userValues = [this.user_uuid, this.name, this.surname, this.email, this.password, this.image];
+                  VALUES (?, ?, ?, ?, ?, ?);`;
+      const userValues = [
+        this.user_uuid,
+        this.name,
+        this.surname,
+        this.email,
+        this.password,
+        this.image,
+      ];
       const [data, _] = await conn.query(sql, userValues);
       return data;
     } catch (error) {
@@ -72,7 +79,14 @@ export class Users {
     }
   }
 
-  static async updateUserIdentifier(name, surname, role, status, image, userID) {
+  static async updateUserIdentifier(
+    name,
+    surname,
+    role,
+    status,
+    image,
+    userID
+  ) {
     try {
       const sql = `UPDATE users SET 
                       name = ?, 
