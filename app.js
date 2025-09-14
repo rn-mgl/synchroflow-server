@@ -1,7 +1,6 @@
 import "dotenv/config";
 import "express-async-errors";
 
-import sendgrid from "@sendgrid/mail";
 import cors from "cors";
 import express from "express";
 import fileUpload from "express-fileupload";
@@ -62,8 +61,6 @@ cloudinary.config({
   api_secret: process.env.CLOUD_SECRET,
 });
 
-sendgrid.setApiKey(process.env.SENDGRID_SECRET);
-
 // api routes //////////////////////////////////////////////////////////////////////////////
 app.use("/auth", authRouter);
 app.use("/password", passwordRouter);
@@ -74,7 +71,11 @@ app.use("/associate_invites", authMiddleware, associateInvitesRouter);
 
 app.use("/dashboard", authMiddleware, dashboardRouter);
 
-app.use("/main_task_collaborators", authMiddleware, mainTaskCollaboratorsRouter);
+app.use(
+  "/main_task_collaborators",
+  authMiddleware,
+  mainTaskCollaboratorsRouter
+);
 app.use("/main_task_invites", authMiddleware, mainTaskInvitesRouter);
 app.use("/main_tasks", authMiddleware, mainTasksRouter);
 
@@ -83,7 +84,11 @@ app.use("/notifications", authMiddleware, notificationsRouter);
 app.use("/sub_task_collaborators", authMiddleware, subTaskCollaboratorsRouter);
 app.use("/sub_tasks", authMiddleware, subTasksRouter);
 
-app.use("/private_message_members", authMiddleware, privateMessageMembersRouter);
+app.use(
+  "/private_message_members",
+  authMiddleware,
+  privateMessageMembersRouter
+);
 app.use("/private_message_rooms", authMiddleware, privateMessageRoomsRouter);
 app.use("/private_messages", authMiddleware, privateMessagesRouter);
 

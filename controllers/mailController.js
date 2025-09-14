@@ -93,7 +93,7 @@ export const sendPasswordResetMail = async (name, email, token) => {
             SynchroFlow | Developers.`,
   };
 
-  const data = await sgMail.send(message);
+  const data = await transporter.sendMail(message);
 
   if (!data) {
     throw new BadRequestError("Error in sending password reset mail.");
