@@ -1,10 +1,16 @@
 import sgMail from "@sendgrid/mail";
 import { BadRequestError } from "../errors/index.js";
+import nodemailer from "nodemailer";
 
-const local = "http://192.168.1.121:3000";
-const prod = "https://synchroflow-server.onrender.com";
+const url = process.env.URL;
 
-const url = prod;
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 export const sendVerificationMail = async (name, email, token) => {
   const message = {
@@ -42,7 +48,7 @@ export const sendVerificationMail = async (name, email, token) => {
             SynchroFlow | Developers.`,
   };
 
-  const data = await sgMail.send(message);
+  const data = await transporter.sendMail(message);
 
   if (!data) {
     throw new BadRequestError("Error in sending verification code.");

@@ -24,6 +24,7 @@
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^9.0.1",
     "mysql2": "^3.6.1",
+    "nodemailer": "^7.0.6",
     "nodemon": "^3.0.1",
     "server": "file:",
     "socket.io": "^4.7.2",
