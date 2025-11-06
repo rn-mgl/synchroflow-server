@@ -7,6 +7,7 @@ export const sockets = (socket) => {
   });
 
   socket.on("rejoin_user_uuid", (args) => {
+    console.log(args.room);
     if (args.room) {
       socket.join(args?.room);
       console.log(socket.rooms);
@@ -28,7 +29,10 @@ export const sockets = (socket) => {
   });
 
   socket.on("remove_associate_invite", (args) => {
-    socket.to(args.invitedRoom).to(args.fromRoom).emit("reflect_remove_associate_invite", { args });
+    socket
+      .to(args.invitedRoom)
+      .to(args.fromRoom)
+      .emit("reflect_remove_associate_invite", { args });
     socket.to(args.fromRoom).emit("reflect_send_associate_invite");
   });
 
@@ -38,7 +42,10 @@ export const sockets = (socket) => {
   });
 
   socket.on("remove_task_invite", (args) => {
-    socket.to(args.invitedRoom).to(args.fromRoom).emit("reflect_remove_task_invite", { args });
+    socket
+      .to(args.invitedRoom)
+      .to(args.fromRoom)
+      .emit("reflect_remove_task_invite", { args });
   });
 
   socket.on("send_main_task_invite", (args) => {
@@ -56,7 +63,9 @@ export const sockets = (socket) => {
 
   //group
   socket.on("remove_group_member", (args) => {
-    socket.to(args.room).emit("reflect_remove_group_member", { room: args.room });
+    socket
+      .to(args.room)
+      .emit("reflect_remove_group_member", { room: args.room });
   });
 
   socket.on("delete_group_room", (args) => {
