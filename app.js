@@ -48,7 +48,10 @@ import { sockets } from "./socket.js";
 //drivers //////////////////////////////////////////////////////////////////////////////
 const app = express();
 const httpsServer = createServer(app);
-const io = new Server(httpsServer, { cors: { origin: "*" } });
+const io = new Server(httpsServer, {
+  cors: { origin: "*" },
+  transports: ["polling", "websocket"],
+});
 
 app.use(express.json({ limit: "100mb" }));
 app.use(helmet());
@@ -111,7 +114,7 @@ const port = process.env.PORT || 9000;
 
 const start = async () => {
   try {
-    httpsServer.listen(port, () => {
+    httpsServer.listen(port, "0.0.0.0", () => {
       console.log(`Listening to port ${port}...`);
     });
   } catch (error) {
