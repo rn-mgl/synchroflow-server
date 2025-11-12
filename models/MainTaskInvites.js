@@ -2,7 +2,13 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class MainTaskInvites {
-  constructor(main_task_invite_uuid, main_task_fk_id, invited_by, invited_associate, main_task_invite_message) {
+  constructor(
+    main_task_invite_uuid,
+    main_task_fk_id,
+    invited_by,
+    invited_associate,
+    main_task_invite_message
+  ) {
     this.main_task_invite_uuid = main_task_invite_uuid;
     this.main_task_fk_id = main_task_fk_id;
     this.invited_by = invited_by;
@@ -49,7 +55,11 @@ export class MainTaskInvites {
     }
   }
 
-  static async updateMainTaskInviteStatus(main_task_invite_status, whereConditions, whereValues) {
+  static async updateMainTaskInviteStatus(
+    main_task_invite_status,
+    whereConditions,
+    whereValues
+  ) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
@@ -81,7 +91,7 @@ export class MainTaskInvites {
     try {
       const sql = `SELECT u_invited.user_uuid AS invited_user_uuid, u_invited.user_id AS invited_user, u_invited.name AS invited_name, u_invited.surname AS invited_surname, u_invited.email AS invited_email,
                     u_from.user_uuid AS from_user_uuid, u_from.user_id AS from_user, u_from.name AS from_name, u_from.surname AS from_surname, u_from.email AS from_email,
-                    mti.main_task_invite_uuid, mt.main_task_title, mt.main_task_banner, mt.main_task_priority, mt.main_task_uuid
+                    mti.main_task_invite_uuid, mt.main_task_title, mt.main_task_banner, mt.main_task_priority, mt.main_task_uuid, mti.main_task_invite_message
       
                     FROM main_task_invites AS mti
 
