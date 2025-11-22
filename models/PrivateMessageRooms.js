@@ -48,14 +48,16 @@ export class PrivateMessageRooms {
                       SELECT pmm2.message_room_fk_id 
                       FROM private_message_members AS pmm2
                       WHERE pmm2.message_room_fk_id = pmr.message_room_id
-                      AND pmm2.member_fk_id = '${userId}'
+                      AND pmm2.member_fk_id = ?
                     )
 
-                    AND pmm.member_fk_id <> '${userId}'
-                    AND (u.name LIKE '%${searchFilter}%' 
-                    OR u.surname LIKE '%${searchFilter}%');`;
+                    AND pmm.member_fk_id <> ?
+                    AND (u.name LIKE ? 
+                    OR u.surname LIKE ?);`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [userId, userId, `%${searchFilter}%`, `%${searchFilter}%`];
+
+      const [data, _] = await conn.execute(sql, values);
 
       return data;
     } catch (error) {
@@ -102,11 +104,12 @@ export class PrivateMessageRooms {
                    INNER JOIN private_message_members AS pmm
                    ON pmr.message_room_id = pmm.message_room_fk_id
                    
-                   WHERE pmm.member_fk_id IN ('${userID}', '${associateID}')
+                   WHERE pmm.member_fk_id IN (?, ?)
                    GROUP BY message_room_id
                    HAVING total_members = 2;`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [userID, associateID];
+      const [data, _] = await conn.execute(sql, values);
 
       return data;
     } catch (error) {
@@ -124,10 +127,12 @@ export class PrivateMessageRooms {
                   INNER JOIN users AS u
                   ON pmm.member_fk_id = u.user_id
 
-                  WHERE pmm.member_fk_id <> '${userID}'
-                  AND pmr.message_room = '${messageRoom}';`;
+                  WHERE pmm.member_fk_id <> ?
+                  AND pmr.message_room = ?;`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [userID, messageRoom];
+
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- get private message room ---");

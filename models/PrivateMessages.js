@@ -63,8 +63,10 @@ export class PrivateMessages {
 
   static async getAllPrivateMessages(whereConditions, whereValues) {
     try {
+      const mappedWhereConditions = mapWhereConditions(whereConditions);
+
       const sql = `SELECT * FROM private_messages
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
       return data;
@@ -80,13 +82,14 @@ export class PrivateMessages {
                     INNER JOIN private_message_rooms AS pmr
                     ON pmr.message_room_id = pm.message_room_fk_id
 
-                    WHERE message_room_fk_id = '${messageRoomID}'
+                    WHERE message_room_fk_id = ?
                     AND pm.message_id = (
                       SELECT MAX(pm2.message_id) FROM private_messages AS pm2
-                      WHERE pm2.message_room_fk_id = '${messageRoomID}'
+                      WHERE pm2.message_room_fk_id = ?
                     );`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [messageRoomID, messageRoomID];
+      const [data, _] = await conn.execute(sql, values);
 
       return data;
     } catch (error) {

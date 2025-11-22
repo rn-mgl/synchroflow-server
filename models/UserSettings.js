@@ -35,13 +35,14 @@ export class UserSettings {
                         task_update = ?,
                         task_deadline = ?,
                         associate_invite = ?
-                    WHERE user_settings_id = '${userSettingsID}'; `;
+                    WHERE user_settings_id = ?; `;
       const userSettingsUpdateValues = [
         notificationSound,
         messageNotification,
         taskUpdate,
         taskDeadline,
         associateInvite,
+        userSettingsID,
       ];
       const [data, _] = await conn.execute(sql, userSettingsUpdateValues);
       return data;

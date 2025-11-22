@@ -60,10 +60,12 @@ export class GroupMessages {
 
   static async getAllGroupMessages(whereConditions, whereValues) {
     try {
+      const mappedWhereConditions = mapWhereConditions(whereConditions);
+
       const sql = `SELECT * FROM group_messages AS gm
                     INNER JOIN group_message_rooms AS gmr
                     ON gm.message_room_id = gmr.message_room_id
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
       return data;
@@ -79,13 +81,13 @@ export class GroupMessages {
                     INNER JOIN group_message_rooms AS gmr
                     ON gmr.message_room_id = gm.message_room_fk_id
 
-                    WHERE message_room_fk_id = '${messageRoomID}'
+                    WHERE message_room_fk_id = ?
                     AND gm.message_id = (
                       SELECT MAX(gm2.message_id) FROM group_messages AS gm2
-                      WHERE gm2.message_room_fk_id = '${messageRoomID}'
+                      WHERE gm2.message_room_fk_id = ?
                     );`;
-
-      const [data, _] = await conn.execute(sql);
+      const values = [messageRoomID, messageRoomID];
+      const [data, _] = await conn.execute(sql, values);
 
       return data;
     } catch (error) {
@@ -95,8 +97,10 @@ export class GroupMessages {
 
   static async getGroupMessage(whereConditions, whereValues) {
     try {
+      const mappedWhereConditions = mapWhereConditions(whereConditions);
+
       const sql = `SELECT * FROM group_messages
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
       return data;

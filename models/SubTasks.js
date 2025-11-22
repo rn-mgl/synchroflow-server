@@ -77,7 +77,7 @@ export class SubTasks {
                     sub_task_status= ?,
                     sub_task_start_date= ?,
                     sub_task_end_date= ?
-                  WHERE sub_task_id = '${subTaskID}';`;
+                  WHERE sub_task_id = ?;`;
       const updateSubTaskValues = [
         sub_task_title,
         sub_task_subtitle,
@@ -86,6 +86,7 @@ export class SubTasks {
         sub_task_status,
         sub_task_start_date,
         sub_task_end_date,
+        subTaskID,
       ];
 
       const [data, _] = await conn.execute(sql, updateSubTaskValues);

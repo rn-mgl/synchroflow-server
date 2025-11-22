@@ -46,8 +46,10 @@ export class PrivateMessageMembers {
 
   static async getAllPrivateMessageMembers(whereConditions, whereValues) {
     try {
+      const mappedWhereConditions = mapWhereConditions(whereConditions);
+
       const sql = `SELECT * FROM private_message_members
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
       return data;

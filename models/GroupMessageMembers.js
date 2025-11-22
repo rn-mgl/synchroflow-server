@@ -71,12 +71,14 @@ export class GroupMessageMembers {
                       SELECT gmm.member_fk_id FROM group_message_members AS gmm
                       INNER JOIN group_message_rooms AS gmr
                       ON gmm.message_room_fk_id = gmr.message_room_id
-                      WHERE gmr.message_room_id = '${messageRoomID}' 
+                      WHERE gmr.message_room_id = ? 
                     ) 
-                    AND u.user_id <> '${userID}'
+                    AND u.user_id <> ?
                     GROUP BY u.user_id;`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [messageRoomID, userID];
+
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- get possible group message members ---");

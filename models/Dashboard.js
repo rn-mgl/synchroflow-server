@@ -7,51 +7,51 @@ export class Dashboard {
   static async getDashboardData(userID) {
     try {
       const tasks = `SELECT 
-                    COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by = ? 
                           AND mt.main_task_status = 'ongoing'
                           THEN mt.main_task_id END) 
                           +
-                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
-                          AND mtc.collaborator_fk_id = '${userID}'
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> ? 
+                          AND mtc.collaborator_fk_id = ?
                           AND mt.main_task_status = 'ongoing'
                           THEN mt.main_task_id END)
                           AS ongoingMainTasksCount,
 
-                    COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by = ? 
                           AND mt.main_task_status = 'done' 
                           THEN mt.main_task_id END)
                           +
-                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
-                          AND mtc.collaborator_fk_id = '${userID}'
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> ? 
+                          AND mtc.collaborator_fk_id = ?
                           AND mt.main_task_status = 'done'
                           THEN mt.main_task_id END) 
                           AS doneMainTasksCount,
 
-                    COUNT(DISTINCT CASE WHEN mt.main_task_by = '${userID}' 
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by = ? 
                           AND mt.main_task_status = 'late' 
                           THEN mt.main_task_id END)
                           +
-                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> '${userID}' 
-                          AND mtc.collaborator_fk_id = '${userID}'
+                    COUNT(DISTINCT CASE WHEN mt.main_task_by <> ? 
+                          AND mtc.collaborator_fk_id = ?
                           AND mt.main_task_status = 'late'
                           THEN mt.main_task_id END) 
                           AS lateMainTasksCount,
 
                     COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
-                          AND st.sub_task_by <> '${userID}' 
-                          AND stc.collaborator_fk_id = '${userID}' 
+                          AND st.sub_task_by <> ? 
+                          AND stc.collaborator_fk_id = ? 
                           AND st.sub_task_status = 'ongoing') 
                           THEN st.sub_task_id END) AS ongoingSubTasksCount,
 
                     COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
-                          AND st.sub_task_by <> '${userID}' 
-                          AND stc.collaborator_fk_id = '${userID}' 
+                          AND st.sub_task_by <> ? 
+                          AND stc.collaborator_fk_id = ? 
                           AND st.sub_task_status = 'done') 
                           THEN st.sub_task_id END) AS doneSubTasksCount,
 
                     COUNT(DISTINCT CASE WHEN (st.sub_task_id IS NOT NULL
-                          AND st.sub_task_by <> '${userID}' 
-                          AND stc.collaborator_fk_id = '${userID}' 
+                          AND st.sub_task_by <> ? 
+                          AND stc.collaborator_fk_id = ? 
                           AND st.sub_task_status = 'late') 
                           THEN st.sub_task_id END) AS lateSubTasksCount
                     
@@ -76,7 +76,7 @@ export class Dashboard {
                     LEFT JOIN main_tasks AS mt
                     ON u.user_id = mt.main_task_by
       
-                    WHERE u.user_id = '${userID}'
+                    WHERE u.user_id = ?
                     AND mt.main_task_end_date >= DATE_SUB(NOW(), INTERVAL WEEKDAY(NOW()) DAY)
                     AND mt.main_task_end_date < DATE_ADD(NOW(), INTERVAL 7 - WEEKDAY(NOW()) DAY)
                     GROUP BY DATE(main_task_end_date)
@@ -90,7 +90,7 @@ export class Dashboard {
                     LEFT JOIN sub_tasks AS st
                     ON u.user_id = st.sub_task_by
       
-                    WHERE u.user_id = '${userID}'
+                    WHERE u.user_id = ?
                     AND st.sub_task_end_date >= DATE_SUB(NOW(), INTERVAL WEEKDAY(NOW()) DAY)
                     AND st.sub_task_end_date < DATE_ADD(NOW(), INTERVAL 7 - WEEKDAY(NOW()) DAY)
                     GROUP BY DATE(sub_task_end_date)
@@ -107,7 +107,7 @@ export class Dashboard {
                     LEFT JOIN main_tasks AS mt
                     ON mtc.main_task_fk_id = mt.main_task_id
       
-                    WHERE u.user_id = '${userID}'
+                    WHERE u.user_id = ?
                     AND mt.main_task_end_date >= DATE_SUB(NOW(), INTERVAL WEEKDAY(NOW()) DAY)
                     AND mt.main_task_end_date < DATE_ADD(NOW(), INTERVAL 7 - WEEKDAY(NOW()) DAY)
                     GROUP BY DATE(main_task_end_date)
@@ -124,13 +124,19 @@ export class Dashboard {
                     LEFT JOIN sub_tasks AS st
                     ON stc.sub_task_fk_id = st.sub_task_id
       
-                    WHERE u.user_id = '${userID}'
+                    WHERE u.user_id = ?
                     AND st.sub_task_end_date >= DATE_SUB(NOW(), INTERVAL WEEKDAY(NOW()) DAY)
                     AND st.sub_task_end_date < DATE_ADD(NOW(), INTERVAL 7 - WEEKDAY(NOW()) DAY)
                     GROUP BY DATE(sub_task_end_date)`;
 
-      const [tasksCount, _tasks] = await conn.execute(tasks);
-      const [weekTasksCount, _weeklyTasks] = await conn.execute(weeklyTasks);
+      const tasksValues = new Array(15).fill(userID);
+      const weeklyTaskValues = new Array(4).fill(userID);
+
+      const [tasksCount, _tasks] = await conn.execute(tasks, tasksValues);
+      const [weekTasksCount, _weeklyTasks] = await conn.execute(
+        weeklyTasks,
+        weeklyTaskValues
+      );
 
       return { tasksCount: tasksCount[0], weekTasksCount };
     } catch (error) {

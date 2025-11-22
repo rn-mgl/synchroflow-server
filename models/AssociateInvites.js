@@ -40,11 +40,9 @@ export class AssociateInvites {
       const sql = `UPDATE associate_invites SET associate_invite_status = ?
                     WHERE ${mappedWhereConditions}`;
 
-      const [data, _] = await conn.execute(
-        sql,
-        associate_invite_status,
-        whereValues
-      );
+      const values = [associate_invite_status, ...whereValues];
+
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- update associate invite ---");

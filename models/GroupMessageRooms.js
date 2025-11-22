@@ -52,9 +52,9 @@ export class GroupMessageRooms {
                     SET 
                       room_name = ?, 
                       room_image = ?
-                    WHERE message_room_id = '${roomID}';`;
+                    WHERE message_room_id = ?;`;
 
-      const groupMessageUpdateValues = [roomName, roomImage];
+      const groupMessageUpdateValues = [roomName, roomImage, roomID];
 
       const [data, _] = await conn.execute(sql, groupMessageUpdateValues);
       return data;
@@ -68,9 +68,9 @@ export class GroupMessageRooms {
       const sql = `UPDATE group_message_rooms 
                     SET 
                       created_by = ?
-                    WHERE message_room_id = '${roomID}';`;
+                    WHERE message_room_id = ?;`;
 
-      const groupMessageUpdateValues = [creatorID];
+      const groupMessageUpdateValues = [creatorID, roomID];
 
       const [data, _] = await conn.execute(sql, groupMessageUpdateValues);
       return data;
@@ -96,10 +96,13 @@ export class GroupMessageRooms {
                       WHERE gmr.message_room_id = gm2.message_room_fk_id 
                     )
 
-                    WHERE member_fk_id = '${memberID}'
-                    AND room_name LIKE '%${searchFilter}%';`;
+                    WHERE member_fk_id = ?
+                    AND room_name LIKE ?;`;
 
-      const [data, _] = await conn.execute(sql);
+      const [data, _] = await conn.execute(sql, [
+        memberID,
+        `%${searchFilter}%`,
+      ]);
 
       return data;
     } catch (error) {
@@ -109,10 +112,12 @@ export class GroupMessageRooms {
 
   static async getGroupMessageRoomMessages(whereConditions, whereValues) {
     try {
+      const mappedWhereConditions = mapWhereConditions(whereConditions);
+
       const sql = `SELECT * FROM group_message_rooms AS pmr
                   INNER JOIN group_messages AS pm
                   ON pmr.message_room_id = pm.message_room_fk_id
-                  WHERE ${whereConditions} = ?
+                  WHERE ${mappedWhereConditions}
                   ORDER BY pm.date_sent DESC;`;
 
       const [data, _] = await conn.execute(sql, whereValues);
@@ -124,8 +129,10 @@ export class GroupMessageRooms {
 
   static async getGroupMessageRoom(whereConditions, whereValues) {
     try {
+      const mappedWhereConditions = mapWhereConditions(whereConditions);
+
       const sql = `SELECT * FROM group_message_rooms
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
       return data;

@@ -66,13 +66,15 @@ export class Associates {
                     INNER JOIN users AS u_of 
                     ON a.associate_of = u_of.user_id
 
-                    WHERE (a.associate_is = '${userID}'
-                    OR a.associate_of = '${userID}')
-                    AND (u_of.${searchCategoryValue} LIKE '%${searchFilter}%'
-                    OR u_is.${searchCategoryValue} LIKE '%${searchFilter}%')
+                    WHERE (a.associate_is = ?
+                    OR a.associate_of = ?)
+                    AND (u_of.${searchCategoryValue} LIKE ?
+                    OR u_is.${searchCategoryValue} LIKE ?)
                     ORDER BY ${checkedSortValue};`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [userID, userID, `%${searchFilter}%`, `%${searchFilter}%`];
+
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- get all associates ---");
@@ -107,14 +109,16 @@ export class Associates {
                     INNER JOIN users AS u_of 
                     ON a.associate_of = u_of.user_id
 
-                    WHERE (a.associate_is = '${userID}'
-                    OR a.associate_of = '${userID}')
-                    AND (u_of.${searchCategoryValue} LIKE '%${searchFilter}%'
-                    OR u_is.${searchCategoryValue} LIKE '%${searchFilter}%')
+                    WHERE (a.associate_is = ?
+                    OR a.associate_of = ?)
+                    AND (u_of.${searchCategoryValue} LIKE ?
+                    OR u_is.${searchCategoryValue} LIKE ?)
                     AND CAST(a.date_associated AS DATE) > CAST(DATE_SUB(NOW(), INTERVAL 5 DAY) AS DATE)
                     ORDER BY ${checkedSortValue};`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [userID, userID, `%${searchFilter}%`, `%${searchFilter}%`];
+
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- get all associates ---");

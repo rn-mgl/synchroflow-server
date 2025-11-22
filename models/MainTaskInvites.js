@@ -89,6 +89,8 @@ export class MainTaskInvites {
 
   static async getAllMainTaskInvites(whereConditions, whereValues) {
     try {
+      const mappedWhereConditions = mapWhereConditions(whereConditions);
+
       const sql = `SELECT u_invited.user_uuid AS invited_user_uuid, u_invited.user_id AS invited_user, u_invited.name AS invited_name, u_invited.surname AS invited_surname, u_invited.email AS invited_email,
                     u_from.user_uuid AS from_user_uuid, u_from.user_id AS from_user, u_from.name AS from_name, u_from.surname AS from_surname, u_from.email AS from_email,
                     mti.main_task_invite_uuid, mt.main_task_title, mt.main_task_banner, mt.main_task_priority, mt.main_task_uuid, mti.main_task_invite_message
@@ -104,7 +106,7 @@ export class MainTaskInvites {
                     INNER JOIN main_tasks AS mt
                     ON mti.main_task_fk_id = mt.main_task_id
 
-                    WHERE ${whereConditions} = ?;`;
+                    WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
 
@@ -119,29 +121,42 @@ export class MainTaskInvites {
       const sql = `SELECT * FROM associates AS a
 
                   INNER JOIN users AS u
-                  ON (u.user_id = a.associate_of AND a.associate_of <> '${userId}')
-                  OR (u.user_id = a.associate_is AND a.associate_is <> '${userId}')
+                  ON (u.user_id = a.associate_of AND a.associate_of <> ?)
+                  OR (u.user_id = a.associate_is AND a.associate_is <> ?)
 
-                  WHERE (a.associate_is = '${userId}' OR a.associate_of = '${userId}')
+                  WHERE (a.associate_is = ? OR a.associate_of = ?)
                   AND a.associate_is NOT IN (
                     SELECT invited_associate FROM main_task_invites
-                    WHERE main_task_fk_id = '${mainTaskId}'
+                    WHERE main_task_fk_id = ?
                   )
                   AND a.associate_of NOT IN (
                     SELECT invited_associate FROM main_task_invites
-                    WHERE main_task_fk_id = '${mainTaskId}'
+                    WHERE main_task_fk_id = ?
                   )
                   AND a.associate_is NOT IN (
                     SELECT collaborator_fk_id FROM main_task_collaborators
-                    WHERE main_task_fk_id = '${mainTaskId}'
+                    WHERE main_task_fk_id = ?
                   )
                   AND a.associate_of NOT IN (
                     SELECT collaborator_fk_id FROM main_task_collaborators
-                    WHERE main_task_fk_id = '${mainTaskId}'
+                    WHERE main_task_fk_id = ?
                   )
-                  AND (name LIKE '%${searchFilter}%' OR surname LIKE '%${searchFilter}%') ;`;
+                  AND (name LIKE ? OR surname LIKE ?) ;`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [
+        userId,
+        userId,
+        userId,
+        userId,
+        mainTaskId,
+        mainTaskId,
+        mainTaskId,
+        mainTaskId,
+        `%${searchFilter}%`,
+        `%${searchFilter}%`,
+      ];
+
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- get all associates to invite ---");

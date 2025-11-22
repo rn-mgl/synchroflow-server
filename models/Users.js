@@ -58,21 +58,30 @@ export class Users {
                     ON ai.associate_invite_to = u.user_id
                     OR ai.associate_invite_from = u.user_id
                     
-                    WHERE u.user_id <> '${userId}'
+                    WHERE u.user_id <> ?
                     AND u.user_id NOT IN (
                       SELECT associate_is FROM associates
-                      WHERE associate_of = '${userId}'
-                      OR associate_is = '${userId}'
+                      WHERE associate_of = ?
+                      OR associate_is = ?
                     )
                     AND u.user_id NOT IN (
                       SELECT associate_of FROM associates
-                      WHERE associate_of = '${userId}'
-                      OR associate_is = '${userId}'
+                      WHERE associate_of = ?
+                      OR associate_is = ?
                     )
-                    AND ${searchCategoryValue} LIKE '%${searchFilter}%'
+                    AND ${searchCategoryValue} LIKE ?
                     ORDER BY ${sortValue};`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [
+        userId,
+        userId,
+        userId,
+        userId,
+        userId,
+        `%${searchFilter}%`,
+      ];
+
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- get user ---");
@@ -94,9 +103,9 @@ export class Users {
                       role = ?,
                       status = ?, 
                       image = ?
-                    WHERE user_id = '${userID}'`;
+                    WHERE user_id = ?`;
 
-      const updateUserValues = [name, surname, role, status, image];
+      const updateUserValues = [name, surname, role, status, image, userID];
 
       const [data, _] = await conn.execute(sql, updateUserValues);
       return data;
@@ -108,9 +117,9 @@ export class Users {
   static async updateUserPassword(password, userID) {
     try {
       const sql = `UPDATE users SET password = ?
-                    WHERE user_id = '${userID}'`;
+                    WHERE user_id = ?;`;
 
-      const updateUserValues = [password];
+      const updateUserValues = [password, userID];
 
       const [data, _] = await conn.execute(sql, updateUserValues);
       return data;
@@ -122,9 +131,9 @@ export class Users {
   static async updateUserVerification(userID) {
     try {
       const sql = `UPDATE users SET is_verified = ?
-                    WHERE user_id = '${userID}'`;
+                    WHERE user_id = ?;`;
 
-      const updateUserValues = [1];
+      const updateUserValues = [1, userID];
 
       const [data, _] = await conn.execute(sql, updateUserValues);
       return data;

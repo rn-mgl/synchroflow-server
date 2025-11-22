@@ -64,10 +64,10 @@ export class SubTaskCollaborators {
                     FROM main_task_collaborators AS mtc
 
                     INNER JOIN main_tasks AS mt
-                    ON mt.main_task_id = '${mainTaskID}'
+                    ON mt.main_task_id = ?
                     
                     INNER JOIN sub_tasks AS st
-                    ON st.sub_task_id = '${subTaskID}'
+                    ON st.sub_task_id = ?
                     
                     INNER JOIN users AS u
                     ON mtc.collaborator_fk_id = u.user_id
@@ -76,9 +76,10 @@ export class SubTaskCollaborators {
                     ON st.sub_task_id = stc.sub_task_fk_id
                     AND stc.collaborator_fk_id = u.user_id
                     
-                    WHERE mtc.main_task_fk_id = '${mainTaskID}';`;
+                    WHERE mtc.main_task_fk_id = ?;`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [mainTaskID, subTaskID, mainTaskID];
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- get all sub task collaborators ---");

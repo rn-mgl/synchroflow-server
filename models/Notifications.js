@@ -3,7 +3,13 @@ import conn from "../db/connection.js";
 export class Notifications {
   constructor() {}
 
-  static async getNotifications(userID, associateInvite, messageNotification, taskDeadline, taskUpdate) {
+  static async getNotifications(
+    userID,
+    associateInvite,
+    messageNotification,
+    taskDeadline,
+    taskUpdate
+  ) {
     try {
       const sql = `SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
                     "main task invite" AS purpose, mt.main_task_title AS title, mti.date_invited AS notif_date
@@ -15,8 +21,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = mti.invited_by
 
-                    WHERE '${taskUpdate}' = '1' AND 
-                    invited_associate = '${userID}'
+                    WHERE ? = '1' AND 
+                    invited_associate = ?
                     
                     UNION
                     
@@ -30,8 +36,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = st.sub_task_by 
 
-                    WHERE '${taskUpdate}' = '1' AND 
-                    stc.collaborator_fk_id = '${userID}'
+                    WHERE ? = '1' AND 
+                    stc.collaborator_fk_id = ?
                     
                     UNION 
                     
@@ -42,8 +48,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = ai.associate_invite_from 
 
-                    WHERE '${associateInvite}' = '1' AND 
-                    ai.associate_invite_to = '${userID}'
+                    WHERE ? = '1' AND 
+                    ai.associate_invite_to = ?
                     
                     UNION 
                     
@@ -57,9 +63,9 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = gmr.created_by
 
-                    WHERE '${associateInvite}' = '1' AND 
-                    gmm.member_fk_id = '${userID}'
-                    AND gmr.created_by <> '${userID}'
+                    WHERE ? = '1' AND 
+                    gmm.member_fk_id = ?
+                    AND gmr.created_by <> ?
                     
                     UNION 
                     
@@ -73,8 +79,8 @@ export class Notifications {
                     INNER JOIN users AS u_from
                     ON u_from.user_id = pm.message_from
 
-                    WHERE '${messageNotification}' = '1' AND 
-                    pm.message_to = '${userID}'
+                    WHERE ? = '1' AND 
+                    pm.message_to = ?
 
                     UNION 
                     
@@ -91,12 +97,12 @@ export class Notifications {
                     INNER JOIN group_message_rooms AS gmr
                     ON gm.message_room_fk_id = gmr.message_room_id
 
-                    WHERE '${messageNotification}' = '1' AND 
-                    '${userID}' IN (
+                    WHERE ? = '1' AND 
+                    ? IN (
                       SELECT gmm.member_fk_id FROM group_message_members AS gmm
                       WHERE gmm.message_room_fk_id = gmr.message_room_id
                     ) AND 
-                    gm.message_from <> '${userID}'
+                    gm.message_from <> ?
 
                     GROUP BY gm.message_from
 
@@ -109,8 +115,8 @@ export class Notifications {
                     INNER JOIN users AS u
                     ON u.user_id = mt.main_task_by
 
-                    WHERE '${taskDeadline}' = '1' AND 
-                    mt.main_task_by = '${userID}' AND
+                    WHERE ? = '1' AND 
+                    mt.main_task_by = ? AND
                     CAST(mt.main_task_end_date AS DATE) = CURDATE()
 
                     UNION 
@@ -125,8 +131,8 @@ export class Notifications {
                     INNER JOIN users AS u
                     ON u.user_id = mtc.collaborator_fk_id	
 
-                    WHERE '${taskDeadline}' = '1' AND 
-                    mtc.collaborator_fk_id = '${userID}' AND
+                    WHERE ? = '1' AND 
+                    mtc.collaborator_fk_id = ? AND
                     CAST(mt.main_task_end_date AS DATE) = CURDATE()
 
                     UNION 
@@ -138,8 +144,8 @@ export class Notifications {
                     INNER JOIN users AS u
                     ON u.user_id = st.sub_task_by
 
-                    WHERE '${taskDeadline}' = '1' AND 
-                    st.sub_task_by = '${userID}' AND
+                    WHERE ? = '1' AND 
+                    st.sub_task_by = ? AND
                     CAST(st.sub_task_end_date AS DATE) = CURDATE()
 
                     UNION 
@@ -154,8 +160,8 @@ export class Notifications {
                     INNER JOIN users AS u
                     ON u.user_id = stc.collaborator_fk_id	
 
-                    WHERE '${taskDeadline}' = '1' AND 
-                    stc.collaborator_fk_id = '${userID}' AND
+                    WHERE ? = '1' AND 
+                    stc.collaborator_fk_id = ? AND
                     CAST(st.sub_task_end_date AS DATE) = CURDATE()
 
                     UNION 
@@ -170,12 +176,39 @@ export class Notifications {
                     INNER JOIN users AS u
                     ON u.user_id = stc.collaborator_fk_id	
 
-                    WHERE '${taskUpdate}' = '1' AND 
-                    stc.collaborator_fk_id = '${userID}'
+                    WHERE ? = '1' AND 
+                    stc.collaborator_fk_id = ?
                     
                     ORDER BY notif_date DESC;`;
 
-      const [data, _] = await conn.execute(sql);
+      const values = [
+        taskUpdate,
+        userID,
+        taskUpdate,
+        userID,
+        associateInvite,
+        userID,
+        associateInvite,
+        userID,
+        userID,
+        messageNotification,
+        userID,
+        messageNotification,
+        userID,
+        userID,
+        taskDeadline,
+        userID,
+        taskDeadline,
+        userID,
+        taskDeadline,
+        userID,
+        taskDeadline,
+        userID,
+        taskUpdate,
+        userID,
+      ];
+
+      const [data, _] = await conn.execute(sql, values);
       return data;
     } catch (error) {
       console.log(error + "--- get notifications ---");
