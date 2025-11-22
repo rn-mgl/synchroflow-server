@@ -33,7 +33,7 @@ export class MainTaskInvites {
         this.invited_associate,
         this.main_task_invite_message,
       ];
-      const [data, _] = await conn.query(sql, mainTaskInviteValues);
+      const [data, _] = await conn.execute(sql, mainTaskInviteValues);
       return data;
     } catch (error) {
       console.log(error + "--- create main task invite ---");
@@ -47,7 +47,7 @@ export class MainTaskInvites {
       const sql = `DELETE FROM main_task_invites
                   WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
 
       return data;
     } catch (error) {
@@ -66,7 +66,7 @@ export class MainTaskInvites {
       const sql = `UPDATE main_task_invites SET main_task_invite_status = ?
                   WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereConditions);
+      const [data, _] = await conn.execute(sql, whereConditions);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");
@@ -80,7 +80,7 @@ export class MainTaskInvites {
       const sql = `SELECT * FROM main_task_invites
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get main task invite ---");
@@ -106,7 +106,7 @@ export class MainTaskInvites {
 
                     WHERE ${whereConditions} = ?;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
 
       return data;
     } catch (error) {

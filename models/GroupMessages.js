@@ -2,7 +2,14 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class GroupMessages {
-  constructor(message_room_id, message_uuid, message_from, message, message_file, message_file_type) {
+  constructor(
+    message_room_id,
+    message_uuid,
+    message_from,
+    message,
+    message_file,
+    message_file_type
+  ) {
     this.message_room_id = message_room_id;
     this.message_uuid = message_uuid;
     this.message_from = message_from;
@@ -30,7 +37,7 @@ export class GroupMessages {
         this.message_file,
         this.message_file_type,
       ];
-      const [data, _] = await conn.query(sql, groupMessageValues);
+      const [data, _] = await conn.execute(sql, groupMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- create group message ---");
@@ -44,7 +51,7 @@ export class GroupMessages {
       const sql = `UPDATE group_messages SET group_message_is_deleted = ?
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message ---");
@@ -58,7 +65,7 @@ export class GroupMessages {
                     ON gm.message_room_id = gmr.message_room_id
                     WHERE ${whereConditions} = ?;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all group messages ---");
@@ -91,7 +98,7 @@ export class GroupMessages {
       const sql = `SELECT * FROM group_messages
                     WHERE ${whereConditions} = ?;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get group message ---");

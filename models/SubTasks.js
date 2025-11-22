@@ -50,7 +50,7 @@ export class SubTasks {
         this.sub_task_end_date,
       ];
 
-      const [data, _] = await conn.query(sql, subTaskValues);
+      const [data, _] = await conn.execute(sql, subTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- create sub task ---");
@@ -88,7 +88,7 @@ export class SubTasks {
         sub_task_end_date,
       ];
 
-      const [data, _] = await conn.query(sql, updateSubTaskValues);
+      const [data, _] = await conn.execute(sql, updateSubTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- update sub task ---");
@@ -102,7 +102,7 @@ export class SubTasks {
       const sql = `SELECT * FROM sub_tasks
                   WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get sub task ---");
@@ -123,7 +123,7 @@ export class SubTasks {
                   
                   WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all sub tasks ---");
@@ -137,7 +137,7 @@ export class SubTasks {
       const sql = `DELETE FROM sub_tasks
                   WHERE ${mappedWhereConditions};;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task ---");

@@ -12,7 +12,7 @@ export class UserSettings {
       const sql = `INSERT INTO user_settings (user_settings_uuid, user_fk_id) 
                   VALUES (?, ?);`;
       const userSettingsValues = [this.user_settings_uuid, this.user_fk_id];
-      const [data, _] = await conn.query(sql, userSettingsValues);
+      const [data, _] = await conn.execute(sql, userSettingsValues);
       return data;
     } catch (error) {
       console.log(error + "--- create user settings ---");
@@ -43,7 +43,7 @@ export class UserSettings {
         taskDeadline,
         associateInvite,
       ];
-      const [data, _] = await conn.query(sql, userSettingsUpdateValues);
+      const [data, _] = await conn.execute(sql, userSettingsUpdateValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user settings ---");
@@ -53,7 +53,8 @@ export class UserSettings {
   static async getUserSettings(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
-      const sql = `SELECT * FROM user_settings AS us
+      const sql = `SELECT user_settings_id, notification_sound, message_notification, task_update, task_deadline, associate_invite 
+                  FROM user_settings AS us
                   INNER JOIN users AS u
                   ON us.user_fk_id = u.user_id
                   WHERE ${mappedWhereConditions};`;

@@ -5,7 +5,13 @@ import { UserSettings } from "../models/UserSettings.js";
 export const updateUserSettings = async (req, res) => {
   const { id } = req.user;
   const { settings } = req.body;
-  const { notification_sound, message_notification, task_update, task_deadline, associate_invite } = settings;
+  const {
+    notification_sound,
+    message_notification,
+    task_update,
+    task_deadline,
+    associate_invite,
+  } = settings;
 
   const userSettings = await UserSettings.getUserSettings(["user_id"], [id]);
 

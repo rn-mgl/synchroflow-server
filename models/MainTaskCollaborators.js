@@ -2,7 +2,11 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class MainTaskCollaborators {
-  constructor(main_task_collaborator_uuid, main_task_fk_id, collaborator_fk_id) {
+  constructor(
+    main_task_collaborator_uuid,
+    main_task_fk_id,
+    collaborator_fk_id
+  ) {
     this.main_task_collaborator_uuid = main_task_collaborator_uuid;
     this.main_task_fk_id = main_task_fk_id;
     this.collaborator_fk_id = collaborator_fk_id;
@@ -21,7 +25,7 @@ export class MainTaskCollaborators {
         this.main_task_fk_id,
         this.collaborator_fk_id,
       ];
-      const [data, _] = await conn.query(sql, mainTaskCollaboratorValues);
+      const [data, _] = await conn.execute(sql, mainTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- create main task collaborator ---");
@@ -35,7 +39,7 @@ export class MainTaskCollaborators {
       const sql = `DELETE FROM main_task_collaborators
                 WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task collaborator ---");
@@ -49,7 +53,7 @@ export class MainTaskCollaborators {
       const sql = `SELECT * FROM main_task_collaborators
                 WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get main task collaborator ---");
@@ -72,7 +76,7 @@ export class MainTaskCollaborators {
                     ON mtc.collaborator_fk_id = u.user_id
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all main task collaborators ---");

@@ -50,7 +50,7 @@ export class MainTasks {
         this.main_task_end_date,
       ];
 
-      const [data, _] = await conn.query(sql, mainTaskValues);
+      const [data, _] = await conn.execute(sql, mainTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- create main task ---");
@@ -90,7 +90,7 @@ export class MainTasks {
         mainTaskStartDate,
         mainTaskEndDate,
       ];
-      const [data, _] = await conn.query(sql, updateTaskValues);
+      const [data, _] = await conn.execute(sql, updateTaskValues);
       return data;
     } catch (error) {
       console.log(error + "--- update main task ---");
@@ -106,14 +106,20 @@ export class MainTasks {
                   mt.main_task_by = u.user_id
                   WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get main task ---");
     }
   }
 
-  static async getAllMainTasks(whereConditions, whereValues, sortFilter, searchFilter, searchCategory) {
+  static async getAllMainTasks(
+    whereConditions,
+    whereValues,
+    sortFilter,
+    searchFilter,
+    searchCategory
+  ) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     const sortValue = mainTasksFilterKey[sortFilter];
     const searchCategoryValue = mainTasksFilterKey[searchCategory];
@@ -127,7 +133,7 @@ export class MainTasks {
                   GROUP BY mt.main_task_id
                   ORDER BY mt.${sortValue};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
 
       return data;
     } catch (error) {
@@ -135,7 +141,13 @@ export class MainTasks {
     }
   }
 
-  static async getAllMainTasksToday(whereConditions, whereValues, sortFilter, searchFilter, searchCategory) {
+  static async getAllMainTasksToday(
+    whereConditions,
+    whereValues,
+    sortFilter,
+    searchFilter,
+    searchCategory
+  ) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     const sortValue = mainTasksFilterKey[sortFilter];
     const searchCategoryValue = mainTasksFilterKey[searchCategory];
@@ -150,7 +162,7 @@ export class MainTasks {
                   GROUP BY mt.main_task_id
                   ORDER BY mt.${sortValue};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
 
       return data;
     } catch (error) {
@@ -170,7 +182,7 @@ export class MainTasks {
                   GROUP BY mt.main_task_id
                   ORDER BY mt.main_task_end_date;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
 
       return data;
     } catch (error) {
@@ -185,7 +197,7 @@ export class MainTasks {
       const sql = `DELETE FROM main_tasks
                   WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete main task ---");

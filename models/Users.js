@@ -24,7 +24,7 @@ export class Users {
         this.password,
         this.image,
       ];
-      const [data, _] = await conn.query(sql, userValues);
+      const [data, _] = await conn.execute(sql, userValues);
       return data;
     } catch (error) {
       console.log(error + "--- create user ---");
@@ -38,7 +38,7 @@ export class Users {
       const sql = `SELECT * FROM users
                     WHERE ${mappedWhereConditions}`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get user ---");
@@ -98,7 +98,7 @@ export class Users {
 
       const updateUserValues = [name, surname, role, status, image];
 
-      const [data, _] = await conn.query(sql, updateUserValues);
+      const [data, _] = await conn.execute(sql, updateUserValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");
@@ -112,7 +112,7 @@ export class Users {
 
       const updateUserValues = [password];
 
-      const [data, _] = await conn.query(sql, updateUserValues);
+      const [data, _] = await conn.execute(sql, updateUserValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user password ---");
@@ -126,7 +126,7 @@ export class Users {
 
       const updateUserValues = [1];
 
-      const [data, _] = await conn.query(sql, updateUserValues);
+      const [data, _] = await conn.execute(sql, updateUserValues);
       return data;
     } catch (error) {
       console.log(error + "--- update user verification ---");

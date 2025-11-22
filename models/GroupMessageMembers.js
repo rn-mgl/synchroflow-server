@@ -16,8 +16,12 @@ export class GroupMessageMembers {
                         member_fk_id,
                         message_room_fk_id
                     ) VALUES (?, ?, ?);`;
-      const groupMessageMemberValues = [this.message_member_uuid, this.member_id, this.message_room_id];
-      const [data, _] = await conn.query(sql, groupMessageMemberValues);
+      const groupMessageMemberValues = [
+        this.message_member_uuid,
+        this.member_id,
+        this.message_room_id,
+      ];
+      const [data, _] = await conn.execute(sql, groupMessageMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- create group message  member ---");
@@ -31,7 +35,7 @@ export class GroupMessageMembers {
       const sql = `DELETE FROM group_message_members
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message  member ---");
@@ -48,7 +52,7 @@ export class GroupMessageMembers {
                     ON gmm.message_room_fk_id = gmr.message_room_id
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all group message members ---");
@@ -85,7 +89,7 @@ export class GroupMessageMembers {
       const sql = `SELECT * FROM group_message_members
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get group message  member ---");

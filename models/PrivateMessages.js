@@ -2,7 +2,15 @@ import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class PrivateMessages {
-  constructor(message_uuid, message_room_fk_id, message_from, message_to, message, message_file, message_file_type) {
+  constructor(
+    message_uuid,
+    message_room_fk_id,
+    message_from,
+    message_to,
+    message,
+    message_file,
+    message_file_type
+  ) {
     this.message_uuid = message_uuid;
     this.message_room_fk_id = message_room_fk_id;
     this.message_from = message_from;
@@ -33,7 +41,7 @@ export class PrivateMessages {
         this.message_file,
         this.message_file_type,
       ];
-      const [data, _] = await conn.query(sql, privateMessageValues);
+      const [data, _] = await conn.execute(sql, privateMessageValues);
       return data;
     } catch (error) {
       console.log(error + "--- create private message ---");
@@ -46,7 +54,7 @@ export class PrivateMessages {
       const sql = `UPDATE private_messages SET private_message_is_deleted = ?
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete private message ---");
@@ -58,7 +66,7 @@ export class PrivateMessages {
       const sql = `SELECT * FROM private_messages
                     WHERE ${whereConditions} = ?;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all private messages ---");
@@ -92,7 +100,7 @@ export class PrivateMessages {
       const sql = `SELECT * FROM private_messages
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get private message ---");

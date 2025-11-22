@@ -13,7 +13,7 @@ export class PrivateMessageRooms {
                         message_room
                     ) VALUES (?);`;
       const privateMessageRoomValues = [this.message_room];
-      const [data, _] = await conn.query(sql, privateMessageRoomValues);
+      const [data, _] = await conn.execute(sql, privateMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- create private message room ---");
@@ -27,7 +27,7 @@ export class PrivateMessageRooms {
       const sql = `DELETE FROM private_message_rooms
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete private message room ---");
@@ -73,7 +73,7 @@ export class PrivateMessageRooms {
                     WHERE ${whereConditions} = ?
                     ORDER BY pm.date_sent DESC;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get private message room ---");
@@ -86,7 +86,7 @@ export class PrivateMessageRooms {
       const sql = `SELECT * FROM private_message_rooms
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get private message room ---");

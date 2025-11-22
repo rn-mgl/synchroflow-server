@@ -16,10 +16,14 @@ export class PrivateMessageMembers {
                         member_fk_id,
                         message_room_fk_id
                     ) VALUES (?, ?, ?);`;
-      const privateMessageMemberValues = [this.message_member_uuid, this.member_id, this.message_room_id];
+      const privateMessageMemberValues = [
+        this.message_member_uuid,
+        this.member_id,
+        this.message_room_id,
+      ];
 
       console.log(privateMessageMemberValues);
-      const [data, _] = await conn.query(sql, privateMessageMemberValues);
+      const [data, _] = await conn.execute(sql, privateMessageMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- create private message  member ---");
@@ -33,7 +37,7 @@ export class PrivateMessageMembers {
       const sql = `DELETE FROM private_message_members
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete private message  member ---");
@@ -45,7 +49,7 @@ export class PrivateMessageMembers {
       const sql = `SELECT * FROM private_message_members
                     WHERE ${whereConditions} = ?;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all private message members ---");
@@ -58,7 +62,7 @@ export class PrivateMessageMembers {
       const sql = `SELECT * FROM private_message_members
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get private message  member ---");

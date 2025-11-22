@@ -13,8 +13,12 @@ export class Associates {
     try {
       const sql = `INSERT INTO associates (associate_uuid, associate_of, associate_is) 
                     VALUES (?, ?, ?);`;
-      const associateValues = [this.associate_uuid, this.associate_of, this.associate_is];
-      const [data, _] = await conn.query(sql, associateValues);
+      const associateValues = [
+        this.associate_uuid,
+        this.associate_of,
+        this.associate_is,
+      ];
+      const [data, _] = await conn.execute(sql, associateValues);
       return data;
     } catch (error) {
       console.log(error + "--- create associate ---");
@@ -27,18 +31,25 @@ export class Associates {
       const sql = `DELETE FROM associates
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete associate ---");
     }
   }
 
-  static async getAllAssociates(userID, sortFilter, searchFilter, searchCategory) {
+  static async getAllAssociates(
+    userID,
+    sortFilter,
+    searchFilter,
+    searchCategory
+  ) {
     const searchCategoryValue = associatesFilterKey[searchCategory];
     const sortValue = associatesFilterKey[sortFilter];
     const checkedSortValue =
-      sortValue === "date_associated" ? "a.date_associated" : `u_of.${sortValue}, u_is.${sortValue}`;
+      sortValue === "date_associated"
+        ? "a.date_associated"
+        : `u_of.${sortValue}, u_is.${sortValue}`;
 
     try {
       const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, 
@@ -68,11 +79,18 @@ export class Associates {
     }
   }
 
-  static async getAllRecentAssociates(userID, sortFilter, searchFilter, searchCategory) {
+  static async getAllRecentAssociates(
+    userID,
+    sortFilter,
+    searchFilter,
+    searchCategory
+  ) {
     const searchCategoryValue = associatesFilterKey[searchCategory];
     const sortValue = associatesFilterKey[sortFilter];
     const checkedSortValue =
-      sortValue === "date_associated" ? "a.date_associated" : `u_of.${sortValue}, u_is.${sortValue}`;
+      sortValue === "date_associated"
+        ? "a.date_associated"
+        : `u_of.${sortValue}, u_is.${sortValue}`;
 
     try {
       const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, 
@@ -112,7 +130,7 @@ export class Associates {
                   ON u.user_id = a.associate_is
                   WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
 
       return data;
     } catch (error) {

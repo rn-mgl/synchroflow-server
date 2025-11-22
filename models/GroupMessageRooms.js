@@ -20,8 +20,13 @@ export class GroupMessageRooms {
                         created_by
                     ) VALUES (?, ?, ?, ?)`;
 
-      const groupMessageRoomValues = [this.message_room, this.room_name, this.room_image, this.created_by];
-      const [data, _] = await conn.query(sql, groupMessageRoomValues);
+      const groupMessageRoomValues = [
+        this.message_room,
+        this.room_name,
+        this.room_image,
+        this.created_by,
+      ];
+      const [data, _] = await conn.execute(sql, groupMessageRoomValues);
       return data;
     } catch (error) {
       console.log(error + "--- create group message room ---");
@@ -34,7 +39,7 @@ export class GroupMessageRooms {
       const sql = `DELETE FROM group_message_rooms
                     WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete group message room ---");
@@ -51,7 +56,7 @@ export class GroupMessageRooms {
 
       const groupMessageUpdateValues = [roomName, roomImage];
 
-      const [data, _] = await conn.query(sql, groupMessageUpdateValues);
+      const [data, _] = await conn.execute(sql, groupMessageUpdateValues);
       return data;
     } catch (error) {
       console.log(error + "--- update group message room ---");
@@ -67,7 +72,7 @@ export class GroupMessageRooms {
 
       const groupMessageUpdateValues = [creatorID];
 
-      const [data, _] = await conn.query(sql, groupMessageUpdateValues);
+      const [data, _] = await conn.execute(sql, groupMessageUpdateValues);
       return data;
     } catch (error) {
       console.log(error + "--- update group message room ---");
@@ -110,7 +115,7 @@ export class GroupMessageRooms {
                   WHERE ${whereConditions} = ?
                   ORDER BY pm.date_sent DESC;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get group message room ---");
@@ -122,7 +127,7 @@ export class GroupMessageRooms {
       const sql = `SELECT * FROM group_message_rooms
                     WHERE ${whereConditions} = ?;`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get group message room ---");

@@ -16,8 +16,12 @@ export class SubTaskCollaborators {
                         sub_task_fk_id, 
                         collaborator_fk_id
                      ) VALUES (?, ?, ?);`;
-      const subTaskCollaboratorValues = [this.sub_task_collaborator_uuid, this.sub_task_fk_id, this.collaborator_fk_id];
-      const [data, _] = await conn.query(sql, subTaskCollaboratorValues);
+      const subTaskCollaboratorValues = [
+        this.sub_task_collaborator_uuid,
+        this.sub_task_fk_id,
+        this.collaborator_fk_id,
+      ];
+      const [data, _] = await conn.execute(sql, subTaskCollaboratorValues);
       return data;
     } catch (error) {
       console.log(error + "--- create sub task collaborator ---");
@@ -30,7 +34,7 @@ export class SubTaskCollaborators {
       const sql = `DELETE FROM sub_task_collaborators
                 WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task collaborator ---");
@@ -43,7 +47,7 @@ export class SubTaskCollaborators {
       const sql = `SELECT * FROM sub_task_collaborators
                 WHERE ${mappedWhereConditions};`;
 
-      const [data, _] = await conn.query(sql, whereValues);
+      const [data, _] = await conn.execute(sql, whereValues);
       return data;
     } catch (error) {
       console.log(error + "--- get sub task collaborator ---");
