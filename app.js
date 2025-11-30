@@ -122,6 +122,4 @@ const start = async () => {
   }
 };
 
-console.log(process.env);
-
 start();
