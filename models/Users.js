@@ -14,16 +14,21 @@ export class Users {
 
   async createUser() {
     try {
-      const sql = `INSERT INTO users (user_uuid, name, surname, email, password, image) 
+      const sql = `INSERT INTO users (user_uuid, name, surname, email, password, status, image) 
                   VALUES (?, ?, ?, ?, ?, ?);`;
+
+      const defaultStatus = "Hi! I'm new here, let's work together.";
+
       const userValues = [
         this.user_uuid,
         this.name,
         this.surname,
         this.email,
         this.password,
+        defaultStatus,
         this.image,
       ];
+
       const [data, _] = await conn.execute(sql, userValues);
       return data;
     } catch (error) {
