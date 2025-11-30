@@ -5,9 +5,9 @@ import nodemailer from "nodemailer";
 const url = process.env.URL;
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  port: 587,
-  secure: false,
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: true,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 export const sendVerificationMail = async (name, email, token) => {
   const message = {
     to: email,
-    from: "SynchroFlow <rltnslns@gmail.com>",
+    from: "SynchroFlow <no-reply@rltn.space>",
     subject: "Account Verification",
     html: `<h1> Hello ${name}</h1>
 
@@ -62,7 +62,7 @@ export const sendVerificationMail = async (name, email, token) => {
 export const sendPasswordResetMail = async (name, email, token) => {
   const message = {
     to: email,
-    from: "SynchroFlow <rltnslns@gmail.com>",
+    from: "SynchroFlow <no-reply@rltn.space>",
     subject: "Password Reset",
     html: `<h1> Hello ${name}</h1>
 
