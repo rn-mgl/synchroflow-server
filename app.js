@@ -122,4 +122,7 @@ const start = async () => {
   }
 };
 
+console.log(process.env.JWT_TTL);
+console.log(process.env.EMAIL_TTL);
+
 start();
