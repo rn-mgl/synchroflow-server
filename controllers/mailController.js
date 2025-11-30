@@ -8,11 +8,17 @@ const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,
   secure: true,
+  requireTLS: true,
+  tls: {
+    ciphers: "SSLv3",
+  },
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
 });
+
+console.log(transporter);
 
 export const sendVerificationMail = async (name, email, token) => {
   const message = {
