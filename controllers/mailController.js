@@ -6,7 +6,7 @@ import axios from "axios";
 const url = process.env.URL;
 
 export const sendVerificationMail = async (name, email, token) => {
-  const message = {
+  const envelope = {
     to: email,
     from: "SynchroFlow <no-reply@rltn.space>",
     subject: "Account Verification",
@@ -108,7 +108,7 @@ export const sendVerificationMail = async (name, email, token) => {
             </html>`,
   };
 
-  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, message);
+  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, envelope);
 
   if (!data) {
     throw new BadRequestError("Error in sending verification code.");
@@ -118,7 +118,7 @@ export const sendVerificationMail = async (name, email, token) => {
 };
 
 export const sendPasswordResetMail = async (name, email, token) => {
-  const message = {
+  const envelope = {
     to: email,
     from: "SynchroFlow <no-reply@rltn.space>",
     subject: "Password Reset",
@@ -154,7 +154,7 @@ export const sendPasswordResetMail = async (name, email, token) => {
             SynchroFlow | Developers.`,
   };
 
-  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, message);
+  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, envelope);
 
   if (!data) {
     throw new BadRequestError("Error in sending password reset mail.");
