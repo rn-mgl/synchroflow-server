@@ -108,7 +108,7 @@ export const sendVerificationMail = async (name, email, token) => {
             </html>`,
   };
 
-  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, envelope);
+  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, { envelope });
 
   if (!data) {
     throw new BadRequestError("Error in sending verification code.");
@@ -154,7 +154,7 @@ export const sendPasswordResetMail = async (name, email, token) => {
             SynchroFlow | Developers.`,
   };
 
-  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, envelope);
+  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, { envelope });
 
   if (!data) {
     throw new BadRequestError("Error in sending password reset mail.");
