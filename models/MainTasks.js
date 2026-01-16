@@ -156,6 +156,8 @@ export class MainTasks {
     const sortValue = mainTasksFilterKey[sortFilter];
     const searchCategoryValue = mainTasksFilterKey[searchCategory];
 
+    console.log(mappedWhereConditions);
+
     try {
       const sql = `SELECT * FROM main_tasks AS mt
                   LEFT JOIN main_task_collaborators AS mtc

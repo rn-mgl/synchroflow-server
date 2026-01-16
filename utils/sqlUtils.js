@@ -1,9 +1,7 @@
 export const mapWhereConditions = (conditions) => {
-  let mappedWhereConditions = "";
-
-  conditions.map((condition, index) => {
-    mappedWhereConditions += `${condition} = ? ${index !== conditions.length - 1 ? `AND ` : ``}`;
-  });
+  const mappedWhereConditions = conditions
+    .map((condition, index) => `${condition} = ?`)
+    .join("AND ");
 
   return mappedWhereConditions;
 };
