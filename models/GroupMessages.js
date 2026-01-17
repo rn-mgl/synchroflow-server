@@ -8,7 +8,7 @@ export class GroupMessages {
     message_from,
     message,
     message_file,
-    message_file_type
+    message_file_type,
   ) {
     this.message_room_id = message_room_id;
     this.message_uuid = message_uuid;

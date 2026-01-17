@@ -11,7 +11,10 @@ export const createGroupMessage = async (req, res) => {
 
   const groupMessageUUID = uuidv4();
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(
+    ["message_room"],
+    [messageRoom],
+  );
 
   if (!groupMessageRoom) {
     throw new NotFoundError(`This group does not exist.`);
@@ -23,42 +26,57 @@ export const createGroupMessage = async (req, res) => {
     id,
     message,
     messageFile,
-    messageFileType
+    messageFileType,
   );
 
   const newGroupMessage = await groupMessage.createGroupMessage();
 
   if (!newGroupMessage) {
-    throw new BadRequestError("Error in sending group message. Try again later.");
+    throw new BadRequestError(
+      "Error in sending group message. Try again later.",
+    );
   }
 
-  const groupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
-    ["message_room_fk_id"],
-    [groupMessageRoom[0]?.message_room_id]
-  );
+  const groupMessageMembers =
+    await GroupMessageMembers.getAllGroupMessageMembers(
+      ["message_room_fk_id"],
+      [groupMessageRoom[0]?.message_room_id],
+    );
 
   if (!groupMessageMembers) {
     throw new BadRequestError("Error in getting group message members.");
   }
 
-  const groupMessageMembersUUID = groupMessageMembers.map((groupMessageMember) => groupMessageMember.user_uuid);
+  const groupMessageMembersUUID = groupMessageMembers.map(
+    (groupMessageMember) => groupMessageMember.user_uuid,
+  );
 
-  res.status(StatusCodes.OK).json({ message: newGroupMessage, rooms: groupMessageMembersUUID });
+  res
+    .status(StatusCodes.OK)
+    .json({ message: newGroupMessage, rooms: groupMessageMembersUUID });
 };
 
 export const deleteGroupMessage = async (req, res) => {
   const { message_uuid } = req.params;
 
-  const groupMessage = await GroupMessages.getGroupMessage(["message_uuid"], [message_uuid]);
+  const groupMessage = await GroupMessages.getGroupMessage(
+    ["message_uuid"],
+    [message_uuid],
+  );
 
   if (!groupMessage) {
     throw new NotFoundError("This message does not exist.");
   }
 
-  const deleteMessage = await GroupMessages.deleteGroupMessage(["message_id"], [groupMessage[0]?.message_id]);
+  const deleteMessage = await GroupMessages.deleteGroupMessage(
+    ["message_id"],
+    [groupMessage[0]?.message_id],
+  );
 
   if (!deleteMessage) {
-    throw new BadRequestError("Error in deleting group message. Try again later.");
+    throw new BadRequestError(
+      "Error in deleting group message. Try again later.",
+    );
   }
 
   res.status(StatusCodes.OK).json(deleteMessage);
@@ -67,7 +85,10 @@ export const deleteGroupMessage = async (req, res) => {
 export const getGroupMessage = async (req, res) => {
   const { message_uuid } = req.params;
 
-  const groupMessage = await GroupMessages.getGroupMessage(["message_uuid"], [message_uuid]);
+  const groupMessage = await GroupMessages.getGroupMessage(
+    ["message_uuid"],
+    [message_uuid],
+  );
 
   if (!groupMessage) {
     throw new NotFoundError("This message does not exist.");
@@ -79,10 +100,15 @@ export const getGroupMessage = async (req, res) => {
 const getGroupMessages = async (req, res) => {
   const { messageRoom } = req.query;
 
-  const groupMessages = await GroupMessages.getAllGroupMessages(["message_room"], [messageRoom]);
+  const groupMessages = await GroupMessages.getAllGroupMessages(
+    ["message_room"],
+    [messageRoom],
+  );
 
   if (!groupMessages) {
-    throw new BadRequestError("Error in getting Group messages. Try again later.");
+    throw new BadRequestError(
+      "Error in getting Group messages. Try again later.",
+    );
   }
   res.status(StatusCodes.OK).json(groupMessages);
 };
@@ -90,13 +116,20 @@ const getGroupMessages = async (req, res) => {
 const getLatestGroupMessages = async (req, res) => {
   const { messageRoom } = req.query;
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
+  console.log(messageRoom);
+
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(
+    ["message_room"],
+    [messageRoom],
+  );
 
   if (!groupMessageRoom) {
     throw new NotFoundError("This group message room does not exist.");
   }
 
-  const latestGroupMessage = await GroupMessages.getLatestGroupMessage(groupMessageRoom[0]?.message_room_id);
+  const latestGroupMessage = await GroupMessages.getLatestGroupMessage(
+    groupMessageRoom[0]?.message_room_id,
+  );
 
   if (!latestGroupMessage) {
     throw new BadRequestError("Error in getting the latest message.");

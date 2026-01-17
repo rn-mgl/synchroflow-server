@@ -9,7 +9,10 @@ export const createGroupMessageMember = async (req, res) => {
   const { memberUUID, groupRoomUUID } = req.body;
   const groupMessageMemberUUID = uuidv4();
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [groupRoomUUID]);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(
+    ["message_room"],
+    [groupRoomUUID],
+  );
 
   if (!groupMessageRoom) {
     throw new NotFoundError(`This room does not exist.`);
@@ -24,10 +27,11 @@ export const createGroupMessageMember = async (req, res) => {
   const groupMessageMember = new GroupMessageMembers(
     groupMessageMemberUUID,
     member[0]?.user_id,
-    groupMessageRoom[0]?.message_room_id
+    groupMessageRoom[0]?.message_room_id,
   );
 
-  const newGroupMessageMember = await groupMessageMember.createGroupMessageMember();
+  const newGroupMessageMember =
+    await groupMessageMember.createGroupMessageMember();
 
   if (!newGroupMessageMember) {
     throw new BadRequestError("Error in adding user in the group message.");
@@ -41,7 +45,7 @@ export const deleteGroupMessageMember = async (req, res) => {
 
   const groupMessageMember = await GroupMessageMembers.getGroupMessageMember(
     ["message_member_uuid"],
-    [message_member_uuid]
+    [message_member_uuid],
   );
 
   if (!groupMessageMember) {
@@ -50,7 +54,7 @@ export const deleteGroupMessageMember = async (req, res) => {
 
   const deleteMember = await GroupMessageMembers.deleteGroupMessageMember(
     ["message_member_id"],
-    [groupMessageMember[0]?.message_member_id]
+    [groupMessageMember[0]?.message_member_id],
   );
 
   if (!deleteMember) {
@@ -63,19 +67,25 @@ export const deleteGroupMessageMember = async (req, res) => {
 const getGroupMessageMembers = async (req, res) => {
   const { messageRoom } = req.query;
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(
+    ["message_room"],
+    [messageRoom],
+  );
 
   if (!groupMessageRoom) {
     throw new NotFoundError("This group message room does not exist.");
   }
 
-  const allGroupMessageMembers = await GroupMessageMembers.getAllGroupMessageMembers(
-    ["message_room_id"],
-    [groupMessageRoom[0]?.message_room_id]
-  );
+  const allGroupMessageMembers =
+    await GroupMessageMembers.getAllGroupMessageMembers(
+      ["message_room_id"],
+      [groupMessageRoom[0]?.message_room_id],
+    );
 
   if (!allGroupMessageMembers) {
-    throw new BadRequestError("Error in getting all members in the group message.");
+    throw new BadRequestError(
+      "Error in getting all members in the group message.",
+    );
   }
 
   res.status(StatusCodes.OK).json(allGroupMessageMembers);
@@ -85,19 +95,25 @@ const getPossibleGroupMessageMembers = async (req, res) => {
   const { messageRoom } = req.query;
   const { id } = req.user;
 
-  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(["message_room"], [messageRoom]);
+  const groupMessageRoom = await GroupMessageRooms.getGroupMessageRoom(
+    ["message_room"],
+    [messageRoom],
+  );
 
   if (!groupMessageRoom) {
     throw new NotFoundError("This group message room does not exist.");
   }
 
-  const allGroupMessageMembers = await GroupMessageMembers.getPossibleGroupMembers(
-    groupMessageRoom[0]?.message_room_id,
-    id
-  );
+  const allGroupMessageMembers =
+    await GroupMessageMembers.getPossibleGroupMembers(
+      groupMessageRoom[0]?.message_room_id,
+      id,
+    );
 
   if (!allGroupMessageMembers) {
-    throw new BadRequestError("Error in getting all members in the group message.");
+    throw new BadRequestError(
+      "Error in getting all members in the group message.",
+    );
   }
 
   res.status(StatusCodes.OK).json(allGroupMessageMembers);
@@ -122,7 +138,7 @@ export const getGroupMessageMember = async (req, res) => {
 
   const groupMessageMember = await GroupMessageMembers.getGroupMessageMember(
     ["message_member_uuid"],
-    [message_member_uuid]
+    [message_member_uuid],
   );
 
   if (!groupMessageMember) {

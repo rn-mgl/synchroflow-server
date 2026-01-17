@@ -6,14 +6,20 @@ import { PrivateMessageRooms } from "../models/PrivateMessageRooms.js";
 import { Users } from "../models/Users.js";
 
 export const createPrivateMessage = async (req, res) => {
-  const { messageRoom, messageToUUID, message, messageFile, messageFileType } = req.body;
+  const { messageRoom, messageToUUID, message, messageFile, messageFileType } =
+    req.body;
   const { id, uuid } = req.user;
   const privateMessageUUID = uuidv4();
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["message_room"], [messageRoom]);
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(
+    ["message_room"],
+    [messageRoom],
+  );
 
   if (!privateMessageRoom) {
-    throw new NotFoundError(`The room you are trying to access does not exist.`);
+    throw new NotFoundError(
+      `The room you are trying to access does not exist.`,
+    );
   }
 
   const messageTo = await Users.getUser(["user_uuid"], [messageToUUID]);
@@ -25,7 +31,7 @@ export const createPrivateMessage = async (req, res) => {
     messageTo[0]?.user_id,
     message,
     messageFile,
-    messageFileType
+    messageFileType,
   );
 
   const newPrivateMessage = await privateMessage.createPrivateMessage();
@@ -34,22 +40,32 @@ export const createPrivateMessage = async (req, res) => {
     throw new BadRequestError("Error in sending message. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json({ message: newPrivateMessage, rooms: [uuid, messageToUUID] });
+  res
+    .status(StatusCodes.OK)
+    .json({ message: newPrivateMessage, rooms: [uuid, messageToUUID] });
 };
 
 export const deletePrivateMessage = async (req, res) => {
   const { message_uuid } = req.params;
 
-  const privateMessage = await PrivateMessages.getPrivateMessage(["message_uuid"], [message_uuid]);
+  const privateMessage = await PrivateMessages.getPrivateMessage(
+    ["message_uuid"],
+    [message_uuid],
+  );
 
   if (!privateMessage) {
     throw new NotFoundError("This private message does not exist.");
   }
 
-  const deleteMessage = await PrivateMessages.deletePrivateMessage(["message_id"], [privateMessage[0]?.message_id]);
+  const deleteMessage = await PrivateMessages.deletePrivateMessage(
+    ["message_id"],
+    [privateMessage[0]?.message_id],
+  );
 
   if (!deleteMessage) {
-    throw new BadRequestError("Error in deleting private message. Try again later.");
+    throw new BadRequestError(
+      "Error in deleting private message. Try again later.",
+    );
   }
 
   res.status(StatusCodes.OK).json(deleteMessage);
@@ -58,10 +74,15 @@ export const deletePrivateMessage = async (req, res) => {
 const getPrivateMessages = async (req, res) => {
   const { roomId } = req.body;
 
-  const privateMessages = await PrivateMessages.getAllPrivateMessages(["message_room_id"], [roomId]);
+  const privateMessages = await PrivateMessages.getAllPrivateMessages(
+    ["message_room_id"],
+    [roomId],
+  );
 
   if (!privateMessages) {
-    throw new BadRequestError("Error in getting private messages. Try again later.");
+    throw new BadRequestError(
+      "Error in getting private messages. Try again later.",
+    );
   }
   res.status(StatusCodes.OK).json(privateMessages);
 };
@@ -69,13 +90,18 @@ const getPrivateMessages = async (req, res) => {
 const getLatestPrivateMessages = async (req, res) => {
   const { messageRoom } = req.query;
 
-  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(["message_room"], [messageRoom]);
+  const privateMessageRoom = await PrivateMessageRooms.getPrivateMessageRoom(
+    ["message_room"],
+    [messageRoom],
+  );
 
   if (!privateMessageRoom) {
     throw new NotFoundError("This private message room does not exist.");
   }
 
-  const latestPrivateMessage = await PrivateMessages.getLatestPrivateMessage(privateMessageRoom[0]?.message_room_id);
+  const latestPrivateMessage = await PrivateMessages.getLatestPrivateMessage(
+    privateMessageRoom[0]?.message_room_id,
+  );
 
   if (!latestPrivateMessage) {
     throw new BadRequestError("Error in getting the latest message.");
