@@ -17,8 +17,7 @@ export class Dashboard {
                   FROM main_tasks AS mt
                   INNER JOIN main_task_collaborators AS mtc 
                         ON mt.main_task_id = mtc.main_task_fk_id
-                  WHERE mt.main_task_by <> ? 
-                  AND mtc.collaborator_fk_id = ?
+                  WHERE mtc.collaborator_fk_id = ?
                   AND mt.main_task_status = 'ongoing')
                   AS ongoingMainTasksCount,
 
@@ -32,8 +31,7 @@ export class Dashboard {
                   FROM main_tasks AS mt
                   INNER JOIN main_task_collaborators AS mtc 
                         ON mt.main_task_id = mtc.main_task_fk_id
-                  WHERE mt.main_task_by <> ? 
-                  AND mtc.collaborator_fk_id = ?
+                  WHERE mtc.collaborator_fk_id = ?
                   AND mt.main_task_status = 'done')
                   AS doneMainTasksCount,
 
@@ -47,8 +45,7 @@ export class Dashboard {
                   FROM main_tasks AS mt
                   INNER JOIN main_task_collaborators AS mtc 
                         ON mt.main_task_id = mtc.main_task_fk_id
-                  WHERE mt.main_task_by <> ? 
-                  AND mtc.collaborator_fk_id = ?
+                  WHERE mtc.collaborator_fk_id = ?
                   AND mt.main_task_status = 'late')
                   AS lateMainTasksCount,
 
@@ -132,7 +129,7 @@ export class Dashboard {
                         AND st.sub_task_end_date <  CURDATE() - INTERVAL (DAYOFWEEK(CURDATE()) - 1) DAY + INTERVAL 7 DAY
                         GROUP BY DAYOFWEEK(st.sub_task_end_date);`;
 
-      const tasksValues = new Array(15).fill(userID);
+      const tasksValues = new Array(12).fill(userID);
       const weeklyTaskValues = new Array(4).fill(userID);
 
       const [tasksCount, _tasks] = await conn.execute(tasks, tasksValues);
