@@ -11,7 +11,7 @@ export class SubTasks {
     sub_task_description,
     sub_task_priority,
     sub_task_start_date,
-    sub_task_end_date
+    sub_task_end_date,
   ) {
     this.sub_task_uuid = sub_task_uuid;
     this.sub_task_by = sub_task_by;
@@ -65,7 +65,7 @@ export class SubTasks {
     sub_task_status,
     sub_task_start_date,
     sub_task_end_date,
-    subTaskID
+    subTaskID,
   ) {
     try {
       const sql = `UPDATE sub_tasks 
