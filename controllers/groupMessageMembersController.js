@@ -1,6 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 import { GroupMessageMembers } from "../models/GroupMessageMembers.js";
-import { BadRequestError, NotFoundError } from "../errors/index.js";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { GroupMessageRooms } from "../models/GroupMessageRooms.js";
 import { Users } from "../models/Users.js";
@@ -41,27 +45,95 @@ export const createGroupMessageMember = async (req, res) => {
 };
 
 export const deleteGroupMessageMember = async (req, res) => {
-  const { message_member_uuid } = req.params;
+  const { identifier } = req.params;
+  const { action } = req.query;
+  const { id } = req.user;
 
-  const groupMessageMember = await GroupMessageMembers.getGroupMessageMember(
-    ["message_member_uuid"],
-    [message_member_uuid],
-  );
+  let groupMessageMember = null;
+  let deleteMember = null;
 
-  if (!groupMessageMember) {
-    throw new NotFoundError("This group message member does not exist.");
+  switch (action) {
+    case "remove":
+      groupMessageMember = await GroupMessageMembers.getGroupMessageMember(
+        ["message_member_uuid"],
+        [identifier],
+      );
+
+      if (!groupMessageMember) {
+        throw new NotFoundError("This group message member does not exist.");
+      }
+
+      deleteMember = await GroupMessageMembers.deleteGroupMessageMember(
+        ["message_member_id"],
+        [groupMessageMember[0]?.message_member_id],
+      );
+
+      if (!deleteMember) {
+        throw new BadRequestError(
+          "Error in deleting user in the group message.",
+        );
+      }
+
+      return res.status(StatusCodes.OK).json(deleteMember);
+
+    case "leave":
+      if (id !== parseInt(identifier)) {
+        throw new UnauthorizedError("This action is not allowed.");
+      }
+
+      groupMessageMember = await GroupMessageMembers.getGroupMessageMember(
+        ["member_fk_id"],
+        [identifier],
+      );
+
+      if (!groupMessageMember) {
+        throw new NotFoundError("This group message member does not exist.");
+      }
+
+      deleteMember = await GroupMessageMembers.deleteGroupMessageMember(
+        ["message_member_id"],
+        [groupMessageMember[0]?.message_member_id],
+      );
+
+      if (!deleteMember) {
+        throw new BadRequestError(
+          "Error in deleting user in the group message.",
+        );
+      }
+
+      const allMembers = await GroupMessageMembers.getAllGroupMessageMembers(
+        ["message_room_fk_id"],
+        [groupMessageMember[0]?.message_room_fk_id],
+      );
+
+      if (!allMembers || !allMembers.length) {
+        const deleteRoom = await GroupMessageRooms.deleteGroupMessageRoom(
+          ["message_room_id"],
+          [groupMessageMember[0]?.message_room_fk_id],
+        );
+
+        console.log(`Group deleted: ${!!deleteRoom}`);
+      } else if (allMembers.length) {
+        const sortedMembers = allMembers.sort(
+          (a, b) => a?.date_added - b?.date_added,
+        );
+
+        const firstMember = sortedMembers[0];
+
+        const reassignOwner = await GroupMessageRooms.updateGroupMessageCreator(
+          groupMessageMember[0]?.message_room_fk_id,
+          firstMember.user_id,
+        );
+
+        console.log(`Owner reassigned: ${!!reassignOwner}`);
+      }
+
+      return res
+        .status(StatusCodes.OK)
+        .json({ members: allMembers.map((member) => member.user_uuid) });
+
+    default:
   }
-
-  const deleteMember = await GroupMessageMembers.deleteGroupMessageMember(
-    ["message_member_id"],
-    [groupMessageMember[0]?.message_member_id],
-  );
-
-  if (!deleteMember) {
-    throw new BadRequestError("Error in deleting user in the group message.");
-  }
-
-  res.status(StatusCodes.OK).json(deleteMember);
 };
 
 const getGroupMessageMembers = async (req, res) => {
@@ -134,11 +206,11 @@ export const getAllGroupMessageMembers = async (req, res) => {
 };
 
 export const getGroupMessageMember = async (req, res) => {
-  const { message_member_uuid } = req.params;
+  const { identifier } = req.params;
 
   const groupMessageMember = await GroupMessageMembers.getGroupMessageMember(
     ["message_member_uuid"],
-    [message_member_uuid],
+    [identifier],
   );
 
   if (!groupMessageMember) {

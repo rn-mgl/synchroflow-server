@@ -49,14 +49,14 @@ export const sockets = (socket) => {
   });
 
   socket.on("send_main_task_invite", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("reflect_send_main_task_invite");
     });
   });
 
   // messages
   socket.on("send_message", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("get_messages", { room });
     });
   });
@@ -69,8 +69,14 @@ export const sockets = (socket) => {
   });
 
   socket.on("delete_group_room", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("reflect_delete_group_room");
+    });
+  });
+
+  socket.on("leave_group", (args) => {
+    args.rooms.forEach((room) => {
+      socket.to(room).emit("get_group_members");
     });
   });
 
@@ -80,26 +86,26 @@ export const sockets = (socket) => {
   });
 
   socket.on("update_group_room", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("reflect_update_group_room");
     });
   });
 
   // tasks
   socket.on("update_task", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("reflect_update_task");
     });
   });
 
   socket.on("update_subtask", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("reflect_update_subtask");
     });
   });
 
   socket.on("delete_subtask", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("reflect_delete_subtask");
     });
   });
@@ -113,20 +119,20 @@ export const sockets = (socket) => {
   });
 
   socket.on("delete_task", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("reflect_delete_task", args);
     });
   });
 
   socket.on("leave_task", (args) => {
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("refetch_tasks_collaborators", args);
     });
   });
 
   socket.on("remove_collaborator", (args) => {
     console.log(args);
-    args.rooms.map((room) => {
+    args.rooms.forEach((room) => {
       socket.to(room).emit("reflect_remove_collaborator", args);
     });
   });
