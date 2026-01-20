@@ -34,7 +34,7 @@ export const registerUser = async (req, res) => {
 
   if (!newUser) {
     throw new BadRequestError(
-      "Error in creating your account. Try again later."
+      "Error in creating your account. Try again later.",
     );
   }
 
@@ -46,7 +46,7 @@ export const registerUser = async (req, res) => {
 
   if (!createUserSettings) {
     throw new BadRequestError(
-      "Error in initializing your settings. Try again later."
+      "Error in initializing your settings. Try again later.",
     );
   }
 
@@ -54,7 +54,7 @@ export const registerUser = async (req, res) => {
     newUser.insertId,
     userUUID,
     `${name} ${surname}`,
-    email
+    email,
   );
 
   res.status(StatusCodes.OK).json(token);
@@ -70,7 +70,7 @@ export const loginUser = async (req, res) => {
 
   if (!userEmail || !userEmail[0]) {
     throw new BadRequestError(
-      "There is no account found with the given email."
+      "There is no account found with the given email.",
     );
   }
 
@@ -87,7 +87,7 @@ export const loginUser = async (req, res) => {
     user_id,
     user_uuid,
     `${name} ${surname}`,
-    email
+    email,
   );
 
   const primary = {
@@ -99,22 +99,22 @@ export const loginUser = async (req, res) => {
     verified: is_verified,
   };
 
-  res.status(StatusCodes.OK).json(primary);
-
   if (!is_verified) {
     const emailToken = createEmailToken(
       user_id,
       user_uuid,
       `${name} ${surname}`,
-      email
+      email,
     );
 
     const data = await sendVerificationMail(
       `${name} ${surname}`,
       email,
-      emailToken
+      emailToken,
     );
   }
+
+  return res.status(StatusCodes.OK).json(primary);
 };
 
 export const verifyUser = async (req, res) => {
@@ -140,7 +140,7 @@ export const verifyUser = async (req, res) => {
 
   if (!verifyUser) {
     throw new BadRequestError(
-      `Error in verifying the account. Try again later.`
+      `Error in verifying the account. Try again later.`,
     );
   }
 
@@ -152,7 +152,7 @@ export const forgotPassword = async (req, res) => {
 
   const user = await Users.getUser(
     ["name", "surname", "email"],
-    [candidateName, candidateSurname, candidateEmail]
+    [candidateName, candidateSurname, candidateEmail],
   );
 
   if (!user[0]) {
@@ -165,13 +165,13 @@ export const forgotPassword = async (req, res) => {
     user_id,
     user_uuid,
     `${name} ${surname}`,
-    email
+    email,
   );
 
   const passwordResetMail = await sendPasswordResetMail(
     `${name} ${surname}`,
     email,
-    token
+    token,
   );
 
   res.status(StatusCodes.OK).json({ token, passwordResetMail });
@@ -197,7 +197,7 @@ export const newPassword = async (req, res) => {
 
   if (!newUserPassword) {
     throw new BadRequestError(
-      `Error in changing your password. Try again later.`
+      `Error in changing your password. Try again later.`,
     );
   }
 
