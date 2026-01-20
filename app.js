@@ -103,8 +103,14 @@ app.use("/users", authMiddleware, usersRouter);
 app.use("/user_settings", authMiddleware, userSettingsRouter);
 
 // web sockets //////////////////////////////////////////////////////////////////////////////
+
 io.on("connection", (socket) => {
-  sockets(socket);
+  try {
+    sockets(socket);
+  } catch (error) {
+    console.log(`Fatal socket error: ${socket.id}`, error);
+    socket.disconnect();
+  }
 });
 
 app.use(errorMiddleware);
