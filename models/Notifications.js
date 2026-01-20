@@ -8,7 +8,7 @@ export class Notifications {
     associateInvite,
     messageNotification,
     taskDeadline,
-    taskUpdate
+    taskUpdate,
   ) {
     try {
       const sql = `SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
@@ -212,6 +212,7 @@ export class Notifications {
       return data;
     } catch (error) {
       console.log(error + "--- get notifications ---");
+      return [];
     }
   }
 }

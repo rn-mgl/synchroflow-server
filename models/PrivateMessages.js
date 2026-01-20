@@ -9,7 +9,7 @@ export class PrivateMessages {
     message_to,
     message,
     message_file,
-    message_file_type
+    message_file_type,
   ) {
     this.message_uuid = message_uuid;
     this.message_room_fk_id = message_room_fk_id;
@@ -45,6 +45,7 @@ export class PrivateMessages {
       return data;
     } catch (error) {
       console.log(error + "--- create private message ---");
+      return [];
     }
   }
 
@@ -58,6 +59,7 @@ export class PrivateMessages {
       return data;
     } catch (error) {
       console.log(error + "--- delete private message ---");
+      return [];
     }
   }
 
@@ -72,6 +74,7 @@ export class PrivateMessages {
       return data;
     } catch (error) {
       console.log(error + "--- get all private messages ---");
+      return [];
     }
   }
 
@@ -94,6 +97,7 @@ export class PrivateMessages {
       return data;
     } catch (error) {
       console.log(error + "--- get latest private message ---");
+      return [];
     }
   }
 
@@ -107,6 +111,7 @@ export class PrivateMessages {
       return data;
     } catch (error) {
       console.log(error + "--- get private message ---");
+      return [];
     }
   }
 }

@@ -17,6 +17,7 @@ export class PrivateMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- create private message room ---");
+      return [];
     }
   }
 
@@ -31,6 +32,7 @@ export class PrivateMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- delete private message room ---");
+      return [];
     }
   }
 
@@ -62,6 +64,7 @@ export class PrivateMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- get all private message room ---");
+      return [];
     }
   }
 
@@ -79,6 +82,7 @@ export class PrivateMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- get private message room ---");
+      return [];
     }
   }
 
@@ -92,6 +96,7 @@ export class PrivateMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- get private message room ---");
+      return [];
     }
   }
 
@@ -114,6 +119,7 @@ export class PrivateMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- get private message room existing members ---");
+      return [];
     }
   }
 
@@ -136,6 +142,7 @@ export class PrivateMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- get private message room ---");
+      return [];
     }
   }
 }

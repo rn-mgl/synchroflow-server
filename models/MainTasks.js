@@ -12,7 +12,7 @@ export class MainTasks {
     main_task_description,
     main_task_priority,
     main_task_start_date,
-    main_task_end_date
+    main_task_end_date,
   ) {
     this.main_task_uuid = main_task_uuid;
     this.main_task_by = main_task_by;
@@ -54,6 +54,7 @@ export class MainTasks {
       return data;
     } catch (error) {
       console.log(error + "--- create main task ---");
+      return [];
     }
   }
 
@@ -66,7 +67,7 @@ export class MainTasks {
     mainTaskPriority,
     mainTaskStartDate,
     mainTaskEndDate,
-    mainTaskId
+    mainTaskId,
   ) {
     try {
       const sql = `UPDATE main_tasks 
@@ -95,6 +96,7 @@ export class MainTasks {
       return data;
     } catch (error) {
       console.log(error + "--- update main task ---");
+      return [];
     }
   }
 
@@ -111,6 +113,7 @@ export class MainTasks {
       return data;
     } catch (error) {
       console.log(error + "--- get main task ---");
+      return [];
     }
   }
 
@@ -119,7 +122,7 @@ export class MainTasks {
     whereValues,
     sortFilter,
     searchFilter,
-    searchCategory
+    searchCategory,
   ) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     const sortValue = mainTasksFilterKey[sortFilter];
@@ -142,6 +145,7 @@ export class MainTasks {
       return data;
     } catch (error) {
       console.log(error + "--- get all main tasks ---");
+      return [];
     }
   }
 
@@ -150,13 +154,11 @@ export class MainTasks {
     whereValues,
     sortFilter,
     searchFilter,
-    searchCategory
+    searchCategory,
   ) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     const sortValue = mainTasksFilterKey[sortFilter];
     const searchCategoryValue = mainTasksFilterKey[searchCategory];
-
-    console.log(mappedWhereConditions);
 
     try {
       const sql = `SELECT * FROM main_tasks AS mt
@@ -176,6 +178,7 @@ export class MainTasks {
       return data;
     } catch (error) {
       console.log(error + "--- get all main tasks ---");
+      return [];
     }
   }
 
@@ -196,6 +199,7 @@ export class MainTasks {
       return data;
     } catch (error) {
       console.log(error + "--- get all upcoming main tasks ---");
+      return [];
     }
   }
 
@@ -210,6 +214,7 @@ export class MainTasks {
       return data;
     } catch (error) {
       console.log(error + "--- delete main task ---");
+      return [];
     }
   }
 }

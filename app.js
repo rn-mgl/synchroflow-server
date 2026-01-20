@@ -49,7 +49,7 @@ import { sockets } from "./socket.js";
 const app = express();
 const httpsServer = createServer(app);
 const io = new Server(httpsServer, {
-  cors: { origin: "*" },
+  cors: { origin: process.env.CORS_ORIGIN },
   transports: ["polling", "websocket"],
 });
 
@@ -77,7 +77,7 @@ app.use("/dashboard", authMiddleware, dashboardRouter);
 app.use(
   "/main_task_collaborators",
   authMiddleware,
-  mainTaskCollaboratorsRouter
+  mainTaskCollaboratorsRouter,
 );
 app.use("/main_task_invites", authMiddleware, mainTaskInvitesRouter);
 app.use("/main_tasks", authMiddleware, mainTasksRouter);
@@ -90,7 +90,7 @@ app.use("/sub_tasks", authMiddleware, subTasksRouter);
 app.use(
   "/private_message_members",
   authMiddleware,
-  privateMessageMembersRouter
+  privateMessageMembersRouter,
 );
 app.use("/private_message_rooms", authMiddleware, privateMessageRoomsRouter);
 app.use("/private_messages", authMiddleware, privateMessagesRouter);

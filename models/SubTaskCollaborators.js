@@ -25,6 +25,7 @@ export class SubTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- create sub task collaborator ---");
+      return [];
     }
   }
 
@@ -38,6 +39,7 @@ export class SubTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task collaborator ---");
+      return [];
     }
   }
 
@@ -51,6 +53,7 @@ export class SubTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- get sub task collaborator ---");
+      return [];
     }
   }
 
@@ -83,6 +86,7 @@ export class SubTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- get all sub task collaborators ---");
+      return [];
     }
   }
 }

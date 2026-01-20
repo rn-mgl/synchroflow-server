@@ -41,6 +41,7 @@ export class GroupMessages {
       return data;
     } catch (error) {
       console.log(error + "--- create group message ---");
+      return [];
     }
   }
 
@@ -55,6 +56,7 @@ export class GroupMessages {
       return data;
     } catch (error) {
       console.log(error + "--- delete group message ---");
+      return [];
     }
   }
 
@@ -71,6 +73,7 @@ export class GroupMessages {
       return data;
     } catch (error) {
       console.log(error + "--- get all group messages ---");
+      return [];
     }
   }
 
@@ -92,6 +95,7 @@ export class GroupMessages {
       return data;
     } catch (error) {
       console.log(error + "--- get latest group message ---");
+      return [];
     }
   }
 
@@ -106,6 +110,7 @@ export class GroupMessages {
       return data;
     } catch (error) {
       console.log(error + "--- get group message ---");
+      return [];
     }
   }
 }

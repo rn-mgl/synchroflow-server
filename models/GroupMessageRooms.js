@@ -30,6 +30,7 @@ export class GroupMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- create group message room ---");
+      return [];
     }
   }
 
@@ -43,6 +44,7 @@ export class GroupMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- delete group message room ---");
+      return [];
     }
   }
 
@@ -60,6 +62,7 @@ export class GroupMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- update group message room ---");
+      return [];
     }
   }
 
@@ -76,6 +79,7 @@ export class GroupMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- update group message room ---");
+      return [];
     }
   }
 
@@ -107,6 +111,7 @@ export class GroupMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- get all group message rooms ---");
+      return [];
     }
   }
 
@@ -124,6 +129,7 @@ export class GroupMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- get group message room ---");
+      return [];
     }
   }
 
@@ -138,6 +144,7 @@ export class GroupMessageRooms {
       return data;
     } catch (error) {
       console.log(error + "--- get group message room ---");
+      return [];
     }
   }
 }

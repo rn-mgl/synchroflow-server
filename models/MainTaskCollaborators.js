@@ -5,7 +5,7 @@ export class MainTaskCollaborators {
   constructor(
     main_task_collaborator_uuid,
     main_task_fk_id,
-    collaborator_fk_id
+    collaborator_fk_id,
   ) {
     this.main_task_collaborator_uuid = main_task_collaborator_uuid;
     this.main_task_fk_id = main_task_fk_id;
@@ -29,6 +29,7 @@ export class MainTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- create main task collaborator ---");
+      return [];
     }
   }
 
@@ -43,6 +44,7 @@ export class MainTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- delete main task collaborator ---");
+      return [];
     }
   }
 
@@ -57,6 +59,7 @@ export class MainTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- get main task collaborator ---");
+      return [];
     }
   }
 
@@ -80,6 +83,7 @@ export class MainTaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- get all main task collaborators ---");
+      return [];
     }
   }
 }

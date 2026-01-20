@@ -7,7 +7,7 @@ export class MainTaskInvites {
     main_task_fk_id,
     invited_by,
     invited_associate,
-    main_task_invite_message
+    main_task_invite_message,
   ) {
     this.main_task_invite_uuid = main_task_invite_uuid;
     this.main_task_fk_id = main_task_fk_id;
@@ -37,6 +37,7 @@ export class MainTaskInvites {
       return data;
     } catch (error) {
       console.log(error + "--- create main task invite ---");
+      return [];
     }
   }
 
@@ -52,13 +53,14 @@ export class MainTaskInvites {
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");
+      return [];
     }
   }
 
   static async updateMainTaskInviteStatus(
     main_task_invite_status,
     whereConditions,
-    whereValues
+    whereValues,
   ) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
@@ -70,6 +72,7 @@ export class MainTaskInvites {
       return data;
     } catch (error) {
       console.log(error + "--- delete main task invite ---");
+      return [];
     }
   }
 
@@ -84,6 +87,7 @@ export class MainTaskInvites {
       return data;
     } catch (error) {
       console.log(error + "--- get main task invite ---");
+      return [];
     }
   }
 
@@ -113,6 +117,7 @@ export class MainTaskInvites {
       return data;
     } catch (error) {
       console.log(error + "--- get all main task invites ---");
+      return [];
     }
   }
 
@@ -160,6 +165,7 @@ export class MainTaskInvites {
       return data;
     } catch (error) {
       console.log(error + "--- get all associates to invite ---");
+      return [];
     }
   }
 }

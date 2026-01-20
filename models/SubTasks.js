@@ -54,6 +54,7 @@ export class SubTasks {
       return data;
     } catch (error) {
       console.log(error + "--- create sub task ---");
+      return [];
     }
   }
 
@@ -93,6 +94,7 @@ export class SubTasks {
       return data;
     } catch (error) {
       console.log(error + "--- update sub task ---");
+      return [];
     }
   }
 
@@ -107,6 +109,7 @@ export class SubTasks {
       return data;
     } catch (error) {
       console.log(error + "--- get sub task ---");
+      return [];
     }
   }
 
@@ -128,6 +131,7 @@ export class SubTasks {
       return data;
     } catch (error) {
       console.log(error + "--- get all sub tasks ---");
+      return [];
     }
   }
 
@@ -142,6 +146,7 @@ export class SubTasks {
       return data;
     } catch (error) {
       console.log(error + "--- delete sub task ---");
+      return [];
     }
   }
 }

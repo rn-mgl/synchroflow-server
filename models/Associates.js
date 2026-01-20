@@ -22,6 +22,7 @@ export class Associates {
       return data;
     } catch (error) {
       console.log(error + "--- create associate ---");
+      return [];
     }
   }
 
@@ -35,6 +36,7 @@ export class Associates {
       return data;
     } catch (error) {
       console.log(error + "--- delete associate ---");
+      return [];
     }
   }
 
@@ -42,7 +44,7 @@ export class Associates {
     userID,
     sortFilter,
     searchFilter,
-    searchCategory
+    searchCategory,
   ) {
     const searchCategoryValue = associatesFilterKey[searchCategory];
     const sortValue = associatesFilterKey[sortFilter];
@@ -78,6 +80,7 @@ export class Associates {
       return data;
     } catch (error) {
       console.log(error + "--- get all associates ---");
+      return [];
     }
   }
 
@@ -85,7 +88,7 @@ export class Associates {
     userID,
     sortFilter,
     searchFilter,
-    searchCategory
+    searchCategory,
   ) {
     const searchCategoryValue = associatesFilterKey[searchCategory];
     const sortValue = associatesFilterKey[sortFilter];
@@ -122,6 +125,7 @@ export class Associates {
       return data;
     } catch (error) {
       console.log(error + "--- get all associates ---");
+      return [];
     }
   }
 
@@ -139,6 +143,7 @@ export class Associates {
       return data;
     } catch (error) {
       console.log(error + "--- get associate ---");
+      return [];
     }
   }
 }

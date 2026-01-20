@@ -25,6 +25,7 @@ export class GroupMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- create group message  member ---");
+      return [];
     }
   }
 
@@ -39,6 +40,7 @@ export class GroupMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- delete group message  member ---");
+      return [];
     }
   }
 
@@ -56,6 +58,7 @@ export class GroupMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- get all group message members ---");
+      return [];
     }
   }
 
@@ -82,6 +85,7 @@ export class GroupMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- get possible group message members ---");
+      return [];
     }
   }
 
@@ -95,6 +99,7 @@ export class GroupMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- get group message  member ---");
+      return [];
     }
   }
 }

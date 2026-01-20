@@ -141,6 +141,7 @@ export class Dashboard {
       return { tasksCount: tasksCount[0], weekTasksCount };
     } catch (error) {
       console.log(error);
+      return [];
     }
   }
 }

@@ -27,6 +27,7 @@ export class PrivateMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- create private message  member ---");
+      return [];
     }
   }
 
@@ -41,6 +42,7 @@ export class PrivateMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- delete private message  member ---");
+      return [];
     }
   }
 
@@ -55,6 +57,7 @@ export class PrivateMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- get all private message members ---");
+      return [];
     }
   }
 
@@ -68,6 +71,7 @@ export class PrivateMessageMembers {
       return data;
     } catch (error) {
       console.log(error + "--- get private message  member ---");
+      return [];
     }
   }
 }

@@ -5,7 +5,7 @@ export class AssociateInvites {
   constructor(
     associate_invite_uuid,
     associate_invite_from,
-    associate_invite_to
+    associate_invite_to,
   ) {
     this.associate_invite_uuid = associate_invite_uuid;
     this.associate_invite_from = associate_invite_from;
@@ -26,13 +26,14 @@ export class AssociateInvites {
       return data;
     } catch (error) {
       console.log(error + "--- create associate ---");
+      return [];
     }
   }
 
   static async updateAssociateInviteStatus(
     associate_invite_status,
     whereConditions,
-    whereValues
+    whereValues,
   ) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
@@ -46,6 +47,7 @@ export class AssociateInvites {
       return data;
     } catch (error) {
       console.log(error + "--- update associate invite ---");
+      return [];
     }
   }
 
@@ -60,6 +62,7 @@ export class AssociateInvites {
       return data;
     } catch (error) {
       console.log(error + "--- delete associate ---");
+      return [];
     }
   }
 
@@ -85,6 +88,7 @@ export class AssociateInvites {
       return data;
     } catch (error) {
       console.log(error + "--- get all associate invites ---");
+      return [];
     }
   }
 
@@ -110,6 +114,7 @@ export class AssociateInvites {
       return data;
     } catch (error) {
       console.log(error + "--- get all associate invites ---");
+      return [];
     }
   }
 
@@ -124,6 +129,7 @@ export class AssociateInvites {
       return data;
     } catch (error) {
       console.log(error + "--- get associate invites ---");
+      return [];
     }
   }
 }

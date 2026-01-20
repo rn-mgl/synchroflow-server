@@ -16,6 +16,7 @@ export class UserSettings {
       return data;
     } catch (error) {
       console.log(error + "--- create user settings ---");
+      return [];
     }
   }
 
@@ -25,7 +26,7 @@ export class UserSettings {
     messageNotification,
     taskUpdate,
     taskDeadline,
-    associateInvite
+    associateInvite,
   ) {
     try {
       const sql = `UPDATE user_settings 
@@ -48,6 +49,7 @@ export class UserSettings {
       return data;
     } catch (error) {
       console.log(error + "--- update user settings ---");
+      return [];
     }
   }
 
@@ -63,6 +65,7 @@ export class UserSettings {
       return data;
     } catch (error) {
       console.log(error + "--- get user settings ---");
+      return [];
     }
   }
 }

@@ -33,6 +33,7 @@ export class Users {
       return data;
     } catch (error) {
       console.log(error + "--- create user ---");
+      return [];
     }
   }
 
@@ -47,6 +48,7 @@ export class Users {
       return data;
     } catch (error) {
       console.log(error + "--- get user ---");
+      return [];
     }
   }
 
@@ -90,6 +92,7 @@ export class Users {
       return data;
     } catch (error) {
       console.log(error + "--- get user ---");
+      return [];
     }
   }
 
@@ -99,7 +102,7 @@ export class Users {
     role,
     status,
     image,
-    userID
+    userID,
   ) {
     try {
       const sql = `UPDATE users SET 
@@ -116,6 +119,7 @@ export class Users {
       return data;
     } catch (error) {
       console.log(error + "--- update user identifier ---");
+      return [];
     }
   }
 
@@ -130,6 +134,7 @@ export class Users {
       return data;
     } catch (error) {
       console.log(error + "--- update user password ---");
+      return [];
     }
   }
 
@@ -144,6 +149,7 @@ export class Users {
       return data;
     } catch (error) {
       console.log(error + "--- update user verification ---");
+      return [];
     }
   }
 }
