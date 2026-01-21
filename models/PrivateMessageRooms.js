@@ -68,7 +68,11 @@ export class PrivateMessageRooms {
     }
   }
 
-  static async getPrivateMessageRoomMessages(whereConditions, whereValues) {
+  static async getPrivateMessageRoomMessages(
+    whereConditions,
+    whereValues,
+    limit = 20,
+  ) {
     try {
       const sql = `SELECT * FROM private_message_rooms AS pmr
 
@@ -76,9 +80,11 @@ export class PrivateMessageRooms {
                     ON pmr.message_room_id = pm.message_room_fk_id
 
                     WHERE ${whereConditions} = ?
-                    ORDER BY pm.date_sent DESC;`;
+                    ORDER BY pm.date_sent DESC
+                    LIMIT ?;`;
 
-      const [data, _] = await conn.execute(sql, whereValues);
+      const [data, _] = await conn.execute(sql, [...whereValues, limit]);
+
       return data;
     } catch (error) {
       console.log(error + "--- get private message room ---");
