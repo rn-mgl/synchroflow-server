@@ -5,25 +5,32 @@ import { UserSettings } from "../models/UserSettings.js";
 
 export const getNotifications = async (req, res) => {
   const { id } = req.user;
+  const { limit } = req.query;
 
   const settings = await UserSettings.getUserSettings(["user_id"], [id]);
 
   if (!settings) {
-    throw new NotFoundError(`This user's settings does not exist. Try again later.`);
+    throw new NotFoundError(
+      `This user's settings does not exist. Try again later.`,
+    );
   }
 
-  const { associate_invite, message_notification, task_deadline, task_update } = settings[0];
+  const { associate_invite, message_notification, task_deadline, task_update } =
+    settings[0];
 
   const notifications = await Notifications.getNotifications(
     id,
     associate_invite,
     message_notification,
     task_deadline,
-    task_update
+    task_update,
+    limit,
   );
 
   if (!notifications) {
-    throw new BadRequestError(`Error in getting notifications. Try again later.`);
+    throw new BadRequestError(
+      `Error in getting notifications. Try again later.`,
+    );
   }
 
   res.status(StatusCodes.OK).json(notifications);

@@ -9,6 +9,7 @@ export class Notifications {
     messageNotification,
     taskDeadline,
     taskUpdate,
+    limit = 10,
   ) {
     try {
       const sql = `SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
@@ -179,7 +180,9 @@ export class Notifications {
                     WHERE ? = '1' AND 
                     stc.collaborator_fk_id = ?
                     
-                    ORDER BY notif_date DESC;`;
+                    ORDER BY notif_date DESC
+                    
+                    LIMIT ?;`;
 
       const values = [
         taskUpdate,
@@ -206,6 +209,7 @@ export class Notifications {
         userID,
         taskUpdate,
         userID,
+        limit,
       ];
 
       const [data, _] = await conn.execute(sql, values);
