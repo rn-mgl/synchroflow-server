@@ -6,7 +6,6 @@ export class PrivateMessages {
     message_uuid,
     message_room_fk_id,
     message_from,
-    message_to,
     message,
     message_file,
     message_file_type,
@@ -14,7 +13,6 @@ export class PrivateMessages {
     this.message_uuid = message_uuid;
     this.message_room_fk_id = message_room_fk_id;
     this.message_from = message_from;
-    this.message_to = message_to;
     this.message = message;
     this.message_file = message_file;
     this.message_file_type = message_file_type;
@@ -27,16 +25,14 @@ export class PrivateMessages {
                         message_uuid,
                         message_room_fk_id,
                         message_from,
-                        message_to,
                         message,
                         message_file,
                         message_file_type
-                     ) VALUES (?, ?, ?, ?, ?, ?, ?);`;
+                     ) VALUES (?, ?, ?, ?, ?, ?);`;
       const privateMessageValues = [
         this.message_uuid,
         this.message_room_fk_id,
         this.message_from,
-        this.message_to,
         this.message,
         this.message_file,
         this.message_file_type,

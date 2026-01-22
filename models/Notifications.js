@@ -81,7 +81,7 @@ export class Notifications {
                     ON u_from.user_id = pm.message_from
 
                     WHERE ? = '1' AND 
-                    pm.message_to = ?
+                    pm.message_from != ?
 
                     UNION 
                     

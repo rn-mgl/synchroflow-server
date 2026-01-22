@@ -22,13 +22,10 @@ export const createPrivateMessage = async (req, res) => {
     );
   }
 
-  const messageTo = await Users.getUser(["user_uuid"], [messageToUUID]);
-
   const privateMessage = new PrivateMessages(
     privateMessageUUID,
     privateMessageRoom[0]?.message_room_id,
     id,
-    messageTo[0]?.user_id,
     message,
     messageFile,
     messageFileType,
@@ -42,7 +39,7 @@ export const createPrivateMessage = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ message: newPrivateMessage, rooms: [uuid, messageToUUID] });
+    .json({ message: !!newPrivateMessage, rooms: [messageToUUID] });
 };
 
 export const deletePrivateMessage = async (req, res) => {
