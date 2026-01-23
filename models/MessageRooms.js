@@ -136,38 +136,6 @@ export class MessageRooms {
     }
   }
 
-  static async getAllPrivateMessageRooms(userId, searchFilter) {
-    try {
-      const sql = `SELECT * FROM private_message_rooms AS pmr
-  
-                    INNER JOIN private_message_members AS pmm
-                    ON pmr.message_room_id = pmm.message_room_fk_id
-
-                    INNER JOIN users AS u
-                    ON pmm.member_fk_id = u.user_id
-
-                    WHERE pmr.message_room_id IN (
-                      SELECT pmm2.message_room_fk_id 
-                      FROM private_message_members AS pmm2
-                      WHERE pmm2.message_room_fk_id = pmr.message_room_id
-                      AND pmm2.member_fk_id = ?
-                    )
-
-                    AND pmm.member_fk_id <> ?
-                    AND (u.name LIKE ? 
-                    OR u.surname LIKE ?);`;
-
-      const values = [userId, userId, `%${searchFilter}%`, `%${searchFilter}%`];
-
-      const [data, _] = await conn.execute(sql, values);
-
-      return data;
-    } catch (error) {
-      console.log(error + "--- get all private message room ---");
-      return [];
-    }
-  }
-
   static async getMessageRoom(whereConditions, whereValues) {
     try {
       const mappedWhereConditions = mapWhereConditions(whereConditions);
