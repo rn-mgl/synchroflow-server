@@ -1,27 +1,27 @@
 import conn from "../db/connection.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
-export class MessageMembers {
+export class RoomMembers {
   constructor(member_uuid, member_fk_id, room_fk_id) {
     this.member_uuid = member_uuid;
     this.member_fk_id = member_fk_id;
     this.room_fk_id = room_fk_id;
   }
 
-  async createMessageMember() {
+  async createRoomMember() {
     try {
-      const sql = `INSERT INTO message_members
+      const sql = `INSERT INTO room_members
                     (
                         message_member_uuid,
                         member_fk_id,
                         message_room_fk_id
                     ) VALUES (?, ?, ?);`;
-      const messageMemberValues = [
+      const roomMemberValues = [
         this.message_member_uuid,
         this.member_fk_id,
         this.room_fk_id,
       ];
-      const [data, _] = await conn.execute(sql, messageMemberValues);
+      const [data, _] = await conn.execute(sql, roomMemberValues);
       return data;
     } catch (error) {
       console.log(error + "--- create message  member ---");
@@ -29,11 +29,11 @@ export class MessageMembers {
     }
   }
 
-  static async deleteMessageMember(whereConditions, whereValues) {
+  static async deleteRoomMember(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
-      const sql = `DELETE FROM message_members
+      const sql = `DELETE FROM room_members
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
@@ -44,10 +44,10 @@ export class MessageMembers {
     }
   }
 
-  static async getAllMessageMembers(whereConditions, whereValues) {
+  static async getAllRoomMembers(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
-      const sql = `SELECT * FROM message_members AS mm
+      const sql = `SELECT * FROM room_members AS mm
                     INNER JOIN users AS u
                     ON mm.member_fk_id = u.user_id
                     INNER JOIN message_rooms AS mr
@@ -71,7 +71,7 @@ export class MessageMembers {
                     OR a.associate_is = u.user_id
                     
                     WHERE u.user_id NOT IN (
-                      SELECT mm.member_fk_id FROM message_members AS mm
+                      SELECT mm.member_fk_id FROM room_members AS mm
                       INNER JOIN message_rooms AS mr
                       ON mm.message_room_fk_id = mr.room_fk_id
                       WHERE mr.room_fk_id = ? 
@@ -89,10 +89,10 @@ export class MessageMembers {
     }
   }
 
-  static async getMessageMember(whereConditions, whereValues) {
+  static async getRoomMember(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
-      const sql = `SELECT * FROM message_members
+      const sql = `SELECT * FROM room_members
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);

@@ -27,6 +27,10 @@ import groupMessageMembersRouter from "./routers/groupMessageMembersRouter.js";
 import groupMessageRoomsRouter from "./routers/groupMessageRoomsRouter.js";
 import groupMessagesRouter from "./routers/groupMessagesRouter.js";
 
+import roomMembersRouter from "./routers/roomMembersRouter.js";
+import messageRoomsRouter from "./routers/messageRoomsRouter.js";
+import messagesRouter from "./routers/messagesRouter.js";
+
 import mainTaskCollaboratorsRouter from "./routers/mainTaskCollaboratorsRouter.js";
 import mainTaskInvitesRouter from "./routers/mainTaskInvitesRouter.js";
 import mainTasksRouter from "./routers/mainTasksRouter.js";
@@ -98,6 +102,10 @@ app.use("/private_messages", authMiddleware, privateMessagesRouter);
 app.use("/group_message_members", authMiddleware, groupMessageMembersRouter);
 app.use("/group_message_rooms", authMiddleware, groupMessageRoomsRouter);
 app.use("/group_messages", authMiddleware, groupMessagesRouter);
+
+app.use("/message_members", authMiddleware, roomMembersRouter);
+app.use("/message_rooms", authMiddleware, messageRoomsRouter);
+app.use("/messages", authMiddleware, messagesRouter);
 
 app.use("/users", authMiddleware, usersRouter);
 app.use("/user_settings", authMiddleware, userSettingsRouter);

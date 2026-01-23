@@ -9,9 +9,9 @@ import { MessageRooms } from "../models/MessageRooms.js";
 import { RoomMembers } from "../models/RoomMembers.js";
 import { Users } from "../models/Users.js";
 
-export const createMessageMember = async (req, res) => {
+export const createRoomMember = async (req, res) => {
   const { memberUUID, roomUUID } = req.body;
-  const messageMemberUUID = uuidv4();
+  const roomMemberUUID = uuidv4();
 
   const messageRoom = await MessageRooms.getMessageRoom(
     ["message_room"],
@@ -28,43 +28,43 @@ export const createMessageMember = async (req, res) => {
     throw new NotFoundError(`This user does not exist.`);
   }
 
-  const messageMember = new RoomMembers(
-    messageMemberUUID,
+  const roomMember = new RoomMembers(
+    roomMemberUUID,
     member[0]?.user_id,
     messageRoom[0]?.message_room_id,
   );
 
-  const newMessageMember = await messageMember.createMessageMember();
+  const newRoomMember = await roomMember.createRoomMember();
 
-  if (!newMessageMember) {
+  if (!newRoomMember) {
     throw new BadRequestError("Error in adding user in the message.");
   }
 
-  res.status(StatusCodes.OK).json(newMessageMember);
+  res.status(StatusCodes.OK).json(newRoomMember);
 };
 
-export const deleteMessageMember = async (req, res) => {
+export const deleteRoomMember = async (req, res) => {
   const { identifier } = req.params;
   const { action } = req.query;
   const { id } = req.user;
 
-  let messageMember = null;
+  let roomMember = null;
   let deleteMember = null;
 
   switch (action) {
     case "remove":
-      messageMember = await RoomMembers.getMessageMember(
+      roomMember = await RoomMembers.getRoomMember(
         ["message_member_uuid"],
         [identifier],
       );
 
-      if (!messageMember) {
+      if (!roomMember) {
         throw new NotFoundError("This message member does not exist.");
       }
 
-      deleteMember = await RoomMembers.deleteMessageMember(
+      deleteMember = await RoomMembers.deleteRoomMember(
         ["message_member_id"],
-        [messageMember[0]?.message_member_id],
+        [roomMember[0]?.message_member_id],
       );
 
       if (!deleteMember) {
@@ -78,18 +78,18 @@ export const deleteMessageMember = async (req, res) => {
         throw new UnauthorizedError("This action is not allowed.");
       }
 
-      messageMember = await RoomMembers.getMessageMember(
+      roomMember = await RoomMembers.getRoomMember(
         ["member_fk_id"],
         [identifier],
       );
 
-      if (!messageMember) {
+      if (!roomMember) {
         throw new NotFoundError("This message member does not exist.");
       }
 
-      deleteMember = await RoomMembers.deleteMessageMember(
+      deleteMember = await RoomMembers.deleteRoomMember(
         ["message_member_id"],
-        [messageMember[0]?.message_member_id],
+        [roomMember[0]?.message_member_id],
       );
 
       if (!deleteMember) {
@@ -98,13 +98,13 @@ export const deleteMessageMember = async (req, res) => {
 
       const allMembers = await RoomMembers.getAllRoomMembers(
         ["message_room_fk_id"],
-        [messageMember[0]?.message_room_fk_id],
+        [roomMember[0]?.message_room_fk_id],
       );
 
       if (!allMembers || !allMembers.length) {
         const deleteRoom = await MessageRooms.deleteMessageRoom(
           ["message_room_id"],
-          [messageMember[0]?.message_room_fk_id],
+          [roomMember[0]?.message_room_fk_id],
         );
 
         console.log(`Group deleted: ${!!deleteRoom}`);
@@ -116,7 +116,7 @@ export const deleteMessageMember = async (req, res) => {
         const firstMember = sortedMembers[0];
 
         const reassignOwner = await MessageRooms.updateMessageCreator(
-          messageMember[0]?.message_room_fk_id,
+          roomMember[0]?.message_room_fk_id,
           firstMember.user_id,
         );
 
@@ -168,7 +168,7 @@ const getPossibleRoomMembers = async (req, res) => {
     throw new NotFoundError("This message room does not exist.");
   }
 
-  const allRoomMembers = await RoomMembers.getPossibleGroupMembers(
+  const allRoomMembers = await RoomMembers.getPossibleMembers(
     room[0]?.message_room_id,
     id,
   );
@@ -194,17 +194,17 @@ export const getAllRoomMembers = async (req, res) => {
   }
 };
 
-export const getMessageMember = async (req, res) => {
+export const getRoomMember = async (req, res) => {
   const { identifier } = req.params;
 
-  const messageMember = await RoomMembers.getMessageMember(
+  const roomMember = await RoomMembers.getRoomMember(
     ["message_member_uuid"],
     [identifier],
   );
 
-  if (!messageMember) {
+  if (!roomMember) {
     throw new NotFoundError("This message member does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(messageMember[0]);
+  res.status(StatusCodes.OK).json(roomMember[0]);
 };
