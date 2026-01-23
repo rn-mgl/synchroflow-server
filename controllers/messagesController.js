@@ -3,7 +3,7 @@ import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { Messages } from "../models/Messages.js";
 import { MessageRooms } from "../models/MessageRooms.js";
-import { MessageMembers } from "../models/MessageMembers.js";
+import { RoomMembers } from "../models/RoomMembers.js";
 
 export const createMessage = async (req, res) => {
   const { messageRoom, message, messageFile, messageFileType } = req.body;
@@ -37,7 +37,7 @@ export const createMessage = async (req, res) => {
     );
   }
 
-  const messageMembers = await MessageMembers.getAllMessageMembers(
+  const messageMembers = await RoomMembers.getAllMessageMembers(
     ["message_room_fk_id"],
     [messageRoom[0]?.message_room_id],
   );

@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import { MessageRooms } from "../models/MessageRooms.js";
-import { MessageMembers } from "../models/MessageMembers.js";
+import { RoomMembers } from "../models/RoomMembers.js";
 import { Users } from "../models/Users.js";
 
 export const createMessageRoom = async (req, res) => {
@@ -24,7 +24,7 @@ export const createMessageRoom = async (req, res) => {
 
   const messageMemberUUID = uuidv4();
 
-  const newMessageMember = new MessageMembers(
+  const newMessageMember = new RoomMembers(
     messageMemberUUID,
     id,
     newMessageRoom.insertId,
@@ -51,7 +51,7 @@ export const deleteMessageRoom = async (req, res) => {
     throw new NotFoundError("The message room does not exist.");
   }
 
-  const messageMembers = await MessageMembers.getAllMessageMembers(
+  const messageMembers = await RoomMembers.getAllMessageMembers(
     ["message_room_fk_id"],
     [messageRoom[0]?.message_room_id],
   );
@@ -106,7 +106,7 @@ const updateMessageRoomName = async (req, res) => {
     );
   }
 
-  const messageMembers = await MessageMembers.getAllMessageMembers(
+  const messageMembers = await RoomMembers.getAllMessageMembers(
     ["message_room_fk_id"],
     [messageRoom[0]?.message_room_id],
   );
