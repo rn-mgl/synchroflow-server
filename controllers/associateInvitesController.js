@@ -16,7 +16,11 @@ export const createAssociateInvite = async (req, res) => {
 
   const associateInviteUUID = uuidv4();
 
-  const associateInvites = new AssociateInvites(associateInviteUUID, id, invitedUser[0]?.user_id);
+  const associateInvites = new AssociateInvites(
+    associateInviteUUID,
+    id,
+    invitedUser[0]?.user_id,
+  );
 
   const newAssociateInvite = await associateInvites.createAssociateInvite();
 
@@ -24,14 +28,17 @@ export const createAssociateInvite = async (req, res) => {
     throw new BadRequestError("Error in sending invite. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(newAssociateInvite);
+  return res.status(StatusCodes.OK).json(newAssociateInvite);
 };
 
 export const updateAssociateInviteStatus = async (req, res) => {
   const { inviteStatus } = req.body;
   const { associate_invite_uuid } = req.params;
 
-  const associateInvite = await AssociateInvites.getAssociateInvite(["associate_invite_uuid"], [associate_invite_uuid]);
+  const associateInvite = await AssociateInvites.getAssociateInvite(
+    ["associate_invite_uuid"],
+    [associate_invite_uuid],
+  );
 
   if (!associateInvite) {
     throw new NotFoundError("This invite no longer exist.");
@@ -40,50 +47,79 @@ export const updateAssociateInviteStatus = async (req, res) => {
   const updateInviteStatus = await AssociateInvites.updateAssociateInviteStatus(
     inviteStatus,
     "associate_invite_id",
-    associateInvite[0]?.associate_invite_id
+    associateInvite[0]?.associate_invite_id,
   );
 
   if (!updateInviteStatus) {
-    throw new BadRequestError("Error in updating invite status. Try again later.");
+    throw new BadRequestError(
+      "Error in updating invite status. Try again later.",
+    );
   }
 
-  res.status(StatusCodes.OK).json(updateInviteStatus);
+  return res.status(StatusCodes.OK).json(updateInviteStatus);
 };
 
 export const getAssociateInvite = async (req, res) => {
   const { associate_invite_uuid } = req.params;
 
-  const associateInvite = await AssociateInvites.getAssociateInvite(["associate_invite_uuid"][associate_invite_uuid]);
+  const associateInvite = await AssociateInvites.getAssociateInvite(
+    ["associate_invite_uuid"][associate_invite_uuid],
+  );
 
   if (!associateInvite) {
     throw new BadRequestError("Error in getting associate invite.");
   }
 
-  res.status(StatusCodes.OK).json(associateInvite[0]);
+  return res.status(StatusCodes.OK).json(associateInvite[0]);
+};
+
+const getAllAvailableAssociates = async (req, res) => {
+  const { id } = req.user;
+  const { sortFilter, searchFilter, searchCategory } = req.query;
+
+  const availableAssociates = await AssociateInvites.getAllAvailableAssociates(
+    id,
+    sortFilter,
+    searchFilter,
+    searchCategory,
+  );
+
+  if (!availableAssociates) {
+    throw new BadRequestError("Error in getting all available associates.");
+  }
+
+  return res.status(StatusCodes.OK).json(availableAssociates);
 };
 
 const getAllSentAssociateInvite = async (req, res) => {
   const { id } = req.user;
 
-  const associateInvites = await AssociateInvites.getAllSentAssociateInvites(["associate_invite_from"], [id]);
+  const associateInvites = await AssociateInvites.getAllSentAssociateInvites(
+    ["associate_invite_from"],
+    [id],
+  );
 
   if (!associateInvites) {
     throw new BadRequestError("Error in getting all associate invites.");
   }
 
-  res.status(StatusCodes.OK).json(associateInvites);
+  return res.status(StatusCodes.OK).json(associateInvites);
 };
 
 const getAllReceivedAssociateInvite = async (req, res) => {
   const { id } = req.user;
 
-  const associateInvites = await AssociateInvites.getAllReceivedAssociateInvites(["associate_invite_to"], [id]);
+  const associateInvites =
+    await AssociateInvites.getAllReceivedAssociateInvites(
+      ["associate_invite_to"],
+      [id],
+    );
 
   if (!associateInvites) {
     throw new BadRequestError("Error in getting all associate invites.");
   }
 
-  res.status(StatusCodes.OK).json(associateInvites);
+  return res.status(StatusCodes.OK).json(associateInvites);
 };
 
 export const getAllAssociateInvites = async (req, res) => {
@@ -98,6 +134,10 @@ export const getAllAssociateInvites = async (req, res) => {
       await getAllReceivedAssociateInvite(req, res);
       return;
 
+    case "available":
+      await getAllAvailableAssociates(req, res);
+      return;
+
     default:
       return;
   }
@@ -106,20 +146,25 @@ export const getAllAssociateInvites = async (req, res) => {
 export const deleteAssociateInvite = async (req, res) => {
   const { associate_invite_uuid } = req.params;
 
-  const associateInvite = await AssociateInvites.getAssociateInvite(["associate_invite_uuid"], [associate_invite_uuid]);
+  const associateInvite = await AssociateInvites.getAssociateInvite(
+    ["associate_invite_uuid"],
+    [associate_invite_uuid],
+  );
 
   if (!associateInvite) {
-    throw new BadRequestError("The invite you are trying to delete does not exist.");
+    throw new BadRequestError(
+      "The invite you are trying to delete does not exist.",
+    );
   }
 
   const deleteInvite = await AssociateInvites.deleteAssociateInvite(
     ["associate_invite_id"],
-    [associateInvite[0]?.associate_invite_id]
+    [associateInvite[0]?.associate_invite_id],
   );
 
   if (!deleteAssociateInvite) {
     throw new BadRequestError("Error in deleting the invite. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(deleteInvite);
+  return res.status(StatusCodes.OK).json(deleteInvite);
 };

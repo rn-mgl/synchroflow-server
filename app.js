@@ -103,7 +103,7 @@ app.use("/group_message_members", authMiddleware, groupMessageMembersRouter);
 app.use("/group_message_rooms", authMiddleware, groupMessageRoomsRouter);
 app.use("/group_messages", authMiddleware, groupMessagesRouter);
 
-app.use("/message_members", authMiddleware, roomMembersRouter);
+app.use("/room_members", authMiddleware, roomMembersRouter);
 app.use("/message_rooms", authMiddleware, messageRoomsRouter);
 app.use("/messages", authMiddleware, messagesRouter);
 

@@ -12,12 +12,13 @@ export class RoomMembers {
     try {
       const sql = `INSERT INTO room_members
                     (
-                        message_member_uuid,
+                        member_uuid,
                         member_fk_id,
-                        message_room_fk_id
+                        room_fk_id
                     ) VALUES (?, ?, ?);`;
+
       const roomMemberValues = [
-        this.message_member_uuid,
+        this.member_uuid,
         this.member_fk_id,
         this.room_fk_id,
       ];
@@ -47,11 +48,12 @@ export class RoomMembers {
   static async getAllRoomMembers(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     try {
-      const sql = `SELECT * FROM room_members AS mm
+      const sql = `SELECT u.name, u.surname, u.image, rm.date_added, rm.member_uuid, u.user_id, u.user_uuid 
+                    FROM room_members AS rm
                     INNER JOIN users AS u
-                    ON mm.member_fk_id = u.user_id
+                    ON rm.member_fk_id = u.user_id
                     INNER JOIN message_rooms AS mr
-                    ON mm.message_room_fk_id = mr.room_fk_id
+                    ON rm.room_fk_id = mr.message_room_id
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
@@ -71,10 +73,10 @@ export class RoomMembers {
                     OR a.associate_is = u.user_id
                     
                     WHERE u.user_id NOT IN (
-                      SELECT mm.member_fk_id FROM room_members AS mm
+                      SELECT rm.member_fk_id FROM room_members AS rm
                       INNER JOIN message_rooms AS mr
-                      ON mm.message_room_fk_id = mr.room_fk_id
-                      WHERE mr.room_fk_id = ? 
+                      ON rm.room_fk_id = mr.message_room_id
+                      WHERE mr.message_room_id = ? 
                     ) 
                     AND u.user_id <> ?
                     GROUP BY u.user_id;`;

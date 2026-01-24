@@ -52,50 +52,6 @@ export class Users {
     }
   }
 
-  static async getUsers(userId, sortFilter, searchFilter, searchCategory) {
-    const sortValue = associatesFilterKey[sortFilter];
-    const searchCategoryValue = associatesFilterKey[searchCategory];
-    try {
-      const sql = `SELECT u.user_uuid, u.name, u.surname, u.email, u.image, u.role, u.status,
-                    ai.associate_invite_uuid
-
-                    FROM users AS u
-
-                    LEFT JOIN associate_invites AS ai
-                    ON ai.associate_invite_to = u.user_id
-                    OR ai.associate_invite_from = u.user_id
-                    
-                    WHERE u.user_id <> ?
-                    AND u.user_id NOT IN (
-                      SELECT associate_is FROM associates
-                      WHERE associate_of = ?
-                      OR associate_is = ?
-                    )
-                    AND u.user_id NOT IN (
-                      SELECT associate_of FROM associates
-                      WHERE associate_of = ?
-                      OR associate_is = ?
-                    )
-                    AND ${searchCategoryValue} LIKE ?
-                    ORDER BY ${sortValue};`;
-
-      const values = [
-        userId,
-        userId,
-        userId,
-        userId,
-        userId,
-        `%${searchFilter}%`,
-      ];
-
-      const [data, _] = await conn.execute(sql, values);
-      return data;
-    } catch (error) {
-      console.log(error + "--- get user ---");
-      return [];
-    }
-  }
-
   static async updateUserIdentifier(
     name,
     surname,

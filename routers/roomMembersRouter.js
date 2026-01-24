@@ -1,17 +1,14 @@
 import { Router } from "express";
 import {
-  createGroupMessageMember,
-  deleteGroupMessageMember,
-  getAllGroupMessageMembers,
-  getGroupMessageMember,
-} from "../controllers/groupMessageMembersController.js";
+  createRoomMember,
+  deleteRoomMember,
+  getAllRoomMembers,
+  getRoomMember,
+} from "../controllers/roomMembersController.js";
 
 const router = Router();
 
-router.route("/").post(createGroupMessageMember).get(getAllGroupMessageMembers);
-router
-  .route("/:identifier")
-  .get(getGroupMessageMember)
-  .delete(deleteGroupMessageMember);
+router.route("/").post(createRoomMember).get(getAllRoomMembers);
+router.route("/:identifier").get(getRoomMember).delete(deleteRoomMember);
 
 export default router;

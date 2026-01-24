@@ -20,19 +20,6 @@ export const getUser = async (req, res) => {
   res.status(StatusCodes.OK).json(user[0]);
 };
 
-export const getUsers = async (req, res) => {
-  const { id } = req.user;
-  const { sortFilter, searchFilter, searchCategory } = req.query;
-
-  const users = await Users.getUsers(id, sortFilter, searchFilter, searchCategory);
-
-  if (!users) {
-    throw new BadRequestError(`Error in getting users. Try again later.`);
-  }
-
-  res.status(StatusCodes.OK).json(users);
-};
-
 const updateUserIdentifier = async (req, res) => {
   const { userData } = req.body;
   const { user_uuid } = req.params;
@@ -49,7 +36,14 @@ const updateUserIdentifier = async (req, res) => {
     userData.image = randomAvatar();
   }
 
-  const updateUser = await Users.updateUserIdentifier(name, surname, role, status, userData.image, user[0]?.user_id);
+  const updateUser = await Users.updateUserIdentifier(
+    name,
+    surname,
+    role,
+    status,
+    userData.image,
+    user[0]?.user_id,
+  );
 
   if (!updateUser) {
     throw new BadRequestError("Error in updating your identifiers.");
@@ -69,15 +63,23 @@ const updateUserPassword = async (req, res) => {
     throw new UnauthorizedError("You are not allowed to access other account.");
   }
 
-  const isCorrect = await comparePassword(password.currentPassword.text, user[0]?.password);
+  const isCorrect = await comparePassword(
+    password.currentPassword.text,
+    user[0]?.password,
+  );
 
   if (!isCorrect) {
-    throw new BadRequestError("The current password you entered does not match your recorded password.");
+    throw new BadRequestError(
+      "The current password you entered does not match your recorded password.",
+    );
   }
 
   const hashedPassword = await hashPassword(password.newPassword.text);
 
-  const updateUser = await Users.updateUserPassword(hashedPassword, user[0]?.user_id);
+  const updateUser = await Users.updateUserPassword(
+    hashedPassword,
+    user[0]?.user_id,
+  );
 
   if (!updateUser) {
     throw new BadRequestError("Error in updating your password.");

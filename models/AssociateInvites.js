@@ -1,4 +1,5 @@
 import conn from "../db/connection.js";
+import { associatesFilterKey } from "../utils/filterUtils.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class AssociateInvites {
@@ -114,6 +115,60 @@ export class AssociateInvites {
       return data;
     } catch (error) {
       console.log(error + "--- get all associate invites ---");
+      return [];
+    }
+  }
+
+  static async getAllAvailableAssociates(
+    userId,
+    sortFilter,
+    searchFilter,
+    searchCategory,
+  ) {
+    const sortValue = associatesFilterKey[sortFilter];
+    const searchCategoryValue = associatesFilterKey[searchCategory];
+
+    console.log(userId);
+
+    try {
+      const sql = `SELECT u.user_uuid, u.name, u.surname, u.email, u.image, u.role, u.status, u.user_id
+  
+                      FROM users AS u
+  
+                      WHERE u.user_id != ? AND
+                      
+                      u.user_id NOT IN (
+                        SELECT associate_of FROM associates WHERE associate_is = ?
+                      ) AND 
+
+                      u.user_id NOT IN (
+                        SELECT associate_is FROM associates WHERE associate_of = ?
+                      ) AND
+
+                      u.user_id NOT IN (
+                        SELECT associate_invite_from FROM associate_invites WHERE associate_invite_to = ?
+                      ) AND 
+
+                      u.user_id NOT IN (
+                        SELECT associate_invite_to FROM associate_invites WHERE associate_invite_from = ?
+                      ) AND
+
+                      ${searchCategoryValue} LIKE ?
+                      ORDER BY ${sortValue};`;
+
+      const values = [
+        userId,
+        userId,
+        userId,
+        userId,
+        userId,
+        `%${searchFilter}%`,
+      ];
+
+      const [data, _] = await conn.execute(sql, values);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get available associates ---");
       return [];
     }
   }

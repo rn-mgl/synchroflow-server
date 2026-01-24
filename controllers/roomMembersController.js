@@ -10,13 +10,11 @@ import { RoomMembers } from "../models/RoomMembers.js";
 import { Users } from "../models/Users.js";
 
 export const createRoomMember = async (req, res) => {
-  const { memberUUID, roomUUID } = req.body;
+  const { memberUUID, roomUUID, roomType } = req.body;
   const roomMemberUUID = uuidv4();
+  const { id } = req.user;
 
-  const messageRoom = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [roomUUID],
-  );
+  const messageRoom = await MessageRooms.getMessageRoom(roomUUID, roomType, id);
 
   if (!messageRoom) {
     throw new NotFoundError(`This room does not exist.`);
@@ -45,7 +43,7 @@ export const createRoomMember = async (req, res) => {
 
 export const deleteRoomMember = async (req, res) => {
   const { identifier } = req.params;
-  const { action } = req.query;
+  const { action, messageRoom, roomType } = req.query;
   const { id } = req.user;
 
   let roomMember = null;
@@ -54,33 +52,39 @@ export const deleteRoomMember = async (req, res) => {
   switch (action) {
     case "remove":
       roomMember = await RoomMembers.getRoomMember(
-        ["message_member_uuid"],
+        ["member_uuid"],
         [identifier],
       );
 
       if (!roomMember) {
-        throw new NotFoundError("This message member does not exist.");
+        throw new NotFoundError("This room member does not exist.");
       }
 
       deleteMember = await RoomMembers.deleteRoomMember(
-        ["message_member_id"],
-        [roomMember[0]?.message_member_id],
+        ["member_id"],
+        [roomMember[0]?.member_id],
       );
 
       if (!deleteMember) {
         throw new BadRequestError("Error in deleting user in the message.");
       }
 
-      return res.status(StatusCodes.OK).json(deleteMember);
+      return res.status(StatusCodes.OK).json({ success: !!deleteMember });
 
     case "leave":
       if (id !== parseInt(identifier)) {
         throw new UnauthorizedError("This action is not allowed.");
       }
 
+      const room = await MessageRooms.getMessageRoom(messageRoom, roomType, id);
+
+      if (!room || !room[0]) {
+        throw new NotFoundError("This room does not exist.");
+      }
+
       roomMember = await RoomMembers.getRoomMember(
-        ["member_fk_id"],
-        [identifier],
+        ["member_fk_id", "room_fk_id"],
+        [identifier, room[0].message_room_id],
       );
 
       if (!roomMember) {
@@ -88,8 +92,8 @@ export const deleteRoomMember = async (req, res) => {
       }
 
       deleteMember = await RoomMembers.deleteRoomMember(
-        ["message_member_id"],
-        [roomMember[0]?.message_member_id],
+        ["member_id"],
+        [roomMember[0]?.member_id],
       );
 
       if (!deleteMember) {
@@ -97,14 +101,16 @@ export const deleteRoomMember = async (req, res) => {
       }
 
       const allMembers = await RoomMembers.getAllRoomMembers(
-        ["message_room_fk_id"],
-        [roomMember[0]?.message_room_fk_id],
+        ["room_fk_id"],
+        [roomMember[0]?.room_fk_id],
       );
+
+      console.log(allMembers);
 
       if (!allMembers || !allMembers.length) {
         const deleteRoom = await MessageRooms.deleteMessageRoom(
           ["message_room_id"],
-          [roomMember[0]?.message_room_fk_id],
+          [roomMember[0]?.room_fk_id],
         );
 
         console.log(`Group deleted: ${!!deleteRoom}`);
@@ -116,7 +122,7 @@ export const deleteRoomMember = async (req, res) => {
         const firstMember = sortedMembers[0];
 
         const reassignOwner = await MessageRooms.updateMessageCreator(
-          roomMember[0]?.message_room_fk_id,
+          roomMember[0]?.room_fk_id,
           firstMember.user_id,
         );
 
@@ -132,12 +138,10 @@ export const deleteRoomMember = async (req, res) => {
 };
 
 const getRoomMembers = async (req, res) => {
-  const { messageRoom } = req.query;
+  const { messageRoom, roomType } = req.query;
+  const { id } = req.user;
 
-  const room = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [messageRoom],
-  );
+  const room = await MessageRooms.getMessageRoom(messageRoom, roomType, id);
 
   if (!room) {
     throw new NotFoundError("This message room does not exist.");
@@ -156,13 +160,10 @@ const getRoomMembers = async (req, res) => {
 };
 
 const getPossibleRoomMembers = async (req, res) => {
-  const { messageRoom } = req.query;
+  const { messageRoom, roomType } = req.query;
   const { id } = req.user;
 
-  const room = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [messageRoom],
-  );
+  const room = await MessageRooms.getMessageRoom(messageRoom, roomType, id);
 
   if (!room) {
     throw new NotFoundError("This message room does not exist.");

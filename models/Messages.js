@@ -22,7 +22,7 @@ export class Messages {
     try {
       const sql = `INSERT INTO messages
                      (
-                        message_room_fk_id,
+                        room_fk_id,
                         message_uuid,
                         sender,
                         message,
@@ -82,12 +82,12 @@ export class Messages {
       const sql = `SELECT * FROM messages AS m
 
                     INNER JOIN message_rooms AS mr
-                    ON mr.room_fk_id = m.message_room_fk_id
+                    ON mr.message_room_id = m.room_fk_id
 
-                    WHERE message_room_fk_id = ?
+                    WHERE room_fk_id = ?
                     AND m.message_id = (
                       SELECT MAX(m2.message_id) FROM messages AS m2
-                      WHERE m2.message_room_fk_id = ?
+                      WHERE m2.room_fk_id = ?
                     );`;
       const values = [messageRoomID, messageRoomID];
       const [data, _] = await conn.execute(sql, values);

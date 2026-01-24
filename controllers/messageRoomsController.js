@@ -6,13 +6,19 @@ import { RoomMembers } from "../models/RoomMembers.js";
 import { Users } from "../models/Users.js";
 
 export const createMessageRoom = async (req, res) => {
-  const { messageData } = req.body;
-  const { roomName, roomImage } = messageData;
+  const { roomData } = req.body;
+  const { roomName, roomImage } = roomData;
   const { id } = req.user;
 
   const messageUUID = uuidv4();
 
-  const messageRoom = new MessageRooms(messageUUID, roomName, roomImage, id);
+  const messageRoom = new MessageRooms(
+    messageUUID,
+    roomName,
+    roomImage,
+    "group",
+    id,
+  );
 
   const newMessageRoom = await messageRoom.createMessageRoom();
 
@@ -22,17 +28,17 @@ export const createMessageRoom = async (req, res) => {
     );
   }
 
-  const messageMemberUUID = uuidv4();
+  const roomMemberUUID = uuidv4();
 
-  const newMessageMember = new RoomMembers(
-    messageMemberUUID,
+  const newRoomMember = new RoomMembers(
+    roomMemberUUID,
     id,
     newMessageRoom.insertId,
   );
 
-  const createMessageMember = await newMessageMember.createMessageMember();
+  const createRoomMember = await newRoomMember.createRoomMember();
 
-  if (!createMessageMember) {
+  if (!createRoomMember) {
     throw new BadRequestError("Error in adding you to the . Try again later.");
   }
 
@@ -41,28 +47,29 @@ export const createMessageRoom = async (req, res) => {
 
 export const deleteMessageRoom = async (req, res) => {
   const { message_room } = req.params;
+  const { roomType } = req.query;
+  const { id } = req.user;
 
   const messageRoom = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [message_room],
+    message_room,
+    roomType,
+    id,
   );
 
   if (!messageRoom) {
     throw new NotFoundError("The message room does not exist.");
   }
 
-  const messageMembers = await RoomMembers.getAllMessageMembers(
+  const roomMembers = await RoomMembers.getAllRoomMembers(
     ["message_room_fk_id"],
     [messageRoom[0]?.message_room_id],
   );
 
-  if (!messageMembers) {
+  if (!roomMembers) {
     throw new BadRequestError("Error in getting message room members.");
   }
 
-  const messageMembersUUID = messageMembers.map(
-    (messageMember) => messageMember.user_uuid,
-  );
+  const roomMembersUUID = roomMembers.map((roomMember) => roomMember.user_uuid);
 
   const deleteRoom = await MessageRooms.deleteMessageRoom(
     ["message_room_id"],
@@ -77,17 +84,19 @@ export const deleteMessageRoom = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ deletedRoom: deleteRoom, rooms: messageMembersUUID });
+    .json({ deletedRoom: deleteRoom, rooms: roomMembersUUID });
 };
 
 const updateMessageRoomName = async (req, res) => {
   const { message_room } = req.params;
-  const { messageData } = req.body;
-  const { messageName, Image } = messageData;
+  const { roomData, roomType } = req.body;
+  const { roomName, roomImage } = roomData;
+  const { id } = req.user;
 
   const messageRoom = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [message_room],
+    message_room,
+    roomType,
+    id,
   );
 
   if (!messageRoom) {
@@ -95,8 +104,8 @@ const updateMessageRoomName = async (req, res) => {
   }
 
   const updateRoomName = await MessageRooms.updateMessageName(
-    messageName,
-    Image,
+    roomName,
+    roomImage,
     messageRoom[0]?.message_room_id,
   );
 
@@ -106,27 +115,26 @@ const updateMessageRoomName = async (req, res) => {
     );
   }
 
-  const messageMembers = await RoomMembers.getAllMessageMembers(
-    ["message_room_fk_id"],
+  const roomMembers = await RoomMembers.getAllRoomMembers(
+    ["room_fk_id"],
     [messageRoom[0]?.message_room_id],
   );
 
-  if (!messageMembers) {
+  if (!roomMembers) {
     throw new BadRequestError("Error in getting message room members.");
   }
 
-  const messageMembersUUID = messageMembers.map(
-    (messageMember) => messageMember.user_uuid,
-  );
+  const roomMembersUUID = roomMembers.map((roomMember) => roomMember.user_uuid);
 
   res
     .status(StatusCodes.OK)
-    .json({ updatedRoom: updateRoomName, rooms: messageMembersUUID });
+    .json({ updatedRoom: updateRoomName, rooms: roomMembersUUID });
 };
 
 const updateMessageOwner = async (req, res) => {
   const { message_room } = req.params;
-  const { ownerUUID } = req.body;
+  const { ownerUUID, roomType } = req.body;
+  const { id } = req.user;
 
   const owner = await Users.getUser(["user_uuid"], [ownerUUID]);
 
@@ -135,8 +143,9 @@ const updateMessageOwner = async (req, res) => {
   }
 
   const messageRoom = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [message_room],
+    message_room,
+    roomType,
+    id,
   );
 
   if (!messageRoom) {
@@ -152,11 +161,11 @@ const updateMessageOwner = async (req, res) => {
     throw new BadRequestError("Error in updating owner. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(updateMessage);
+  res.status(StatusCodes.OK).json({ success: !!updateMessage });
 };
 
 export const updateMessage = async (req, res) => {
-  const { type } = req.query;
+  const { type } = req.body;
 
   if (type === "name") {
     await updateMessageRoomName(req, res);
@@ -171,10 +180,11 @@ export const updateMessage = async (req, res) => {
 
 export const getAllMessageRoom = async (req, res) => {
   const { id } = req.user;
-  const { searchFilter } = req.query;
+  const { searchFilter, roomType } = req.query;
 
   const allMessageRoom = await MessageRooms.getAllMessageRooms(
     id,
+    roomType,
     searchFilter,
   );
 
@@ -187,10 +197,13 @@ export const getAllMessageRoom = async (req, res) => {
 
 const getMessageRoomMainData = async (req, res) => {
   const { message_room } = req.params;
+  const { roomType } = req.query;
+  const { id } = req.user;
 
   const messageRoom = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [message_room],
+    message_room,
+    roomType,
+    id,
   );
 
   if (!messageRoom) {
@@ -202,10 +215,13 @@ const getMessageRoomMainData = async (req, res) => {
 
 const getMessageRoomMessages = async (req, res) => {
   const { message_room } = req.params;
+  const { roomType } = req.query;
+  const { id } = req.user;
 
   const messageRoom = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [message_room],
+    message_room,
+    roomType,
+    id,
   );
 
   if (!messageRoom) {

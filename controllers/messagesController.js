@@ -6,22 +6,20 @@ import { MessageRooms } from "../models/MessageRooms.js";
 import { RoomMembers } from "../models/RoomMembers.js";
 
 export const createMessage = async (req, res) => {
-  const { messageRoom, message, messageFile, messageFileType } = req.body;
-  const { id, uuid } = req.user;
+  const { messageRoom, message, messageFile, messageFileType, roomType } =
+    req.body;
+  const { id } = req.user;
 
   const messageUUID = uuidv4();
 
-  const room = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [messageRoom],
-  );
+  const room = await MessageRooms.getMessageRoom(messageRoom, roomType, id);
 
-  if (!room) {
+  if (!room || !room[0]) {
     throw new NotFoundError(`This group does not exist.`);
   }
 
   const messageInstance = new Messages(
-    messageRoom[0]?.message_room_id,
+    room[0].message_room_id,
     messageUUID,
     id,
     message,
@@ -37,9 +35,9 @@ export const createMessage = async (req, res) => {
     );
   }
 
-  const messageMembers = await RoomMembers.getAllMessageMembers(
-    ["message_room_fk_id"],
-    [messageRoom[0]?.message_room_id],
+  const messageMembers = await RoomMembers.getAllRoomMembers(
+    ["room_fk_id"],
+    [room[0]?.message_room_id],
   );
 
   if (!messageMembers) {
@@ -107,12 +105,10 @@ const getMessages = async (req, res) => {
 };
 
 const getLatestMessages = async (req, res) => {
-  const { messageRoom } = req.query;
+  const { messageRoom, roomType } = req.query;
+  const { id } = req.user;
 
-  const room = await MessageRooms.getMessageRoom(
-    ["message_room"],
-    [messageRoom],
-  );
+  const room = await MessageRooms.getMessageRoom(messageRoom, roomType, id);
 
   if (!room) {
     throw new NotFoundError("This group message room does not exist.");
