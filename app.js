@@ -31,6 +31,10 @@ import mainTaskCollaboratorsRouter from "./routers/mainTaskCollaboratorsRouter.j
 import mainTaskInvitesRouter from "./routers/mainTaskInvitesRouter.js";
 import mainTasksRouter from "./routers/mainTasksRouter.js";
 
+import taskCollaboratorsRouter from "./routers/taskCollaboratorsRouter.js";
+import taskInvitesRouter from "./routers/taskInvitesRouter.js";
+import tasksRouter from "./routers/tasksRouter.js";
+
 import notificationsRouter from "./routers/notificationsRouter.js";
 
 import passwordRouter from "./routers/passwordRouter.js";
@@ -87,6 +91,10 @@ app.use("/sub_tasks", authMiddleware, subTasksRouter);
 app.use("/room_members", authMiddleware, roomMembersRouter);
 app.use("/message_rooms", authMiddleware, messageRoomsRouter);
 app.use("/messages", authMiddleware, messagesRouter);
+
+app.use("/tasks", authMiddleware, tasksRouter);
+app.use("/task_invites", authMiddleware, taskInvitesRouter);
+app.use("/task_collaborators", authMiddleware, taskCollaboratorsRouter);
 
 app.use("/users", authMiddleware, usersRouter);
 app.use("/user_settings", authMiddleware, userSettingsRouter);

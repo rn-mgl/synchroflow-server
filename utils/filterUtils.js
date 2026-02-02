@@ -5,6 +5,13 @@ export const mainTasksFilterKey = {
   deadline: "main_task_end_date",
 };
 
+export const tasksFilterKey = {
+  title: "title",
+  "sub title": "subtitle",
+  start: "start_date",
+  deadline: "end_date",
+};
+
 export const associatesFilterKey = {
   "date added": "date_associated",
   name: "name",
