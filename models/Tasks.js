@@ -77,7 +77,7 @@ export class Tasks {
                     subtitle= ?,
                     description= ?,
                     priority= ?,
-                    task_status= ?,
+                    status= ?,
                     start_date= ?,
                     end_date= ?
                   WHERE task_id = ?;`;

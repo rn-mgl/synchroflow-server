@@ -91,18 +91,18 @@ export class TaskInvites {
 
       const sql = `SELECT u_invited.user_uuid AS invited_user_uuid, u_invited.user_id AS invited_user, u_invited.name AS invited_name, u_invited.surname AS invited_surname, u_invited.email AS invited_email,
                     u_from.user_uuid AS from_user_uuid, u_from.user_id AS from_user, u_from.name AS from_name, u_from.surname AS from_surname, u_from.email AS from_email,
-                    mti.task_invite_uuid, t.task_title, t.task_banner, t.task_priority, t.task_uuid, mti.message
+                    ti.task_invite_uuid, t.title, t.banner, t.priority, t.task_uuid, ti.message
       
-                    FROM task_invites AS mti
+                    FROM task_invites AS ti
 
                     INNER JOIN users AS u_invited
-                    ON mti.invite_to = u_invited.user_id
+                    ON ti.invite_to = u_invited.user_id
 
                     INNER JOIN users AS u_from
-                    ON mti.invite_from = u_from.user_id
+                    ON ti.invite_from = u_from.user_id
 
-                    INNER JOIN tasks AS mt
-                    ON mti.task_fk_id = t.task_id
+                    INNER JOIN tasks AS t
+                    ON ti.task_fk_id = t.task_id
 
                     WHERE ${mappedWhereConditions};`;
 

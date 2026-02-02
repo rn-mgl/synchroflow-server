@@ -48,9 +48,9 @@ export const sockets = (socket) => {
       .emit("reflect_remove_task_invite", { args });
   });
 
-  socket.on("send_main_task_invite", (args) => {
+  socket.on("send_task_invite", (args) => {
     args.rooms.forEach((room) => {
-      socket.to(room).emit("reflect_send_main_task_invite");
+      socket.to(room).emit("reflect_send_task_invite");
     });
   });
 

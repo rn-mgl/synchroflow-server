@@ -156,7 +156,7 @@ export const deleteTaskCollaborator = async (req, res) => {
 export const getAllTaskCollaborator = async (req, res) => {
   const { taskUUID } = req.query;
 
-  const task = await Tasks.getTask(["mt.task_uuid"], [taskUUID]);
+  const task = await Tasks.getTask(["t.task_uuid"], [taskUUID]);
 
   if (!task) {
     throw new NotFoundError(
@@ -165,7 +165,7 @@ export const getAllTaskCollaborator = async (req, res) => {
   }
 
   const allTaskCollaborator = await TaskCollaborators.getAllTaskCollaborators(
-    ["mtc.task_fk_id"],
+    ["tc.task_fk_id"],
     [task[0]?.task_id],
   );
 

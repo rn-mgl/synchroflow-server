@@ -139,7 +139,7 @@ const getAllCollaboratedTasks = async (req, res) => {
   const { sortFilter, searchFilter, searchCategory } = req.query;
 
   const task = await Tasks.getAllTasks(
-    ["mtc.collaborator_fk_id"],
+    ["tc.collaborator_fk_id"],
     [id],
     sortFilter,
     searchFilter,
@@ -177,7 +177,7 @@ const getAllCollaboratedTasksToday = async (req, res) => {
   const { sortFilter, searchFilter, searchCategory } = req.query;
 
   const task = await Tasks.getAllTasksToday(
-    ["mtc.collaborator_fk_id"],
+    ["tc.collaborator_fk_id"],
     [id],
     sortFilter,
     searchFilter,

@@ -64,15 +64,15 @@ export class TaskCollaborators {
 
     try {
       const sql = `SELECT u.name, u.surname, u.image, u.user_uuid,
-                    mtc.task_collaborator_uuid
+                    tc.task_collaborator_uuid
 
-                    FROM task_collaborators AS mtc
+                    FROM task_collaborators AS tc
 
-                    INNER JOIN tasks AS mt
-                    ON mtc.task_fk_id = t.task_id
+                    INNER JOIN tasks AS t
+                    ON tc.task_fk_id = t.task_id
 
                     INNER JOIN users AS u
-                    ON mtc.collaborator_fk_id = u.user_id
+                    ON tc.collaborator_fk_id = u.user_id
                     WHERE ${mappedWhereConditions};`;
 
       const [data, _] = await conn.execute(sql, whereValues);
