@@ -5,7 +5,7 @@ import { Tasks } from "../models/Tasks.js";
 import { TaskCollaborators } from "../models/TaskCollaborators.js";
 
 export const createTask = async (req, res) => {
-  const { taskData } = req.body;
+  const { taskData, parentTask } = req.body;
   const {
     taskBanner,
     taskTitle,
@@ -15,12 +15,21 @@ export const createTask = async (req, res) => {
     taskStartDate,
     taskEndDate,
   } = taskData;
+
   const taskUUID = uuidv4();
   const { id } = req.user;
+
+  let parentId = null;
+
+  if (parentTask !== null) {
+    const parent = await Tasks.getTask(["task_uuid"], [parentTask]);
+    parentId = parent[0]?.task_id ?? null;
+  }
 
   const task = new Tasks(
     taskUUID,
     id,
+    parentId,
     taskBanner,
     taskTitle,
     taskSubtitle,
@@ -75,7 +84,7 @@ export const updateTask = async (req, res) => {
     throw new BadRequestError("Error in updating task. Try again later.");
   }
 
-  const taskCollaborators = await TaskCollaborators.getAllTaskCollaborators(
+  const taskCollaborators = await TaskCollaborators.getAllMainTaskCollaborators(
     ["task_fk_id"],
     [task[0]?.task_id],
   );
@@ -191,32 +200,45 @@ const getAllCollaboratedTasksToday = async (req, res) => {
   res.status(StatusCodes.OK).json(task);
 };
 
+const getAllCreatedSubTasks = async (req, res) => {
+  const { taskUUID } = req.query;
+
+  const task = await Tasks.getTask(["task_uuid"], [taskUUID]);
+
+  if (!task || !task[0]) {
+    throw new NotFoundError(`No task found.`);
+  }
+
+  const subTasks = await Tasks.getAllTasks(["parent_task"], [task[0]?.task_id]);
+
+  res.status(StatusCodes.OK).json(subTasks);
+};
+
 export const getAllTasks = async (req, res) => {
   const { type, which } = req.query;
 
   if (type === "my" && which === "today") {
-    await getAllMyTasksToday(req, res);
-    return;
+    return await getAllMyTasksToday(req, res);
   }
 
   if (type === "collaborated" && which === "today") {
-    await getAllCollaboratedTasksToday(req, res);
-    return;
+    return await getAllCollaboratedTasksToday(req, res);
   }
 
   if (type === "my" && which === "all") {
-    await getAllMyTasks(req, res);
-    return;
+    return await getAllMyTasks(req, res);
   }
 
   if (type === "collaborated" && which === "all") {
-    await getAllCollaboratedTasks(req, res);
-    return;
+    return await getAllCollaboratedTasks(req, res);
   }
 
   if (type === "upcoming" && which === "all") {
-    await getAllMyUpcomingTasks(req, res);
-    return;
+    return await getAllMyUpcomingTasks(req, res);
+  }
+
+  if (type === "subs") {
+    return await getAllCreatedSubTasks(req, res);
   }
 };
 
@@ -229,7 +251,7 @@ export const deleteTask = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  const taskCollaborators = await TaskCollaborators.getAllTaskCollaborators(
+  const taskCollaborators = await TaskCollaborators.getAllMainTaskCollaborators(
     ["task_fk_id"],
     [task[0]?.task_id],
   );

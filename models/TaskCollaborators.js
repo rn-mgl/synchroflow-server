@@ -59,7 +59,7 @@ export class TaskCollaborators {
     }
   }
 
-  static async getAllTaskCollaborators(whereConditions, whereValues) {
+  static async getAllMainTaskCollaborators(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
 
     try {
@@ -67,9 +67,6 @@ export class TaskCollaborators {
                     tc.task_collaborator_uuid
 
                     FROM task_collaborators AS tc
-
-                    INNER JOIN tasks AS t
-                    ON tc.task_fk_id = t.task_id
 
                     INNER JOIN users AS u
                     ON tc.collaborator_fk_id = u.user_id
@@ -79,6 +76,34 @@ export class TaskCollaborators {
       return data;
     } catch (error) {
       console.log(error + "--- get all task collaborators ---");
+      return [];
+    }
+  }
+
+  static async getAllSubTaskCollaborators(subTaskID, mainTaskID) {
+    try {
+      const sql = `SELECT u.name, u.surname, u.user_uuid, u.image,
+                    stc.task_collaborator_uuid,
+                    CASE WHEN
+                      stc.task_collaborator_uuid IS NULL THEN 0 ELSE 1
+                    END AS is_task_collaborator
+                    
+                    FROM task_collaborators AS tc
+                    
+                    INNER JOIN users AS u
+                    ON tc.collaborator_fk_id = u.user_id
+                    
+                    LEFT JOIN task_collaborators AS stc
+                    ON stc.task_fk_id = ?
+                    AND stc.collaborator_fk_id = u.user_id
+                    
+                    WHERE tc.task_fk_id = ?;`;
+
+      const values = [subTaskID, mainTaskID];
+      const [data, _] = await conn.execute(sql, values);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all sub task collaborators ---");
       return [];
     }
   }

@@ -6,6 +6,7 @@ export class Tasks {
   constructor(
     task_uuid,
     task_by,
+    parent_task,
     banner,
     title,
     subtitle,
@@ -16,6 +17,7 @@ export class Tasks {
   ) {
     this.task_uuid = task_uuid;
     this.task_by = task_by;
+    this.parent_task = parent_task;
     this.banner = banner;
     this.title = title;
     this.subtitle = subtitle;
@@ -30,6 +32,7 @@ export class Tasks {
       const sql = `INSERT INTO tasks
                   ( task_uuid,
                     task_by,
+                    parent_task,
                     banner,
                     title,
                     subtitle,
@@ -37,10 +40,11 @@ export class Tasks {
                     priority,
                     start_date,
                     end_date
-                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
       const taskValues = [
         this.task_uuid,
         this.task_by,
+        this.parent_task,
         this.banner,
         this.title,
         this.subtitle,
@@ -120,9 +124,9 @@ export class Tasks {
   static async getAllTasks(
     whereConditions,
     whereValues,
-    sortFilter,
-    searchFilter,
-    searchCategory,
+    sortFilter = "title",
+    searchFilter = "",
+    searchCategory = "title",
   ) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
     const sortValue = tasksFilterKey[sortFilter];

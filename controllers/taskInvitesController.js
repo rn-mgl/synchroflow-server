@@ -115,7 +115,7 @@ const getAllSentTaskInvites = async (req, res) => {
   const { id } = req.user;
 
   const allTaskInvites = await TaskInvites.getAllTaskInvites(
-    ["invited_by"],
+    ["invite_from"],
     [id],
   );
 
@@ -130,7 +130,7 @@ const getAllReceivedTaskInvites = async (req, res) => {
   const { id } = req.user;
 
   const allTaskInvites = await TaskInvites.getAllTaskInvites(
-    ["invited_associate"],
+    ["invite_to"],
     [id],
   );
 

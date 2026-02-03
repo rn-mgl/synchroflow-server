@@ -68,7 +68,7 @@ const leaveTask = async (req, res) => {
     throw new BadRequestError(`Error in leaving the task. Try again later.`);
   }
 
-  const taskCollaborators = await TaskCollaborators.getAllTaskCollaborators(
+  const taskCollaborators = await TaskCollaborators.getAllMainTaskCollaborators(
     ["task_fk_id"],
     [task[0]?.task_id],
   );
@@ -110,7 +110,7 @@ const deleteCollaborator = async (req, res) => {
     throw new NotFoundError(`This task does not exist.`);
   }
 
-  const taskCollaborators = await TaskCollaborators.getAllTaskCollaborators(
+  const taskCollaborators = await TaskCollaborators.getAllMainTaskCollaborators(
     ["task_fk_id"],
     [task[0].task_id],
   );
@@ -153,7 +153,7 @@ export const deleteTaskCollaborator = async (req, res) => {
   }
 };
 
-export const getAllTaskCollaborator = async (req, res) => {
+const getAllMainTaskCollaborators = async (req, res) => {
   const { taskUUID } = req.query;
 
   const task = await Tasks.getTask(["t.task_uuid"], [taskUUID]);
@@ -164,16 +164,53 @@ export const getAllTaskCollaborator = async (req, res) => {
     );
   }
 
-  const allTaskCollaborator = await TaskCollaborators.getAllTaskCollaborators(
-    ["tc.task_fk_id"],
-    [task[0]?.task_id],
-  );
+  const allTaskCollaborator =
+    await TaskCollaborators.getAllMainTaskCollaborators(
+      ["tc.task_fk_id"],
+      [task[0]?.task_id],
+    );
 
   if (!allTaskCollaborator) {
     throw new BadRequestError("Error in getting all task collaborators.");
   }
 
-  res.status(StatusCodes.OK).json(allTaskCollaborator);
+  return res.status(StatusCodes.OK).json(allTaskCollaborator);
+};
+
+const getAllSubTaskCollaborators = async (req, res) => {
+  const { subTaskUUID } = req.query;
+
+  const task = await Tasks.getTask(["t.task_uuid"], [subTaskUUID]);
+
+  if (!task) {
+    throw new NotFoundError(
+      `The task you are trying to find collaborators from does not exist.`,
+    );
+  }
+
+  const allTaskCollaborator =
+    await TaskCollaborators.getAllSubTaskCollaborators(
+      task[0]?.task_id,
+      task[0]?.parent_task,
+    );
+
+  if (!allTaskCollaborator) {
+    throw new BadRequestError("Error in getting all task collaborators.");
+  }
+
+  return res.status(StatusCodes.OK).json(allTaskCollaborator);
+};
+
+export const getAllTaskCollaborator = async (req, res) => {
+  const { type } = req.query;
+
+  if (type === "main") {
+    return await getAllMainTaskCollaborators(req, res);
+  }
+
+  if (type === "sub") {
+    return await getAllSubTaskCollaborators(req, res);
+  }
 };
 
 export const getTaskCollaborator = async (req, res) => {
