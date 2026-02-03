@@ -214,6 +214,24 @@ const getAllCreatedSubTasks = async (req, res) => {
   res.status(StatusCodes.OK).json(subTasks);
 };
 
+const getAllAssignedSubTasks = async (req, res) => {
+  const { taskUUID } = req.query;
+  const { id } = req.user;
+
+  const task = await Tasks.getTask(["task_uuid"], [taskUUID]);
+
+  if (!task || !task[0]) {
+    throw new NotFoundError(`No task found.`);
+  }
+
+  const subTasks = await Tasks.getAllTasks(
+    ["parent_task", "tc.collaborator_fk_id"],
+    [task[0]?.task_id, id],
+  );
+
+  return res.status(StatusCodes.OK).json(subTasks);
+};
+
 export const getAllTasks = async (req, res) => {
   const { type, which } = req.query;
 
@@ -239,6 +257,10 @@ export const getAllTasks = async (req, res) => {
 
   if (type === "subs") {
     return await getAllCreatedSubTasks(req, res);
+  }
+
+  if (type === "assigned") {
+    return await getAllAssignedSubTasks(req, res);
   }
 };
 
