@@ -121,30 +121,17 @@ export class Tasks {
     }
   }
 
-  static async getAllTasks(
-    whereConditions,
-    whereValues,
-    sortFilter = "title",
-    searchFilter = "",
-    searchCategory = "title",
-  ) {
+  static async getAllTasks(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
-    const sortValue = tasksFilterKey[sortFilter];
-    const searchCategoryValue = tasksFilterKey[searchCategory];
 
     try {
       const sql = `SELECT * FROM tasks AS t
                   LEFT JOIN task_collaborators AS tc
                   ON t.task_id = tc.task_fk_id
                   WHERE ${mappedWhereConditions}
-                  AND ${searchCategoryValue} LIKE ?
-                  GROUP BY t.task_id
-                  ORDER BY t.${sortValue};`;
+                  GROUP BY t.task_id;`;
 
-      const [data, _] = await conn.query(sql, [
-        ...whereValues,
-        `%${searchFilter}%`,
-      ]);
+      const [data, _] = await conn.query(sql, whereValues);
 
       return data;
     } catch (error) {
@@ -153,31 +140,18 @@ export class Tasks {
     }
   }
 
-  static async getAllTasksToday(
-    whereConditions,
-    whereValues,
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  ) {
+  static async getAllTasksToday(whereConditions, whereValues) {
     const mappedWhereConditions = mapWhereConditions(whereConditions);
-    const sortValue = tasksFilterKey[sortFilter];
-    const searchCategoryValue = tasksFilterKey[searchCategory];
 
     try {
       const sql = `SELECT * FROM tasks AS t
                   LEFT JOIN task_collaborators AS tc
                   ON t.task_id = tc.task_fk_id
                   WHERE ${mappedWhereConditions}
-                  AND ${searchCategoryValue} LIKE ?
                   AND CAST(t.end_date AS DATE) = CURDATE()
-                  GROUP BY t.task_id
-                  ORDER BY t.${sortValue};`;
+                  GROUP BY t.task_id;`;
 
-      const [data, _] = await conn.query(sql, [
-        ...whereValues,
-        `%${searchFilter}%`,
-      ]);
+      const [data, _] = await conn.query(sql, whereValues);
 
       return data;
     } catch (error) {

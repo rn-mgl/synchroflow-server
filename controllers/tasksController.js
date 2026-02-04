@@ -128,15 +128,8 @@ const getAllMyUpcomingTasks = async (req, res) => {
 
 const getAllMyTasks = async (req, res) => {
   const { id } = req.user;
-  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const task = await Tasks.getAllTasks(
-    ["t.task_by"],
-    [id],
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  );
+  const task = await Tasks.getAllTasks(["t.task_by"], [id]);
 
   if (!task) {
     throw new NotFoundError("This task does not exist.");
@@ -147,15 +140,8 @@ const getAllMyTasks = async (req, res) => {
 
 const getAllCollaboratedTasks = async (req, res) => {
   const { id } = req.user;
-  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const task = await Tasks.getAllTasks(
-    ["tc.collaborator_fk_id"],
-    [id],
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  );
+  const task = await Tasks.getAllTasks(["tc.collaborator_fk_id"], [id]);
 
   if (!task) {
     throw new NotFoundError("This task does not exist.");
@@ -166,15 +152,8 @@ const getAllCollaboratedTasks = async (req, res) => {
 
 const getAllMyTasksToday = async (req, res) => {
   const { id } = req.user;
-  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const task = await Tasks.getAllTasksToday(
-    ["t.task_by"],
-    [id],
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  );
+  const task = await Tasks.getAllTasksToday(["t.task_by"], [id]);
 
   if (!task) {
     throw new NotFoundError("This task does not exist.");
@@ -185,15 +164,8 @@ const getAllMyTasksToday = async (req, res) => {
 
 const getAllCollaboratedTasksToday = async (req, res) => {
   const { id } = req.user;
-  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const task = await Tasks.getAllTasksToday(
-    ["tc.collaborator_fk_id"],
-    [id],
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  );
+  const task = await Tasks.getAllTasksToday(["tc.collaborator_fk_id"], [id]);
 
   if (!task) {
     throw new NotFoundError("This task does not exist.");
