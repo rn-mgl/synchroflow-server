@@ -8,7 +8,9 @@ export const getDashboardData = async (req, res) => {
   const dashboardData = await Dashboard.getDashboardData(id);
 
   if (!dashboardData) {
-    throw new BadRequestError(`Error in getting dashboard data. Try again later.`);
+    throw new BadRequestError(
+      `Error in getting dashboard data. Try again later.`,
+    );
   }
 
   res.status(StatusCodes.OK).json(dashboardData);

@@ -25,7 +25,7 @@ export const updateUserSettings = async (req, res) => {
     message_notification,
     task_update,
     task_deadline,
-    associate_invite
+    associate_invite,
   );
 
   if (!updateUserSetting) {
