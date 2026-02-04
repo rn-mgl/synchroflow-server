@@ -45,7 +45,7 @@ export const createTask = async (req, res) => {
     throw new BadRequestError("Error in creating task. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(newTask);
+  return res.status(StatusCodes.OK).json(newTask);
 };
 
 export const updateTask = async (req, res) => {
@@ -97,7 +97,9 @@ export const updateTask = async (req, res) => {
     (collaborator) => collaborator.user_uuid,
   );
 
-  res.status(StatusCodes.OK).json({ updateTask, rooms: taskCollaboratorsUUID });
+  return res
+    .status(StatusCodes.OK)
+    .json({ updateTask, rooms: taskCollaboratorsUUID });
 };
 
 export const getTask = async (req, res) => {
@@ -109,7 +111,7 @@ export const getTask = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(task[0]);
+  return res.status(StatusCodes.OK).json(task[0]);
 };
 
 const getAllMyUpcomingTasks = async (req, res) => {
@@ -121,7 +123,7 @@ const getAllMyUpcomingTasks = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(task);
+  return res.status(StatusCodes.OK).json(task);
 };
 
 const getAllMyTasks = async (req, res) => {
@@ -140,7 +142,7 @@ const getAllMyTasks = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(task);
+  return res.status(StatusCodes.OK).json(task);
 };
 
 const getAllCollaboratedTasks = async (req, res) => {
@@ -159,7 +161,7 @@ const getAllCollaboratedTasks = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(task);
+  return res.status(StatusCodes.OK).json(task);
 };
 
 const getAllMyTasksToday = async (req, res) => {
@@ -178,7 +180,7 @@ const getAllMyTasksToday = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(task);
+  return res.status(StatusCodes.OK).json(task);
 };
 
 const getAllCollaboratedTasksToday = async (req, res) => {
@@ -197,7 +199,7 @@ const getAllCollaboratedTasksToday = async (req, res) => {
     throw new NotFoundError("This task does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(task);
+  return res.status(StatusCodes.OK).json(task);
 };
 
 const getAllCreatedSubTasks = async (req, res) => {
@@ -211,7 +213,7 @@ const getAllCreatedSubTasks = async (req, res) => {
 
   const subTasks = await Tasks.getAllTasks(["parent_task"], [task[0]?.task_id]);
 
-  res.status(StatusCodes.OK).json(subTasks);
+  return res.status(StatusCodes.OK).json(subTasks);
 };
 
 const getAllAssignedSubTasks = async (req, res) => {
@@ -292,5 +294,7 @@ export const deleteTask = async (req, res) => {
     throw new BadRequestError("Error in deleting task. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json({ deleteTask, rooms: taskCollaboratorsUUID });
+  return res
+    .status(StatusCodes.OK)
+    .json({ deleteTask, rooms: taskCollaboratorsUUID });
 };
