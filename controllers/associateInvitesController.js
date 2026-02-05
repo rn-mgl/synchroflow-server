@@ -75,14 +75,9 @@ export const getAssociateInvite = async (req, res) => {
 
 const getAllAvailableAssociates = async (req, res) => {
   const { id } = req.user;
-  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const availableAssociates = await AssociateInvites.getAllAvailableAssociates(
-    id,
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  );
+  const availableAssociates =
+    await AssociateInvites.getAllAvailableAssociates(id);
 
   if (!availableAssociates) {
     throw new BadRequestError("Error in getting all available associates.");

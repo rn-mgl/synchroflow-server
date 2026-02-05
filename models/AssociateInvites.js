@@ -1,5 +1,4 @@
 import conn from "../db/connection.js";
-import { associatesFilterKey } from "../utils/filterUtils.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class AssociateInvites {
@@ -119,17 +118,7 @@ export class AssociateInvites {
     }
   }
 
-  static async getAllAvailableAssociates(
-    userId,
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  ) {
-    const sortValue = associatesFilterKey[sortFilter];
-    const searchCategoryValue = associatesFilterKey[searchCategory];
-
-    console.log(userId);
-
+  static async getAllAvailableAssociates(userId) {
     try {
       const sql = `SELECT u.user_uuid, u.name, u.surname, u.email, u.image, u.role, u.status, u.user_id
   
@@ -151,19 +140,9 @@ export class AssociateInvites {
 
                       u.user_id NOT IN (
                         SELECT associate_invite_to FROM associate_invites WHERE associate_invite_from = ?
-                      ) AND
+                      );`;
 
-                      ${searchCategoryValue} LIKE ?
-                      ORDER BY ${sortValue};`;
-
-      const values = [
-        userId,
-        userId,
-        userId,
-        userId,
-        userId,
-        `%${searchFilter}%`,
-      ];
+      const values = [userId, userId, userId, userId, userId];
 
       const [data, _] = await conn.execute(sql, values);
       return data;

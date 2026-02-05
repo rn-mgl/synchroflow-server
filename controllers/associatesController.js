@@ -63,14 +63,8 @@ const createMessageRoom = async (userId, associateId) => {
 
 const getAllMyAssociates = async (req, res) => {
   const { id } = req.user;
-  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const associates = await Associates.getAllAssociates(
-    id,
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  );
+  const associates = await Associates.getAllAssociates(id);
 
   if (!associates) {
     throw new BadRequestError(
@@ -161,14 +155,8 @@ export const getAssociate = async (req, res) => {
 
 const getAllRecentAssociates = async (req, res) => {
   const { id } = req.user;
-  const { sortFilter, searchFilter, searchCategory } = req.query;
 
-  const associates = await Associates.getAllRecentAssociates(
-    id,
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  );
+  const associates = await Associates.getAllRecentAssociates(id);
 
   if (!associates) {
     throw new BadRequestError(

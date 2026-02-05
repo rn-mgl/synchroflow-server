@@ -1,5 +1,4 @@
 import conn from "../db/connection.js";
-import { associatesFilterKey } from "../utils/filterUtils.js";
 import { mapWhereConditions } from "../utils/sqlUtils.js";
 
 export class Associates {
@@ -40,25 +39,44 @@ export class Associates {
     }
   }
 
-  static async getAllAssociates(
-    userID,
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  ) {
-    const searchCategoryValue = associatesFilterKey[searchCategory];
-    const sortValue = associatesFilterKey[sortFilter];
-    const checkedSortValue =
-      sortValue === "date_associated"
-        ? "a.date_associated"
-        : `u_of.${sortValue}, u_is.${sortValue}`;
-
+  static async getAllAssociates(userID) {
     try {
-      const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, 
-                    u_of.email AS of_email, u_of.image AS of_image, u_of.status AS of_status, u_of.role AS of_role,
-                    u_is.user_uuid AS is_uuid, u_is.name AS is_name, u_is.surname AS is_surname, 
-                    u_is.email AS is_email, u_is.image AS is_image, u_is.status AS is_status, u_is.role AS is_role,
-                    a.associate_uuid, a.associate_of, a.associate_is
+      const sql = `SELECT a.associate_uuid, a.associate_of, a.associate_is,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.user_uuid 
+                    ELSE u_of.user_uuid
+                    END AS user_uuid,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.name 
+                    ELSE u_of.name
+                    END AS name,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.surname 
+                    ELSE u_of.surname
+                    END AS surname,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.email 
+                    ELSE u_of.email
+                    END AS email,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.image 
+                    ELSE u_of.image
+                    END AS image,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.status 
+                    ELSE u_of.status
+                    END AS status,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.role 
+                    ELSE u_of.role
+                    END AS role
 
                     FROM associates AS a
 
@@ -69,12 +87,9 @@ export class Associates {
                     ON a.associate_of = u_of.user_id
 
                     WHERE (a.associate_is = ?
-                    OR a.associate_of = ?)
-                    AND (u_of.${searchCategoryValue} LIKE ?
-                    OR u_is.${searchCategoryValue} LIKE ?)
-                    ORDER BY ${checkedSortValue};`;
+                    OR a.associate_of = ?);`;
 
-      const values = [userID, userID, `%${searchFilter}%`, `%${searchFilter}%`];
+      const values = new Array(9).fill(userID);
 
       const [data, _] = await conn.execute(sql, values);
       return data;
@@ -84,25 +99,44 @@ export class Associates {
     }
   }
 
-  static async getAllRecentAssociates(
-    userID,
-    sortFilter,
-    searchFilter,
-    searchCategory,
-  ) {
-    const searchCategoryValue = associatesFilterKey[searchCategory];
-    const sortValue = associatesFilterKey[sortFilter];
-    const checkedSortValue =
-      sortValue === "date_associated"
-        ? "a.date_associated"
-        : `u_of.${sortValue}, u_is.${sortValue}`;
-
+  static async getAllRecentAssociates(userID) {
     try {
-      const sql = `SELECT u_of.user_uuid AS of_uuid, u_of.name AS of_name, u_of.surname AS of_surname, 
-                    u_of.email AS of_email, u_of.image AS of_image, u_of.status AS of_status, u_of.role AS of_role,
-                    u_is.user_uuid AS is_uuid, u_is.name AS is_name, u_is.surname AS is_surname, 
-                    u_is.email AS is_email, u_is.image AS is_image, u_is.status AS is_status, u_is.role AS is_role,
-                    a.associate_uuid, a.associate_of, a.associate_is
+      const sql = `SELECT a.associate_uuid, a.associate_of, a.associate_is,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.user_uuid 
+                    ELSE u_of.user_uuid
+                    END AS user_uuid,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.name 
+                    ELSE u_of.name
+                    END AS name,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.surname 
+                    ELSE u_of.surname
+                    END AS surname,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.email 
+                    ELSE u_of.email
+                    END AS email,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.image 
+                    ELSE u_of.image
+                    END AS image,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.status 
+                    ELSE u_of.status
+                    END AS status,
+
+                    CASE WHEN u_of.user_id = ?
+                    THEN u_is.role 
+                    ELSE u_of.role
+                    END AS role
 
                     FROM associates AS a
 
@@ -114,12 +148,9 @@ export class Associates {
 
                     WHERE (a.associate_is = ?
                     OR a.associate_of = ?)
-                    AND (u_of.${searchCategoryValue} LIKE ?
-                    OR u_is.${searchCategoryValue} LIKE ?)
-                    AND CAST(a.date_associated AS DATE) > CAST(DATE_SUB(NOW(), INTERVAL 5 DAY) AS DATE)
-                    ORDER BY ${checkedSortValue};`;
+                    AND CAST(a.date_associated AS DATE) > CAST(DATE_SUB(NOW(), INTERVAL 5 DAY) AS DATE);`;
 
-      const values = [userID, userID, `%${searchFilter}%`, `%${searchFilter}%`];
+      const values = new Array(9).fill(userID);
 
       const [data, _] = await conn.execute(sql, values);
       return data;

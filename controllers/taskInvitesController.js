@@ -145,7 +145,7 @@ const getAllReceivedTaskInvites = async (req, res) => {
 
 const getAllAssociatesToInvite = async (req, res) => {
   const { id } = req.user;
-  const { taskUUID, searchFilter } = req.query;
+  const { taskUUID } = req.query;
 
   const task = await Tasks.getTask(["task_uuid"], [taskUUID]);
 
@@ -158,7 +158,6 @@ const getAllAssociatesToInvite = async (req, res) => {
   const allTaskInvites = await TaskInvites.getAllAssociatesToInvite(
     id,
     task[0]?.task_id,
-    searchFilter,
   );
 
   if (!allTaskInvites) {

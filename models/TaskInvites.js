@@ -115,7 +115,7 @@ export class TaskInvites {
     }
   }
 
-  static async getAllAssociatesToInvite(userId, taskId, searchFilter) {
+  static async getAllAssociatesToInvite(userId, taskId) {
     try {
       const sql = `SELECT * FROM associates AS a
 
@@ -139,8 +139,7 @@ export class TaskInvites {
                   AND a.associate_of NOT IN (
                     SELECT collaborator_fk_id FROM task_collaborators
                     WHERE task_fk_id = ?
-                  )
-                  AND (name LIKE ? OR surname LIKE ?) ;`;
+                  );`;
 
       const values = [
         userId,
@@ -151,8 +150,6 @@ export class TaskInvites {
         taskId,
         taskId,
         taskId,
-        `%${searchFilter}%`,
-        `%${searchFilter}%`,
       ];
 
       const [data, _] = await conn.execute(sql, values);
