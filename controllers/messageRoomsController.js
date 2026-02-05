@@ -180,13 +180,9 @@ export const updateMessage = async (req, res) => {
 
 export const getAllMessageRoom = async (req, res) => {
   const { id } = req.user;
-  const { searchFilter, roomType } = req.query;
+  const { roomType } = req.query;
 
-  const allMessageRoom = await MessageRooms.getAllMessageRooms(
-    id,
-    roomType,
-    searchFilter,
-  );
+  const allMessageRoom = await MessageRooms.getAllMessageRooms(id, roomType);
 
   if (!allMessageRoom) {
     throw new NotFoundError("Error in getting all message rooms.");
