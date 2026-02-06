@@ -12,173 +12,185 @@ export class Notifications {
     limit = 10,
   ) {
     try {
-      const sql = `SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
-                    "main task invite" AS purpose, mt.main_task_title AS title, mti.date_invited AS notif_date
-                    FROM main_task_invites AS mti
+      const sql = `SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "main task invite" AS purpose, t.title, ti.date_invited AS notif_date
+                    FROM task_invites AS ti
 
-                    INNER JOIN main_tasks AS mt
-                    ON mti.main_task_fk_id = mt.main_task_id
+                    INNER JOIN tasks AS t
+                    ON ti.task_fk_id = t.task_id
 
-                    INNER JOIN users AS u_from
-                    ON u_from.user_id = mti.invited_by
+                    INNER JOIN users AS u
+                    ON u.user_id = ti.invite_from
 
-                    WHERE ? = '1' AND 
-                    invited_associate = ?
+                    WHERE ? = 1 AND 
+                    invite_to = ? AND
+                    t.parent_task IS NULL
                     
                     UNION
                     
-                    SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
-                    "sub task invite" AS purpose, st.sub_task_title AS title, stc.date_joined AS notif_date
-                    FROM sub_task_collaborators AS stc
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "sub task invite" AS purpose, t.title, tc.date_joined AS notif_date
+                    FROM task_collaborators AS tc
 
-                    INNER JOIN sub_tasks AS st
-                    ON stc.sub_task_fk_id = st.sub_task_id
+                    INNER JOIN tasks AS t
+                    ON tc.task_fk_id = t.task_id
 
-                    INNER JOIN users AS u_from
-                    ON u_from.user_id = st.sub_task_by 
+                    INNER JOIN users AS u
+                    ON u.user_id = t.task_by 
 
-                    WHERE ? = '1' AND 
-                    stc.collaborator_fk_id = ?
+                    WHERE ? = 1 AND 
+                    tc.collaborator_fk_id = ? AND
+                    t.parent_task IS NOT NULL
                     
                     UNION 
                     
-                    SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
                     "associate invite" AS purpose, "associate request" AS title, ai.date_invited AS notif_date
                     FROM associate_invites AS ai
 
-                    INNER JOIN users AS u_from
-                    ON u_from.user_id = ai.associate_invite_from 
+                    INNER JOIN users AS u
+                    ON u.user_id = ai.associate_invite_from 
 
-                    WHERE ? = '1' AND 
+                    WHERE ? = 1 AND 
                     ai.associate_invite_to = ?
                     
                     UNION 
                     
-                    SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
-                    "group member" AS purpose, gmr.room_name AS title, gmm.date_added AS notif_date
-                    FROM group_message_rooms AS gmr
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "group member" AS purpose, mr.room_name AS title, rm.date_added AS notif_date
+                    FROM message_rooms AS mr
 
-                    INNER JOIN group_message_members AS gmm
-                    ON gmm.message_room_fk_id = gmr.message_room_id
+                    INNER JOIN room_members AS rm
+                    ON rm.room_fk_id = mr.message_room_id
                     
-                    INNER JOIN users AS u_from
-                    ON u_from.user_id = gmr.created_by
+                    INNER JOIN users AS u
+                    ON u.user_id = mr.created_by
 
-                    WHERE ? = '1' AND 
-                    gmm.member_fk_id = ?
-                    AND gmr.created_by <> ?
+                    WHERE ? = 1 AND 
+                    rm.member_fk_id = ?
+                    AND mr.created_by <> ?
+                    AND mr.room_type = "group"
                     
                     UNION 
                     
-                    SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
                     "private message" AS purpose,
                     CASE
-                        WHEN pm.message IS NULL THEN pm.message_file ELSE pm.message
-                    END AS title, pm.date_sent AS notif_date
-                    FROM private_messages AS pm
+                        WHEN m.message IS NULL THEN m.message_file ELSE m.message
+                    END AS title, m.date_sent AS notif_date
+                    FROM messages AS m
                     
-                    INNER JOIN users AS u_from
-                    ON u_from.user_id = pm.message_from
+                    INNER JOIN users AS u
+                    ON u.user_id = m.sender
 
-                    WHERE ? = '1' AND 
-                    pm.message_from != ?
+                    INNER JOIN message_rooms AS mr
+                    ON m.room_fk_id = mr.message_room_id
+
+                    WHERE ? = 1 AND 
+                    m.sender != ?
+                    AND mr.room_type = "private"
 
                     UNION 
                     
-                    SELECT u_from.image AS from_image, u_from.name AS name, u_from.surname AS surname, 
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
                     "group message" AS purpose,
                     CASE
-                        WHEN gm.message IS NULL THEN gm.message_file ELSE gm.message
-                    END AS title, gm.date_sent AS notif_date
-                    FROM group_messages AS gm
+                        WHEN m.message IS NULL THEN m.message_file ELSE m.message
+                    END AS title, m.date_sent AS notif_date
+                    FROM messages AS m
                     
-                    INNER JOIN users AS u_from
-                    ON u_from.user_id = gm.message_from
+                    INNER JOIN users AS u
+                    ON u.user_id = m.sender
 
-                    INNER JOIN group_message_rooms AS gmr
-                    ON gm.message_room_fk_id = gmr.message_room_id
+                    INNER JOIN message_rooms AS mr
+                    ON m.room_fk_id = mr.message_room_id
 
-                    WHERE ? = '1' AND 
+                    WHERE ? = 1 AND 
                     ? IN (
-                      SELECT gmm.member_fk_id FROM group_message_members AS gmm
-                      WHERE gmm.message_room_fk_id = gmr.message_room_id
+                      SELECT rm.member_fk_id FROM room_members AS rm
+                      WHERE rm.room_fk_id = mr.message_room_id
                     ) AND 
-                    gm.message_from <> ?
+                    m.sender <> ?
+                    AND mr.room_type = "group"
 
-                    GROUP BY gm.message_from
-
-                    UNION 
-                    
-                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
-                    "created main task deadline" AS purpose, mt.main_task_title AS title, mt.main_task_end_date AS notif_date
-                    FROM main_tasks AS mt
-                    
-                    INNER JOIN users AS u
-                    ON u.user_id = mt.main_task_by
-
-                    WHERE ? = '1' AND 
-                    mt.main_task_by = ? AND
-                    CAST(mt.main_task_end_date AS DATE) = CURDATE()
+                    GROUP BY m.sender
 
                     UNION 
                     
                     SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
-                    "collaborated main task deadline" AS purpose, mt.main_task_title AS title, mt.main_task_end_date AS notif_date
-                    FROM main_task_collaborators AS mtc
-
-                    INNER JOIN main_tasks AS mt
-                    ON mt.main_task_id = mtc.main_task_fk_id
+                    "created main task deadline" AS purpose, t.title, t.end_date AS notif_date
+                    FROM tasks AS t
                     
                     INNER JOIN users AS u
-                    ON u.user_id = mtc.collaborator_fk_id	
+                    ON u.user_id = t.task_by
 
-                    WHERE ? = '1' AND 
-                    mtc.collaborator_fk_id = ? AND
-                    CAST(mt.main_task_end_date AS DATE) = CURDATE()
+                    WHERE ? = 1 AND 
+                    t.task_by = ? AND
+                    CAST(t.end_date AS DATE) = CURDATE()
 
                     UNION 
                     
                     SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
-                    "created sub task deadline" AS purpose, st.sub_task_title AS title, st.sub_task_end_date AS notif_date
-                    FROM sub_tasks AS st
+                    "collaborated main task deadline" AS purpose, t.title, t.end_date AS notif_date
+                    FROM task_collaborators AS tc
+
+                    INNER JOIN tasks AS t
+                    ON t.task_id = tc.task_fk_id
                     
                     INNER JOIN users AS u
-                    ON u.user_id = st.sub_task_by
+                    ON u.user_id = tc.collaborator_fk_id	
 
-                    WHERE ? = '1' AND 
-                    st.sub_task_by = ? AND
-                    CAST(st.sub_task_end_date AS DATE) = CURDATE()
+                    WHERE ? = 1 AND 
+                    tc.collaborator_fk_id = ? AND
+                    CAST(t.end_date AS DATE) = CURDATE() AND
+                    t.parent_task IS NULL
 
                     UNION 
                     
                     SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
-                    "collaborated sub task deadline" AS purpose, st.sub_task_title AS title, st.sub_task_end_date AS notif_date
-                    FROM sub_task_collaborators AS stc
-
-                    INNER JOIN sub_tasks AS st
-                    ON st.sub_task_id = stc.sub_task_fk_id
+                    "created sub task deadline" AS purpose, t.title, t.end_date AS notif_date
+                    FROM tasks AS t
                     
                     INNER JOIN users AS u
-                    ON u.user_id = stc.collaborator_fk_id	
+                    ON u.user_id = t.task_by
 
-                    WHERE ? = '1' AND 
-                    stc.collaborator_fk_id = ? AND
-                    CAST(st.sub_task_end_date AS DATE) = CURDATE()
+                    WHERE ? = 1 AND 
+                    t.task_by = ? AND
+                    CAST(t.end_date AS DATE) = CURDATE() AND
+                    t.parent_task IS NOT NULL
 
                     UNION 
                     
                     SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
-                    "assigned sub task" AS purpose, st.sub_task_title AS title, stc.date_joined AS notif_date
-                    FROM sub_task_collaborators AS stc
+                    "collaborated sub task deadline" AS purpose, t.title, t.end_date AS notif_date
+                    FROM task_collaborators AS tc
 
-                    INNER JOIN sub_tasks AS st
-                    ON st.sub_task_id = stc.sub_task_fk_id
+                    INNER JOIN tasks AS t
+                    ON t.task_id = tc.task_fk_id
                     
                     INNER JOIN users AS u
-                    ON u.user_id = stc.collaborator_fk_id	
+                    ON u.user_id = tc.collaborator_fk_id	
 
-                    WHERE ? = '1' AND 
-                    stc.collaborator_fk_id = ?
+                    WHERE ? = 1 AND 
+                    tc.collaborator_fk_id = ? AND
+                    CAST(t.end_date AS DATE) = CURDATE() AND
+                    t.parent_task IS NOT NULL
+
+                    UNION 
+                    
+                    SELECT u.image AS from_image, u.name AS name, u.surname AS surname, 
+                    "assigned sub task" AS purpose, t.title, tc.date_joined AS notif_date
+                    FROM task_collaborators AS tc
+
+                    INNER JOIN tasks AS t
+                    ON t.task_id = tc.task_fk_id
+                    
+                    INNER JOIN users AS u
+                    ON u.user_id = tc.collaborator_fk_id	
+
+                    WHERE ? = 1 AND 
+                    tc.collaborator_fk_id = ? AND
+                    t.parent_task IS NOT NULL
                     
                     ORDER BY notif_date DESC
                     
