@@ -38,7 +38,6 @@ export const sockets = (socket) => {
 
   socket.on("accept_task_invite", (args) => {
     socket.to(args.fromRoom).emit("refetch_tasks_collaborators", args);
-    socket.to(args.fromRoom).emit("refetch_task", args);
   });
 
   socket.on("remove_task_invite", (args) => {
