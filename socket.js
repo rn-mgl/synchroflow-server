@@ -57,6 +57,7 @@ export const sockets = (socket) => {
   socket.on("send_message", (args) => {
     args.rooms.forEach((room) => {
       socket.to(room).emit("get_messages", { room });
+      socket.to(room).emit("receive_messages", { room });
     });
   });
 
@@ -111,6 +112,7 @@ export const sockets = (socket) => {
 
   socket.on("assign_sub_task", (args) => {
     socket.to(args.room).emit("refetch_assigned_subtask");
+    socket.to(args.room).emit("reflect_assign_sub_task");
   });
 
   socket.on("revoke_sub_task", (args) => {
