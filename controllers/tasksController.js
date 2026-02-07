@@ -229,7 +229,7 @@ export const getAllTasks = async (req, res) => {
     return await getAllMyUpcomingTasks(req, res);
   }
 
-  if (type === "subs") {
+  if (type === "created") {
     return await getAllCreatedSubTasks(req, res);
   }
 
