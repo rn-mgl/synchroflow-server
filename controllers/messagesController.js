@@ -73,7 +73,7 @@ export const deleteMessage = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(deleteMessage);
+  return res.status(StatusCodes.OK).json(deleteMessage);
 };
 
 export const getMessage = async (req, res) => {
@@ -85,7 +85,7 @@ export const getMessage = async (req, res) => {
     throw new NotFoundError("This message does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(message[0]);
+  return res.status(StatusCodes.OK).json(message[0]);
 };
 
 const getMessages = async (req, res) => {
@@ -101,7 +101,7 @@ const getMessages = async (req, res) => {
       "Error in getting Group messages. Try again later.",
     );
   }
-  res.status(StatusCodes.OK).json(messages);
+  return res.status(StatusCodes.OK).json(messages);
 };
 
 const getLatestMessages = async (req, res) => {
@@ -122,7 +122,7 @@ const getLatestMessages = async (req, res) => {
     throw new BadRequestError("Error in getting the latest message.");
   }
 
-  res.status(StatusCodes.OK).json(latestMessage[0]);
+  return res.status(StatusCodes.OK).json(latestMessage[0]);
 };
 
 export const getAllMessages = async (req, res) => {

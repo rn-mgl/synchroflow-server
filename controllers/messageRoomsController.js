@@ -42,7 +42,7 @@ export const createMessageRoom = async (req, res) => {
     throw new BadRequestError("Error in adding you to the . Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(newMessageRoom);
+  return res.status(StatusCodes.OK).json(newMessageRoom);
 };
 
 export const deleteMessageRoom = async (req, res) => {
@@ -161,7 +161,7 @@ const updateMessageOwner = async (req, res) => {
     throw new BadRequestError("Error in updating owner. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json({ success: !!updateMessage });
+  return res.status(StatusCodes.OK).json({ success: !!updateMessage });
 };
 
 export const updateMessage = async (req, res) => {
@@ -188,7 +188,7 @@ export const getAllMessageRoom = async (req, res) => {
     throw new NotFoundError("Error in getting all message rooms.");
   }
 
-  res.status(StatusCodes.OK).json(allMessageRoom);
+  return res.status(StatusCodes.OK).json(allMessageRoom);
 };
 
 const getMessageRoomMainData = async (req, res) => {
@@ -206,7 +206,7 @@ const getMessageRoomMainData = async (req, res) => {
     throw new NotFoundError("The message room does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(messageRoom[0]);
+  return res.status(StatusCodes.OK).json(messageRoom[0]);
 };
 
 const getMessageRoomMessages = async (req, res) => {
@@ -233,7 +233,7 @@ const getMessageRoomMessages = async (req, res) => {
     throw new NotFoundError("Error in getting messages.");
   }
 
-  res.status(StatusCodes.OK).json(messageRoomMessages);
+  return res.status(StatusCodes.OK).json(messageRoomMessages);
 };
 
 export const getMessageRoom = async (req, res) => {

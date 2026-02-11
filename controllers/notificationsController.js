@@ -33,5 +33,5 @@ export const getNotifications = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(notifications);
+  return res.status(StatusCodes.OK).json(notifications);
 };

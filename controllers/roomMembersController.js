@@ -38,7 +38,7 @@ export const createRoomMember = async (req, res) => {
     throw new BadRequestError("Error in adding user in the message.");
   }
 
-  res.status(StatusCodes.OK).json(newRoomMember);
+  return res.status(StatusCodes.OK).json(newRoomMember);
 };
 
 export const deleteRoomMember = async (req, res) => {
@@ -156,7 +156,7 @@ const getRoomMembers = async (req, res) => {
     throw new BadRequestError("Error in getting all members in the message.");
   }
 
-  res.status(StatusCodes.OK).json(allRoomMembers);
+  return res.status(StatusCodes.OK).json(allRoomMembers);
 };
 
 const getPossibleRoomMembers = async (req, res) => {
@@ -178,7 +178,7 @@ const getPossibleRoomMembers = async (req, res) => {
     throw new BadRequestError("Error in getting all members in the message.");
   }
 
-  res.status(StatusCodes.OK).json(allRoomMembers);
+  return res.status(StatusCodes.OK).json(allRoomMembers);
 };
 
 export const getAllRoomMembers = async (req, res) => {
@@ -207,5 +207,5 @@ export const getRoomMember = async (req, res) => {
     throw new NotFoundError("This message member does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(roomMember[0]);
+  return res.status(StatusCodes.OK).json(roomMember[0]);
 };

@@ -32,7 +32,7 @@ export const updateUserSettings = async (req, res) => {
     throw new BadRequestError(`Error in updating user settings. Try again`);
   }
 
-  res.status(StatusCodes.OK).json(updateUserSetting);
+  return res.status(StatusCodes.OK).json(updateUserSetting);
 };
 
 export const getUserSettings = async (req, res) => {
@@ -44,5 +44,5 @@ export const getUserSettings = async (req, res) => {
     throw new NotFoundError(`This user setting does not exist.`);
   }
 
-  res.status(StatusCodes.OK).json(userSettings[0]);
+  return res.status(StatusCodes.OK).json(userSettings[0]);
 };

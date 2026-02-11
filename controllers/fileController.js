@@ -22,5 +22,5 @@ export const uploadFiles = async (req, res) => {
   }
 
   fs.unlinkSync(tempFilePath);
-  res.status(StatusCodes.OK).json(data.secure_url);
+  return res.status(StatusCodes.OK).json(data.secure_url);
 };

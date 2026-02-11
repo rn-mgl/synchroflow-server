@@ -72,7 +72,7 @@ const getAllMyAssociates = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(associates);
+  return res.status(StatusCodes.OK).json(associates);
 };
 
 // exports
@@ -109,7 +109,7 @@ export const createAssociate = async (req, res) => {
     await createMessageRoom(id, user[0].user_id);
   }
 
-  res.status(StatusCodes.OK).json(newAssociate);
+  return res.status(StatusCodes.OK).json(newAssociate);
 };
 
 export const deleteAssociate = async (req, res) => {
@@ -135,7 +135,7 @@ export const deleteAssociate = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(deleteConnection);
+  return res.status(StatusCodes.OK).json(deleteConnection);
 };
 
 export const getAssociate = async (req, res) => {
@@ -150,7 +150,7 @@ export const getAssociate = async (req, res) => {
     throw new NotFoundError("This associate connection no longer exist.");
   }
 
-  res.status(StatusCodes.OK).json(associate[0]);
+  return res.status(StatusCodes.OK).json(associate[0]);
 };
 
 const getAllRecentAssociates = async (req, res) => {
@@ -164,7 +164,7 @@ const getAllRecentAssociates = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(associates);
+  return res.status(StatusCodes.OK).json(associates);
 };
 
 export const getAllAssociates = async (req, res) => {

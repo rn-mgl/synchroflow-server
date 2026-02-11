@@ -17,7 +17,7 @@ export const getUser = async (req, res) => {
     throw new BadRequestError(`Error in getting your data. Try again later.`);
   }
 
-  res.status(StatusCodes.OK).json(user[0]);
+  return res.status(StatusCodes.OK).json(user[0]);
 };
 
 const updateUserIdentifier = async (req, res) => {
@@ -49,7 +49,7 @@ const updateUserIdentifier = async (req, res) => {
     throw new BadRequestError("Error in updating your identifiers.");
   }
 
-  res.status(StatusCodes.OK).json(updateUser);
+  return res.status(StatusCodes.OK).json(updateUser);
 };
 
 const updateUserPassword = async (req, res) => {
@@ -85,7 +85,7 @@ const updateUserPassword = async (req, res) => {
     throw new BadRequestError("Error in updating your password.");
   }
 
-  res.status(StatusCodes.OK).json(updateUser);
+  return res.status(StatusCodes.OK).json(updateUser);
 };
 
 export const updateUser = async (req, res) => {

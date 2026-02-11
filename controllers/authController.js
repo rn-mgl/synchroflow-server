@@ -56,10 +56,9 @@ export const registerUser = async (req, res) => {
     `${name} ${surname}`,
     email,
   );
-
-  res.status(StatusCodes.OK).json(token);
-
   const data = await sendVerificationMail(`${name} ${surname}`, email, token);
+
+  return res.status(StatusCodes.OK).json(token);
 };
 
 export const loginUser = async (req, res) => {
@@ -144,7 +143,7 @@ export const verifyUser = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(verify);
+  return res.status(StatusCodes.OK).json(verify);
 };
 
 export const forgotPassword = async (req, res) => {
@@ -174,7 +173,7 @@ export const forgotPassword = async (req, res) => {
     token,
   );
 
-  res.status(StatusCodes.OK).json({ token, passwordResetMail });
+  return res.status(StatusCodes.OK).json({ token, passwordResetMail });
 };
 
 export const newPassword = async (req, res) => {
@@ -201,5 +200,5 @@ export const newPassword = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(newUserPassword);
+  return res.status(StatusCodes.OK).json(newUserPassword);
 };

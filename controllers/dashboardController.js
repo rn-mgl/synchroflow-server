@@ -13,5 +13,5 @@ export const getDashboardData = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(dashboardData);
+  return res.status(StatusCodes.OK).json(dashboardData);
 };

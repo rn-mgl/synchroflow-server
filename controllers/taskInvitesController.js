@@ -41,7 +41,7 @@ export const createTaskInvite = async (req, res) => {
     }
   });
 
-  res.status(StatusCodes.OK).json({ msg: "Sent successfully" });
+  return res.status(StatusCodes.OK).json({ msg: "Sent successfully" });
 };
 
 export const deleteTaskInvite = async (req, res) => {
@@ -65,7 +65,7 @@ export const deleteTaskInvite = async (req, res) => {
     throw new BadRequestError("Error in deleting invite. Try again later.");
   }
 
-  res.status(StatusCodes.OK).json(deleteInvite);
+  return res.status(StatusCodes.OK).json(deleteInvite);
 };
 
 export const updateTaskInviteStatus = async (req, res) => {
@@ -93,7 +93,7 @@ export const updateTaskInviteStatus = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(updateInvite);
+  return res.status(StatusCodes.OK).json(updateInvite);
 };
 
 export const getTaskInvite = async (req, res) => {
@@ -108,7 +108,7 @@ export const getTaskInvite = async (req, res) => {
     throw new NotFoundError("The invite does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(taskInvite[0]);
+  return res.status(StatusCodes.OK).json(taskInvite[0]);
 };
 
 const getAllSentTaskInvites = async (req, res) => {
@@ -123,7 +123,7 @@ const getAllSentTaskInvites = async (req, res) => {
     throw new BadRequestError("Error in getting all your sent task invites.");
   }
 
-  res.status(StatusCodes.OK).json(allTaskInvites);
+  return res.status(StatusCodes.OK).json(allTaskInvites);
 };
 
 const getAllReceivedTaskInvites = async (req, res) => {
@@ -140,7 +140,7 @@ const getAllReceivedTaskInvites = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(allTaskInvites);
+  return res.status(StatusCodes.OK).json(allTaskInvites);
 };
 
 const getAllAssociatesToInvite = async (req, res) => {
@@ -166,7 +166,7 @@ const getAllAssociatesToInvite = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(allTaskInvites);
+  return res.status(StatusCodes.OK).json(allTaskInvites);
 };
 
 export const getAllTaskInvites = async (req, res) => {

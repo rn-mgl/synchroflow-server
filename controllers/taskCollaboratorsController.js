@@ -37,7 +37,7 @@ export const createTaskCollaborator = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json(newTaskCollaborator);
+  return res.status(StatusCodes.OK).json(newTaskCollaborator);
 };
 
 const leaveTask = async (req, res) => {
@@ -225,5 +225,5 @@ export const getTaskCollaborator = async (req, res) => {
     throw new NotFoundError("The task collaborator does not exist.");
   }
 
-  res.status(StatusCodes.OK).json(taskCollaborator[0]);
+  return res.status(StatusCodes.OK).json(taskCollaborator[0]);
 };

@@ -5,7 +5,8 @@ export const errorMiddleware = (err, req, res, next) => {
 
   let customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
-    message: err.message || "Sorry, there was a problem. Please try again later.",
+    message:
+      err.message || "Sorry, there was a problem. Please try again later.",
   };
 
   if (err?.errno === 1062) {
@@ -13,5 +14,5 @@ export const errorMiddleware = (err, req, res, next) => {
     customError.message = `Input for ${err.sqlMessage.split(" ")[2]} already exists`;
   }
 
-  res.status(customError.statusCode).send(customError.message);
+  return res.status(customError.statusCode).send(customError.message);
 };
