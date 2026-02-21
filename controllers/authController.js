@@ -89,7 +89,7 @@ export const loginUser = async (req, res) => {
     email,
   );
 
-  const primary = {
+  let primary = {
     id: user_id,
     uuid: user_uuid,
     name: `${name} ${surname}`,
@@ -111,6 +111,8 @@ export const loginUser = async (req, res) => {
       email,
       emailToken,
     );
+
+    primary.token = null;
   }
 
   return res.status(StatusCodes.OK).json(primary);
